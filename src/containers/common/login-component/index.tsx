@@ -42,7 +42,10 @@ export default function LoginComponent() {
                   <div className="w-10 h-10 rounded-full bg-white overflow-hidden">
                     <Image
                       src={
-                        user?.avatar?.replace(/^\./, "") || "/images/avatar.png"
+                        user?.avatar
+                          ? user?.avatar?.replace(/^\./, "") ||
+                            "/images/avatar.png"
+                          : "/assets/images/default_user.png"
                       }
                       alt="user avatar"
                       width={40}
