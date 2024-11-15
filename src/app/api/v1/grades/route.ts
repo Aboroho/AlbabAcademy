@@ -7,11 +7,10 @@ import { withMiddleware } from "../../middlewares/withMiddleware";
 import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
+import { ApiRoute } from "@/types/common";
 
-export const POST = withMiddleware(
-  authenticate,
-  authorizeAdmin,
-  async (req) => {
+export const POST: ApiRoute = async (req, params) => {
+  return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
     const gradeData = await parseJSONData(req);
 
     const parsedGrade = await gradeCreateSchema.parseAsync(gradeData);
@@ -21,10 +20,12 @@ export const POST = withMiddleware(
     });
 
     return apiResponse({ data: grade });
-  }
-);
+  })(req, params);
+};
 
-export const GET = withMiddleware(authenticate, async () => {
-  const grades = await prismaQ.grade.findMany();
-  return apiResponse({ data: grades });
-});
+export const GET: ApiRoute = async (req, params) => {
+  return await withMiddleware(authenticate, async () => {
+    const grades = await prismaQ.grade.findMany();
+    return apiResponse({ data: grades });
+  })(req, params);
+};

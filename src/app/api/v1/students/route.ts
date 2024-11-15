@@ -17,12 +17,11 @@ import {
   IStudentResponse,
   IStudentResponseWithPaymentInfo,
 } from "@/types/response_types";
+import { ApiRoute } from "@/types/common";
 
 // create student
-export const POST = withMiddleware(
-  authenticate,
-  authorizeAdmin,
-  async (req) => {
+export const POST: ApiRoute = async (req, params) => {
+  return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
     const studentData = await parseJSONData(req);
 
     // transaction
@@ -120,44 +119,46 @@ export const POST = withMiddleware(
     };
 
     return apiResponse({ data: flattenedStudent });
-  }
-);
+  })(req, params);
+};
 
 // get student
-export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
-  const students = await prismaQ.student.findMany({
-    include: {
-      cohort: {
-        include: {
+export const GET: ApiRoute = async (req, params) => {
+  return await withMiddleware(authenticate, authorizeAdmin, async () => {
+    const students = await prismaQ.student.findMany({
+      include: {
+        cohort: {
+          include: {
+            section: {
+              include: {
+                grade: true,
+              },
+            },
+          },
+        },
+        user: true,
+        address: true,
+      },
+      orderBy: {
+        cohort: {
           section: {
-            include: {
-              grade: true,
+            grade: {
+              name: "asc",
             },
           },
         },
       },
-      user: true,
-      address: true,
-    },
-    orderBy: {
-      cohort: {
-        section: {
-          grade: {
-            name: "asc",
-          },
-        },
-      },
-    },
-  });
-  const flattenedStudents: IStudentResponse[] = students.map((student) => {
-    return {
-      ...student,
-      cohort: omitFields(student.cohort, ["section"]),
-      section: omitFields(student.cohort.section, ["grade"]),
-      grade: student.cohort.section.grade,
-      user: omitFields(student.user, ["password"]),
-    };
-  });
+    });
+    const flattenedStudents: IStudentResponse[] = students.map((student) => {
+      return {
+        ...student,
+        cohort: omitFields(student.cohort, ["section"]),
+        section: omitFields(student.cohort.section, ["grade"]),
+        grade: student.cohort.section.grade,
+        user: omitFields(student.user, ["password"]),
+      };
+    });
 
-  return apiResponse({ data: flattenedStudents });
-});
+    return apiResponse({ data: flattenedStudents });
+  })(req, params);
+};

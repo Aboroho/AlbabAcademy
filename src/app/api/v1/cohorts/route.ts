@@ -1,3 +1,4 @@
+import { ApiRoute } from "@/types/common";
 import {
   authenticate,
   authorizeAdmin,
@@ -8,10 +9,8 @@ import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { cohortCreateValidationSchema } from "../../validationSchema/cohortSchema";
 
-export const POST = withMiddleware(
-  authenticate,
-  authorizeAdmin,
-  async (req) => {
+export const POST: ApiRoute = (req, params) => {
+  return withMiddleware(authenticate, authorizeAdmin, async (req) => {
     const cohortData = await parseJSONData(req);
 
     const parsedCohort = await cohortCreateValidationSchema.parseAsync(
@@ -23,32 +22,34 @@ export const POST = withMiddleware(
     });
 
     return apiResponse({ data: cohort });
-  }
-);
+  })(req, params);
+};
 
-export const GET = withMiddleware(authenticate, async (req) => {
-  const { searchParams } = req.nextUrl;
+export const GET: ApiRoute = async (req, params) => {
+  return await withMiddleware(authenticate, async (req) => {
+    const { searchParams } = req.nextUrl;
 
-  const conditions: { [key: string]: unknown } = {};
+    const conditions: { [key: string]: unknown } = {};
 
-  const sectionIdQ = searchParams.get("section_id");
-  if (sectionIdQ) {
-    const sectionId = parseInt(sectionIdQ);
-    if (sectionIdQ === "null") conditions["section_id"] = null;
-    else conditions["section_id"] = sectionId ? sectionId : -1;
-  }
+    const sectionIdQ = searchParams.get("section_id");
+    if (sectionIdQ) {
+      const sectionId = parseInt(sectionIdQ);
+      if (sectionIdQ === "null") conditions["section_id"] = null;
+      else conditions["section_id"] = sectionId ? sectionId : -1;
+    }
 
-  const cohort = await prismaQ.cohort.findMany({
-    where: {
-      ...conditions,
-    },
-    include: {
-      section: {
-        include: {
-          grade: true,
+    const cohort = await prismaQ.cohort.findMany({
+      where: {
+        ...conditions,
+      },
+      include: {
+        section: {
+          include: {
+            grade: true,
+          },
         },
       },
-    },
-  });
-  return apiResponse({ data: cohort });
-});
+    });
+    return apiResponse({ data: cohort });
+  })(req, params);
+};

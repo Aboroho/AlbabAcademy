@@ -1,4 +1,10 @@
+import { NextRequest } from "next/server";
 import { FieldValues, Path } from "react-hook-form";
+
+export type ApiRoute = (
+  req: NextRequest,
+  params: Record<string, unknown>
+) => Promise<void | Response>;
 
 export interface User {
   username: string;
