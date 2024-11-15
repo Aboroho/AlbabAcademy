@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { withMiddleware } from "../../middlewares/withMiddleware";
 import { apiResponse } from "../../utils/handleResponse";
-import { APIError, withError } from "../../utils/handleError";
+import { APIError } from "../../utils/handleError";
 import { uploadFile } from "../../utils/fileUploader";
 
 import {
