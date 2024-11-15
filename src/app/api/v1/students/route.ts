@@ -3,13 +3,13 @@ import {
   authorizeAdmin,
 } from "../../middlewares/auth/auth_middlewares";
 import { withMiddleware } from "../../middlewares/withMiddleware";
-import { hashPassword } from "../../utils/encryption";
+
 import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { studentCreateValidatoinSchema } from "../../validationSchema/studentSchema";
 
-import { excludeFields, omitFields } from "../../utils/excludeFields";
+import { omitFields } from "../../utils/excludeFields";
 
 import { validateFileAndMove } from "../../utils/fileUploader";
 import { Role } from "@prisma/client";
@@ -17,17 +17,6 @@ import {
   IStudentResponse,
   IStudentResponseWithPaymentInfo,
 } from "@/types/response_types";
-
-const allUserField = {
-  id: true,
-  username: true,
-  password: true,
-  role: true,
-  phone: true,
-  email: true,
-  avatar: true,
-  createdAt: true,
-};
 
 // create student
 export const POST = withMiddleware(

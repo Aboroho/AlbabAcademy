@@ -101,6 +101,7 @@ export const AuthProvider = ({ children }: Props) => {
         return true;
       }
     } catch (err: unknown) {
+      console.log(err);
       return false;
     }
   };

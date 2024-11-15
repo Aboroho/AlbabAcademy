@@ -1,9 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-type Props = {};
-
-function Loader({}: Props) {
+function Loader() {
   return (
     <div className="w-screen h-screen flex items-center justify-center">
       <Image
