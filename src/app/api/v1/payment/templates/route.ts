@@ -8,10 +8,11 @@ import { apiResponse } from "@/app/api/utils/handleResponse";
 import { parseJSONData } from "@/app/api/utils/parseIncomingData";
 import { prismaQ } from "@/app/api/utils/prisma";
 import { paymentTemplateCreateValidationSchema } from "@/app/api/validationSchema/paymentSchema";
-import { ApiRoute } from "@/types/common";
 
-export const POST: ApiRoute = async (req, params) => {
-  return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
+export const POST = withMiddleware(
+  authenticate,
+  authorizeAdmin,
+  async (req) => {
     const paymentTemplateData = await parseJSONData(req);
 
     const parsedPaymentTemplate =
@@ -32,16 +33,14 @@ export const POST: ApiRoute = async (req, params) => {
     });
 
     return apiResponse({ data: paymentTemplate });
-  })(req, params);
-};
+  }
+);
 
-export const GET: ApiRoute = async (req, params) => {
-  return await withMiddleware(authenticate, authorizeAdmin, async () => {
-    const templates = await prismaQ.paymentTemplate.findMany({
-      include: {
-        template_fields: true,
-      },
-    });
-    return apiResponse({ data: templates });
-  })(req, params);
-};
+export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
+  const templates = await prismaQ.paymentTemplate.findMany({
+    include: {
+      template_fields: true,
+    },
+  });
+  return apiResponse({ data: templates });
+});

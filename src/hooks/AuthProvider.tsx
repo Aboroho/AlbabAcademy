@@ -4,7 +4,6 @@ import { User } from "@/types/common";
 import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { useRouter } from "next/navigation";
-import { BASE_URL } from "@/lib/constants";
 
 export type ILoginData = {
   username: string;
@@ -68,7 +67,7 @@ export const AuthProvider = ({ children }: Props) => {
   const loginAction = async (loginData: ILoginData): Promise<boolean> => {
     const { username, password } = loginData;
     console.log(loginData);
-    const url = BASE_URL + "/api/v1/login";
+    const url = "/api/v1/login";
     try {
       const res = await fetch(url, {
         method: "post",

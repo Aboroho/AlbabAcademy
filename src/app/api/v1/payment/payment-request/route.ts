@@ -48,7 +48,6 @@ export const POST = withMiddleware(
         });
       } else {
         // structure
-        // eslint-disable-next-line prefer-const
         const query: any = {
           cohort: {
             section: {},

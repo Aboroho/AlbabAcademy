@@ -22,7 +22,7 @@ import { ApiResponse, FormDetailsProps } from "@/types/common";
 import { Button } from "@/components/button";
 
 import { IGradeResponse } from "@/types/response_types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createGrade, updateGrade } from "./utils";
 
 type FormData = IGradeCreateFormData | IGradeUpdateFormData;
@@ -53,14 +53,21 @@ function GradeDetailsForm({
   }, [grade, reset]);
 
   // mutations
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: IGradeUpdateFormData) => {
       return await updateGrade(data, gradeId);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["grades"] });
     },
   });
   const createMutation = useMutation({
     mutationFn: async (data: IGradeCreateFormData) => {
       return await createGrade(data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["grades"] });
     },
   });
 

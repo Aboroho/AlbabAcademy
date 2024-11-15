@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 import { ISectionResponse } from "@/types/response_types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createSection, updateSection } from "./utils";
 
@@ -68,14 +68,21 @@ function SectionDetailsForm({
   }, [section, reset]);
 
   // mutations
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: ISectionUpdateFormData) => {
       return await updateSection(data, sectionId);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
     },
   });
   const createMutation = useMutation({
     mutationFn: async (data: ISectionCreateFormData) => {
       return await createSection(data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["sections"] });
     },
   });
 

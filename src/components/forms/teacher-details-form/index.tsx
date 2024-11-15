@@ -29,7 +29,7 @@ import {
   getTeacherDefaultUpdateFormData,
   updateTeacher,
 } from "./utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ITeacherResponse } from "@/types/response_types";
 
 type FormData = ITeacherCreateFormData | ITeacherUpdateFormData;
@@ -62,14 +62,22 @@ function TeacherDetailsForm({
   }, [teacher, reset]);
 
   // mutations
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: ITeacherUpdateFormData) => {
       return await updateTeacher(data, teacherId);
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
     },
   });
   const createMutation = useMutation({
     mutationFn: async (data: ITeacherCreateFormData) => {
       return await createTeacher(data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
     },
   });
 

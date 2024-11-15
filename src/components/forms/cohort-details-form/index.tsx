@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/button";
 import { SelectGradeField, SelectSectionField } from "../common-fields";
 import { ICohortResponseWithParent } from "@/types/response_types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCohort, updateCohort } from "./utils";
 
 type FormData = (ICohortCreateFormData | ICohortUpdateFormData) & {
@@ -68,14 +68,21 @@ function CohortDetailsFrom({
   }, [cohort, reset]);
 
   // mutations
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: ICohortUpdateFormData) => {
       return await updateCohort(data, cohortId);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["cohorts"] });
     },
   });
   const createMutation = useMutation({
     mutationFn: async (data: ICohortCreateFormData) => {
       return await createCohort(data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["cohorts"] });
     },
   });
 

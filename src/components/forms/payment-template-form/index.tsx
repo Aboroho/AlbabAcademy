@@ -25,7 +25,7 @@ import { Cross1Icon } from "@radix-ui/react-icons";
 
 import { IPaymentTemplateResponse } from "@/types/response_types";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPaymentTemplate, updatePaymentTemplate } from "./utils";
 
 type FormData = IPaymentTemplateCreateFormData | IPaymentTemplateUpdateFormData;
@@ -72,16 +72,22 @@ function PaymentTemplateDetailsForm({
   }, [paymentTemplate, reset]);
 
   // mutation
-
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: IPaymentTemplateUpdateFormData) => {
       return await updatePaymentTemplate(data, paymentTemplateId);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["payment-templates"] });
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async (data: IPaymentTemplateUpdateFormData) => {
       return await createPaymentTemplate(data);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["payment-templates"] });
     },
   });
 

@@ -11,10 +11,11 @@ import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { teacherCreateValidationSchema } from "../../validationSchema/teacherSchema";
-import { ApiRoute } from "@/types/common";
 
-export const POST: ApiRoute = async (req, params) => {
-  return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
+export const POST = withMiddleware(
+  authenticate,
+  authorizeAdmin,
+  async (req) => {
     const teacherData = await parseJSONData(req);
 
     const parsedTeacher = await teacherCreateValidationSchema.parseAsync(
@@ -65,25 +66,23 @@ export const POST: ApiRoute = async (req, params) => {
       user: omitFields(teacher.user, ["password"]),
     };
     return apiResponse({ data: res, statusCode: 201 });
-  })(req, params);
-};
+  }
+);
 
-export const GET: ApiRoute = async (req, params) => {
-  return await withMiddleware(authenticate, authorizeAdmin, async () => {
-    const teachers = await prismaQ.teacher.findMany({
-      include: {
-        address: true,
-        user: true,
-      },
-    });
+export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
+  const teachers = await prismaQ.teacher.findMany({
+    include: {
+      address: true,
+      user: true,
+    },
+  });
 
-    const res: ITeacherResponse[] = teachers.map((teacher) => {
-      return {
-        ...teacher,
-        user: omitFields(teacher.user, ["password"]),
-      };
-    });
+  const res: ITeacherResponse[] = teachers.map((teacher) => {
+    return {
+      ...teacher,
+      user: omitFields(teacher.user, ["password"]),
+    };
+  });
 
-    return apiResponse({ data: res });
-  })(req, params);
-};
+  return apiResponse({ data: res });
+});
