@@ -10,10 +10,11 @@ import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { AssessmentSchema } from "../../validationSchema/assesmentSchema";
-import { ApiRoute } from "@/types/common";
 
-export const POST: ApiRoute = async (req, params) => {
-  return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
+export const POST = withMiddleware(
+  authenticate,
+  authorizeAdmin,
+  async (req) => {
     const assessmentData = await parseJSONData(req);
     const user = JSON.parse(req.headers.get("x-user") || "");
     assessmentData.creator_id = user?.id;
@@ -33,55 +34,53 @@ export const POST: ApiRoute = async (req, params) => {
     });
 
     return apiResponse({ data: assement });
-  })(req, params);
-};
+  }
+);
 
-export const GET: ApiRoute = async (req, params) => {
-  return await withMiddleware(
-    authenticate,
-    authorizeTeacherAndAdmin,
-    async (req) => {
-      const user = JSON.parse(req.headers.get("x-user") || "");
+export const GET = withMiddleware(
+  authenticate,
+  authorizeTeacherAndAdmin,
+  async (req) => {
+    const user = JSON.parse(req.headers.get("x-user") || "");
 
-      if (user.role === "TEACHER") {
-        const teacher = await prismaQ.teacher.findUnique({
-          where: {
-            user_id: user.id,
-          },
-        });
-        if (!teacher) throw new APIError("No data found");
+    if (user.role === "TEACHER") {
+      const teacher = await prismaQ.teacher.findUnique({
+        where: {
+          user_id: user.id,
+        },
+      });
+      if (!teacher) throw new APIError("No data found");
 
-        const assessments = await prismaQ.assessment.findMany({
-          where: {
-            assessment_subjects: {
-              some: {
-                teacher_id: teacher.id,
-              },
+      const assessments = await prismaQ.assessment.findMany({
+        where: {
+          assessment_subjects: {
+            some: {
+              teacher_id: teacher.id,
             },
           },
-          include: {
-            assessment_subjects: {
-              where: {
-                teacher_id: teacher.id,
-              },
-              select: {
-                id: true,
-                subject_name: true,
-                total_mark: true,
-                teacher_id: true,
-              },
+        },
+        include: {
+          assessment_subjects: {
+            where: {
+              teacher_id: teacher.id,
+            },
+            select: {
+              id: true,
+              subject_name: true,
+              total_mark: true,
+              teacher_id: true,
             },
           },
-        });
-        return apiResponse({ data: assessments });
-      } else {
-        const assessments = await prismaQ.assessment.findMany({
-          include: {
-            assessment_subjects: true,
-          },
-        });
-        return apiResponse({ data: assessments });
-      }
+        },
+      });
+      return apiResponse({ data: assessments });
+    } else {
+      const assessments = await prismaQ.assessment.findMany({
+        include: {
+          assessment_subjects: true,
+        },
+      });
+      return apiResponse({ data: assessments });
     }
-  )(req, params);
-};
+  }
+);

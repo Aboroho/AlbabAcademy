@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   async function validateUser() {
-    const url = "http://localhost:3000/api/v1/verify-token";
+    const url = "/api/v1/verify-token";
     try {
       const res = await fetch(url, {
         method: "post",
