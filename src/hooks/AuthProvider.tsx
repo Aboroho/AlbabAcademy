@@ -4,6 +4,7 @@ import { User } from "@/types/common";
 import React, { useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/ui/skeleton/loader";
 
 export type ILoginData = {
   username: string;
@@ -100,7 +101,6 @@ export const AuthProvider = ({ children }: Props) => {
         return true;
       }
     } catch (err: unknown) {
-      console.log(err);
       return false;
     }
   };
@@ -156,7 +156,7 @@ export const Protected = ({
     }
   }, [action, isLogin, redirectPath, roles, router, user, isLoading]);
 
-  if (isLoading) return <div>Loading</div>;
+  if (isLoading) return <Loader />;
 
   if (!isLogin || !user || !roles?.includes(user.role)) {
     if (action === "hide") return null;

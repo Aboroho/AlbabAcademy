@@ -5,7 +5,6 @@ import { Prisma } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 function prismaErrorMapper(err: PrismaClientKnownRequestError) {
-  console.log(err.meta);
   const target = err.meta?.target;
   const errors = {
     Student_student_id_key: {
@@ -86,10 +85,11 @@ export const withError = (handler: Middleware) => {
         e.message = "`next` can not be called outside of withMiddleware";
         throw e;
       } else if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        let err = new APIError("db error", 400, {
+        let err = new APIError("Server error!!", 400, {
           errCode: e.code,
           details: e.meta?.target,
         });
+        console.log(err);
 
         if (e.code === "P2002") {
           err = new APIError(

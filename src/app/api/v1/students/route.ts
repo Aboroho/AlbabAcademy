@@ -3,17 +3,31 @@ import {
   authorizeAdmin,
 } from "../../middlewares/auth/auth_middlewares";
 import { withMiddleware } from "../../middlewares/withMiddleware";
-
+import { hashPassword } from "../../utils/encryption";
 import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { studentCreateValidatoinSchema } from "../../validationSchema/studentSchema";
 
-import { omitFields } from "../../utils/excludeFields";
+import { excludeFields, omitFields } from "../../utils/excludeFields";
 
 import { validateFileAndMove } from "../../utils/fileUploader";
 import { Role } from "@prisma/client";
-import { IStudentResponse } from "@/types/response_types";
+import {
+  IStudentResponse,
+  IStudentResponseWithPaymentInfo,
+} from "@/types/response_types";
+
+const allUserField = {
+  id: true,
+  username: true,
+  password: true,
+  role: true,
+  phone: true,
+  email: true,
+  avatar: true,
+  createdAt: true,
+};
 
 // create student
 export const POST = withMiddleware(
@@ -23,7 +37,7 @@ export const POST = withMiddleware(
     const studentData = await parseJSONData(req);
 
     // transaction
-    const student = await prismaQ.$transaction(async (prismaQ) => {
+    const { student, payment } = await prismaQ.$transaction(async (prismaQ) => {
       // validate and create user
       const parsedStudent = await studentCreateValidatoinSchema.parseAsync(
         studentData
@@ -44,12 +58,15 @@ export const POST = withMiddleware(
         data: refinedUser,
       });
 
+      console.log(user);
+
       // validate and create address
       const parsedAddress = parsedStudent.address;
       const address = await prismaQ.address.create({
         data: parsedAddress,
       });
 
+      console.log(address);
       studentData.user_id = user.id;
       studentData.address_id = address.id;
 
@@ -94,24 +111,26 @@ export const POST = withMiddleware(
             payment_template_id: parsedStudent.payment_template_id,
           },
         });
-        await prismaQ.payment.create({
+        const payment = await prismaQ.payment.create({
           data: {
             payment_request_id: paymentRequest.id,
             user_id: user.id,
             status: parsedStudent.payment_status,
           },
         });
+        return { student, payment };
       }
 
-      return student;
+      return { student };
     });
 
-    const flattenedStudent: IStudentResponse = {
+    const flattenedStudent: IStudentResponseWithPaymentInfo = {
       ...student,
       cohort: omitFields(student.cohort, ["section"]),
       section: omitFields(student.cohort.section, ["grade"]),
       grade: student.cohort.section.grade,
       user: omitFields(student.user, ["password"]),
+      payment,
     };
 
     return apiResponse({ data: flattenedStudent });

@@ -31,6 +31,7 @@ import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { Badge } from "@/components/shadcn/ui/badge";
 import AlertDialog from "@/components/ui/modal/AlertDialog";
 import toast from "react-hot-toast";
+import TableSkeleton from "@/components/ui/skeleton/table-skeleton";
 
 export type IStudentTableRow = {
   id: number;
@@ -51,7 +52,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
   const [studentTableRows, setStudentTableRows] = useState<IStudentTableRow[]>(
     [] as IStudentTableRow[]
   );
-  const { data: fetchedStudents } = useGetStudents({
+  const { data: fetchedStudents, isLoading } = useGetStudents({
     enabled: isEmpty(defaultStudents),
   });
   const students = defaultStudents || fetchedStudents;
@@ -249,6 +250,8 @@ function StudentListTable({ students: defaultStudents }: Props) {
     ],
     []
   );
+
+  if (isLoading) return <TableSkeleton />;
   return (
     <div className="p-8">
       {/* <SearchFilter
