@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { verifyToken } from "../../utils/jwt";
 
 export const authenticate: Middleware = async (req, params, next) => {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const accessTokenData = cookieStore.get("access_token");
 
   if (!accessTokenData) throw new APIError("No access token provided", 401);
