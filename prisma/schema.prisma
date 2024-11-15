@@ -2,15 +2,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
-}
-
 // datasource db {
-//   provider = "mysql"
-//   url      = env("MySQL")
+//   provider = "postgresql"
+//   url      = env("POSTGRES_PRISMA_URL")
 // }
+
+datasource db {
+  provider = "mysql"
+  url      = env("MySQL")
+}
 
 enum Role {
   STUDENT

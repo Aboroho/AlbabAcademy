@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import {
   authenticate,
   authorizeAdmin,
@@ -10,9 +11,9 @@ import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 import { AssessmentSchema } from "../../validationSchema/assesmentSchema";
-import { ApiRoute } from "@/types/common";
+// import { ApiRoute } from "@/types/common";
 
-export const POST: ApiRoute = async (req, params) => {
+export async function POST(req: NextRequest, params: Record<string, unknown>) {
   return await withMiddleware(authenticate, authorizeAdmin, async (req) => {
     const assessmentData = await parseJSONData(req);
     const user = JSON.parse(req.headers.get("x-user") || "");
@@ -34,9 +35,9 @@ export const POST: ApiRoute = async (req, params) => {
 
     return apiResponse({ data: assement });
   })(req, params);
-};
+}
 
-export const GET: ApiRoute = async (req, params) => {
+export async function GET(req: NextRequest, params: Record<string, unknown>) {
   return await withMiddleware(
     authenticate,
     authorizeTeacherAndAdmin,
@@ -84,4 +85,4 @@ export const GET: ApiRoute = async (req, params) => {
       }
     }
   )(req, params);
-};
+}
