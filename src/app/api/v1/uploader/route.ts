@@ -9,9 +9,9 @@ import {
   authorizeAdmin,
 } from "@/app/api/middlewares/auth/auth_middlewares";
 
-export const GETs = withMiddleware(authenticate, authorizeAdmin, async () => {
-  return apiResponse({ message: "passed" });
-});
+// export const GETs = withMiddleware(authenticate, authorizeAdmin, async () => {
+//   return apiResponse({ message: "passed" });
+// });
 
 export const GET = withError(() => {
   throw new APIError("oh ho");
