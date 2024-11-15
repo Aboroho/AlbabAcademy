@@ -271,7 +271,9 @@ const StudentInvoice = ({
 
         {/* Signature Section */}
         <View style={styles.signatureSection}>
-          <Text style={styles.borderTop}>Depositor's Signature and Mobile</Text>
+          <Text style={styles.borderTop}>
+            Depositor&apos;s Signature and Mobile
+          </Text>
           <Text style={styles.borderTop}>Officer</Text>
           <Text style={styles.borderTop}>Authorised Officer</Text>
         </View>

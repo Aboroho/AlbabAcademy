@@ -6,7 +6,6 @@ import { CustomQueryOptions } from "@/types/common";
 import { api, DEFAULT_QUERY_FILTER } from "../helper";
 
 import {
-  ICohortResponse,
   ICohortResponseWithParent,
   IGradeResponse,
   ISectionResponse,
@@ -188,11 +187,11 @@ export const useGetCohortById = (
   const query = useQuery({
     queryKey: ["byId", "cohort", id],
     queryFn: async () => {
-      if (!id) return {} as ICohortResponse;
+      if (!id) return {} as ICohortResponseWithParent;
       const res = await api("/cohorts/" + id, {
         method: "get",
       });
-      if (res?.success) return res.data as ICohortResponse;
+      if (res?.success) return res.data as ICohortResponseWithParent;
     },
 
     ...DEFAULT_QUERY_FILTER,

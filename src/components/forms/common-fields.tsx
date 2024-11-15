@@ -551,9 +551,10 @@ export const SelectPaymentTarget = ({
 
   const placeholder = `Select ${targetType?.toLowerCase() || "target"}s`;
 
+  const setValue = form.setValue;
   useEffect(() => {
-    form.setValue("payment_targets", []);
-  }, [targetType]);
+    setValue("payment_targets", []);
+  }, [targetType, setValue]);
 
   const options = {
     default: [{ label: "", value: "" }],
@@ -648,7 +649,7 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
       (tem) => tem.id === paymentTemplateId
     );
     setSelectedTemplate(_selectedTemplate);
-  }, [paymentTemplateId]);
+  }, [paymentTemplateId, paymentTemplates]);
 
   async function handleDownloadInvoice(details: StudentPaymentInvoiceDetails) {
     if (!selectedTemplate) return;
@@ -766,3 +767,5 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
     </div>
   );
 });
+
+PaymentOnEnroll.displayName = "PaymentOnEnroll";

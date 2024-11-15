@@ -4,7 +4,7 @@ import {
   authorizeAdmin,
 } from "../../middlewares/auth/auth_middlewares";
 import { withMiddleware } from "../../middlewares/withMiddleware";
-import { hashPassword } from "../../utils/encryption";
+
 import { omitFields } from "../../utils/excludeFields";
 import { validateFileAndMove } from "../../utils/fileUploader";
 import { apiResponse } from "../../utils/handleResponse";

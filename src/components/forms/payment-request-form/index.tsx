@@ -72,7 +72,7 @@ function PaymentRequestForm({
         forYear: paymentRequest.forYear,
       });
     }
-  }, [paymentRequest]);
+  }, [paymentRequest, reset]);
 
   // mutation
   const updateMutation = useMutation({

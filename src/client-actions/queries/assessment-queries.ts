@@ -2,11 +2,7 @@ import { CustomQueryOptions } from "@/types/common";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../helper";
 
-import {
-  Assessment,
-  AssessmentSubject,
-  AssessmentStatus,
-} from "prisma/prisma-client";
+import { AssessmentStatus } from "prisma/prisma-client";
 export type IAssessmentsResponse = {
   description: string | null;
   id: number;

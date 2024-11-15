@@ -2,9 +2,9 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
-import { Cat, Dog, Fish, LoaderCircle, Rabbit, Turtle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { MultiSelect } from "./multiselect";
 import { FieldError } from "react-hook-form";
 import { InputSkeleton } from "./skeleton/input-skeleton";

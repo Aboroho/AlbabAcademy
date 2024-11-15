@@ -1,6 +1,5 @@
 import {
   paymentTemplateCreateSchema,
-  paymentTemplateFieldSchema,
   paymentTemplateUpdateSchema,
 } from "@/components/forms/payment-template-form/schema";
 import { z } from "zod";

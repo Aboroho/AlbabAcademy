@@ -27,10 +27,10 @@ import {
 } from "../form-utils";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import toast from "react-hot-toast";
+
 import { ISectionResponse } from "@/types/response_types";
 import { useMutation } from "@tanstack/react-query";
-import { IGradeUpdateFormData } from "../grade-details-form/schema";
+
 import { createSection, updateSection } from "./utils";
 
 type FormData = ISectionCreateFormData | ISectionUpdateFormData;

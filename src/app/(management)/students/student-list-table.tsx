@@ -51,8 +51,9 @@ function StudentListTable({ students: defaultStudents }: Props) {
   const [studentTableRows, setStudentTableRows] = useState<IStudentTableRow[]>(
     [] as IStudentTableRow[]
   );
-  const { data: fetchedStudents, isLoading: isStudentsLoading } =
-    useGetStudents({ enabled: isEmpty(defaultStudents) });
+  const { data: fetchedStudents } = useGetStudents({
+    enabled: isEmpty(defaultStudents),
+  });
   const students = defaultStudents || fetchedStudents;
 
   useEffect(() => {
@@ -75,7 +76,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
   }, [students]);
 
   function handleDelete(id: number) {
-    toast.success("Student deleted [not implemented yet]");
+    toast.success("Student deleted [not implemented yet]" + id);
   }
 
   const columns: ColumnDef<IStudentTableRow>[] = useMemo(

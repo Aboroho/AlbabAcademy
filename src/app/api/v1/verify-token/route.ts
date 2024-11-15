@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
-import { isLoggedin } from "../../middlewares/auth/auth_middlewares";
-import { withMiddleware } from "../../middlewares/withMiddleware";
+
 import { apiResponse } from "../../utils/handleResponse";
 import { APIError, withError } from "../../utils/handleError";
 import { verifyToken } from "../../utils/jwt";

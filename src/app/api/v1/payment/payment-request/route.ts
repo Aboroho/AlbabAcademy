@@ -43,12 +43,13 @@ export const POST = withMiddleware(
               )
           );
 
-        const payments = await prismaQ.payment.createMany({
+        await prismaQ.payment.createMany({
           data: paymentInfo,
         });
       } else {
         // structure
-        let query: any = {
+        // eslint-disable-next-line prefer-const
+        const query: any = {
           cohort: {
             section: {},
           },

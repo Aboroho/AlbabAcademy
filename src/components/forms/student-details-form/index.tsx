@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useRef } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import {
   IStudentCreateFormData,
   IStudentUpdateFormData,
@@ -46,8 +46,8 @@ import {
   IStudentResponse,
   IStudentResponseWithPaymentInfo,
 } from "@/types/response_types";
-import { SelectInput } from "@/components/ui/single-select-input";
-import { AlertCircleIcon, FileWarning } from "lucide-react";
+
+import { AlertCircleIcon } from "lucide-react";
 
 type FormData = IStudentCreateFormData | IStudentUpdateFormData;
 

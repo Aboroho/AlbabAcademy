@@ -1,4 +1,3 @@
-import { BASE_URL } from "@/lib/constants";
 import { ApiResponse } from "@/types/common";
 
 export const api = async (route: string, options: RequestInit) => {

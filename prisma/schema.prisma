@@ -7,6 +7,11 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
+// datasource db {
+//   provider = "mysql"
+//   url      = env("MySQL")
+// }
+
 enum Role {
   STUDENT
   TEACHER

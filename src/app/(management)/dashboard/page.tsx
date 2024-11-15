@@ -8,13 +8,12 @@ function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(user, isLogin);
     if (!isLogin) {
       router.push("/login");
     } else if (user?.role === "ADMIN") {
       router.push("/dashboard/admin");
     }
-  }, []);
+  }, [isLogin, router, user]);
 
   if (!isLogin) return null;
 

@@ -8,14 +8,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/shadcn/ui/drawer";
-import {
-  ChevronDown,
-  Facebook,
-  LogIn,
-  MenuIcon,
-  Twitter,
-  X,
-} from "lucide-react";
+import { ChevronDown, Facebook, MenuIcon, Twitter, X } from "lucide-react";
 import React, { Fragment } from "react";
 import { Navlink, topNavLinks } from "./top-nav-links";
 import Link from "next/link";

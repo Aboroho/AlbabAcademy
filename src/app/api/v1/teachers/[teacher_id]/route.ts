@@ -1,7 +1,6 @@
 import {
   authenticate,
   authorizeAdmin,
-  authorizeTeacherAndAdmin,
 } from "@/app/api/middlewares/auth/auth_middlewares";
 import { withMiddleware } from "@/app/api/middlewares/withMiddleware";
 import { omitFields } from "@/app/api/utils/excludeFields";

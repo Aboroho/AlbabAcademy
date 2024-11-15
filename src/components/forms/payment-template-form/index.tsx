@@ -69,7 +69,7 @@ function PaymentTemplateDetailsForm({
         })),
       });
     }
-  }, [paymentTemplate]);
+  }, [paymentTemplate, reset]);
 
   // mutation
 
@@ -108,13 +108,12 @@ function PaymentTemplateDetailsForm({
       <div>
         <h1 className="text-2xl mb-10 ">{formTitle || "Payment Template"}</h1>
       </div>
-
-      {/* Error Area
+      {/* Error Area */}
       {isNotEmpty(errors) && (
         <div className="p-4 rounded-md bg-red-100 mb-6 text-red-500">
           {showErrors(errors as { [key: string]: { message: string } })}
         </div>
-      )} */}
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="">

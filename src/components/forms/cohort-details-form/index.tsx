@@ -18,13 +18,11 @@ import {
   noRecordFoundFallback,
   renderFormSkeleton,
   resolveFormError,
+  showErrors,
 } from "../form-utils";
 import { Button } from "@/components/button";
 import { SelectGradeField, SelectSectionField } from "../common-fields";
-import {
-  ICohortResponse,
-  ICohortResponseWithParent,
-} from "@/types/response_types";
+import { ICohortResponseWithParent } from "@/types/response_types";
 import { useMutation } from "@tanstack/react-query";
 import { createCohort, updateCohort } from "./utils";
 
@@ -98,6 +96,19 @@ function CohortDetailsFrom({
 
   return (
     <div>
+      {/* Form Title section */}
+      <div>
+        <h1 className="text-2xl mb-10 ">
+          {formTitle || "Teacher Details Form"}
+        </h1>
+      </div>
+
+      {/* Error Area */}
+      {isNotEmpty(errors) && (
+        <div className="p-4 rounded-md bg-red-100 mb-6 text-red-500">
+          {showErrors(errors as { [key: string]: { message: string } })}
+        </div>
+      )}
       <div className="lg:max-w-1/2">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
