@@ -1,0 +1,77 @@
+"use client";
+import { Button } from "@/components/button";
+import InputField from "@/components/ui/input-field";
+
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { IAuthContext, useAuth } from "@/hooks/AuthProvider";
+import { useRouter } from "next/navigation";
+
+const loginSchema = z.object({
+  username: z.string().min(1, "username required"),
+  password: z.string().min(1, "password required"),
+});
+
+function Login() {
+  const [serverError, setServerError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const { loginAction } = useAuth() as IAuthContext;
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(data: z.infer<typeof loginSchema>) {
+    const { username, password } = data;
+
+    setServerError("");
+    setSubmitting(true);
+    const loginStatus = await loginAction({ username, password });
+    setSubmitting(false);
+    if (!loginStatus) {
+      setServerError("username or password is incorrect");
+    } else {
+      router.push("/dashboard");
+      console.log("log in successfull");
+    }
+  }
+  return (
+    <div className="w-full max-h-screen min-h-[50vh]  flex justify-center items-center ">
+      <div className="p-4 w-[360px] md:w-[540px] max-h-fit ">
+        {serverError && (
+          <div className="serverError bg-red-200 text-red-800 p-4 rounded-md mb-6">
+            {serverError}
+          </div>
+        )}
+        <form action="" className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <InputField
+            label="Username"
+            {...register("username")}
+            error={errors.username}
+          />
+          <InputField
+            label="password"
+            type="password"
+            error={errors.password}
+            {...register("password")}
+          />
+          <Button size="sm" type="submit" disabled={submitting}>
+            Log in
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default Login;

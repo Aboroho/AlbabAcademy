@@ -1,0 +1,290 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("MySQL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+  STAFF
+  SUPER_ADMIN
+}
+
+enum CohortStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+enum PaymentTargetTypes {
+  STUDENT
+  TEACHER
+  GRADE
+  SECTION
+  COHORT
+}
+enum PaymentStatus {
+  PROCESSING
+  PAID
+  FAILED
+}
+
+enum PaymentMethod {
+  ONLINE
+  CASH
+}
+
+
+model Address {
+  id           Int    @id @default(autoincrement())
+  district     String? @db.VarChar(15)
+  sub_district String? @db.VarChar(15)
+  union        String? @db.VarChar(15)
+  village      String? @db.VarChar(15)
+  
+  student Student[]
+  teacher Teacher[]
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique @db.VarChar(12)
+  password  String   @db.VarChar(128)
+  role      Role
+  phone     String   @unique @db.VarChar(11)
+  email     String?  @unique @db.VarChar(32)
+  avatar    String?  @db.VarChar(512)
+
+  createdAt DateTime @default(now()) @db.Timestamp
+
+  students Student[]
+  teachers Teacher[]
+  payments Payment[]
+
+  assessments Assessment[]
+}
+
+model Teacher {
+  id                Int      @unique @default(autoincrement())
+ 
+  full_name         String   @db.VarChar(32)
+  designation       String   @db.VarChar(32)
+  description       String?   @db.VarChar(512)
+  subject_expertise String?   @db.VarChar(128)
+  date_of_joining   DateTime? @default(now()) @db.Timestamp
+  qualification     String?  @db.VarChar(128)
+
+  user_id           Int      @unique
+  user              User     @relation(fields: [user_id], references: [id])
+
+  address_id        Int
+  address           Address @relation(fields: [address_id], references: [id])
+
+  AssessmentSubject AssessmentSubject[]
+  section Section[]
+}
+
+
+model Grade {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  sections Section[] 
+
+  assessments Assessment[]
+}
+
+
+model Section {
+  id               Int      @id @default(autoincrement())
+  name             String
+  grade_id         Int
+  grade            Grade    @relation(fields: [grade_id], references: [id], onDelete: Restrict)
+
+  class_teacher_id Int?    
+  class_teacher    Teacher?  @relation(fields: [class_teacher_id], references: [id], onDelete: NoAction) 
+  cohorts          Cohort[]
+
+  @@unique([grade_id, name]) 
+  @@index([name])
+}
+
+
+model Cohort {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  status      CohortStatus
+
+  section_id  Int 
+  section     Section     @relation(fields: [section_id], references: [id],onDelete: Restrict)
+
+  student Student[]
+
+  @@index([section_id,name])
+}
+
+
+enum RESIDENTIAL_STATUS {
+  RESIDENTIAL
+  NON_RESIDENTIAL
+}
+
+model Student {
+  id                  Int      @id @default(autoincrement())
+  student_id          String   @unique @db.VarChar(32)
+
+  user_id             Int
+  user                User     @relation(fields: [user_id], references: [id])
+
+  cohort_id           Int
+  cohort              Cohort   @relation(fields: [cohort_id], references: [id])
+
+  roll                Int  
+     
+  full_name           String   @db.VarChar(32)
+  father_name         String   @db.VarChar(32)
+  mother_name         String   @db.VarChar(32)
+  guardian_phone      String   @db.VarChar(11)
+  gender              Gender
+  date_of_birth       DateTime
+  residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)
+
+  address_id          Int
+  address             Address  @relation(fields: [address_id], references: [id])
+  
+  @@unique([roll, cohort_id])
+}
+
+enum AssessmentStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  GRADED
+}
+
+
+model AssessmentType {
+  name      String   @id @db.VarChar(20)
+}
+
+
+model Assessment {
+  id                Int              @id @default(autoincrement())
+  
+  title             String           @db.VarChar(128)
+  description       String?          @db.Text
+  assessment_type   String?          @db.VarChar(20)
+  date              DateTime
+  result_date       DateTime?
+
+  creator_id        Int?
+  creator           User?            @relation(fields: [creator_id], references: [id], onDelete: SetNull)
+
+  assessment_status AssessmentStatus
+  created_at        DateTime         @default(now())
+
+  grade_id          Int
+  grade             Grade            @relation(fields: [grade_id], references: [id])
+  
+  
+  assessment_subjects AssessmentSubject[]
+}
+
+// Model for AssessmentSubject
+model AssessmentSubject {
+  id             Int       @id @default(autoincrement())
+  
+  subject_name           String    @db.VarChar(32)
+  total_mark     Int
+
+  teacher_id     Int?
+  teacher        Teacher?    @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
+ 
+  assessment_id  Int
+  assessment     Assessment  @relation(fields: [assessment_id], references: [id],onDelete: Cascade)
+  
+
+  @@unique([assessment_id, subject_name])
+}
+
+
+// PAYMENT
+
+model PaymentTemplateField {
+  id                 Int                @id @default(autoincrement())
+  description        String
+  amount             Float
+
+  payment_template_id  Int
+  payment_template    PaymentTemplate    @relation(fields: [payment_template_id], references: [id], onDelete: Cascade)
+
+  
+ 
+}
+
+model PaymentTemplate {
+  id          Int                    @id @default(autoincrement())
+  name        String                 @db.VarChar(30)
+  description String?
+  createdAt   DateTime               @default(now())
+
+ 
+  template_fields PaymentTemplateField[]
+  payment_request PaymentRequest[]
+
+   @@unique([name])
+
+ 
+}
+
+
+model PaymentRequest {
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String?
+  forMonth         String?            @db.VarChar(32)
+  forYear          String?            @db.VarChar(32)
+
+  payment_template_id Int
+  payment_template  PaymentTemplate    @relation(fields: [payment_template_id], references: [id])
+
+  payment_target_type PaymentTargetTypes
+
+  payments         Payment[]         
+  
+}
+
+model Payment {
+  id               Int             @id @default(autoincrement())
+  status           PaymentStatus   @default(PROCESSING)
+  paymentMethod    PaymentMethod   @default(CASH)
+ 
+  user_id           Int
+  user             User            @relation(fields: [user_id], references: [id])
+
+  payment_request_id Int
+  payment_request   PaymentRequest  @relation(fields: [payment_request_id], references: [id])
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@unique([user_id, payment_request_id])
+
+}
+
+
+
+
+
+
+

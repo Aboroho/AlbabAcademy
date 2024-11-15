@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .container {
+    @apply px-4 mx-auto w-[91.66%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-[80rem];
+  }
+  .hero-pattern {
+    position: relative;
+  }
+  .hero-pattern::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("../assets/images/jupiter.webp");
+    background-repeat: repeat;
+    background-size: 50px auto;
+    opacity: 0.03;
+  }
+}
