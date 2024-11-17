@@ -113,7 +113,7 @@ export const POST = withMiddleware(
       return { student };
     });
 
-    const flattenedStudent: IStudentResponseWithPaymentInfo = {
+    const flattenedStudent = {
       ...student,
       cohort: omitFields(student.cohort, ["section"]),
       section: omitFields(student.cohort.section, ["grade"]),
@@ -152,7 +152,7 @@ export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
       },
     },
   });
-  const flattenedStudents: IStudentResponse[] = students.map((student) => {
+  const flattenedStudents = students.map((student) => {
     return {
       ...student,
       cohort: omitFields(student.cohort, ["section"]),
