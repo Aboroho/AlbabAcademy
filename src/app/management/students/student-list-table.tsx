@@ -217,7 +217,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
                 <PopoverContent className=" z-[1]">
                   <div className="action-menu-container">
                     <Link
-                      href={"/students/" + student.id}
+                      href={"/management/students/" + student.id}
                       className="flex gap-3  items-center  cursor-pointer hover:text-slate-700"
                     >
                       <Pencil1Icon

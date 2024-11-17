@@ -26,7 +26,9 @@ export function showErrors(errors: IBaseValidationResultFormat) {
           return showErrors(error[1] as IBaseValidationResultFormat);
         return (
           <div key={error[0]} className="flex gap-4">
-            {/* <div className="font-semibold text-red-600">[{error[0]}]</div> */}
+            {error[1]?.message && (
+              <div className="font-semibold text-red-600">{error[0]}:</div>
+            )}
             <div className=" text-red-500">{error[1]?.message as string}</div>
           </div>
         );

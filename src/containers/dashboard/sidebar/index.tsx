@@ -8,6 +8,7 @@ import {
   CollapsibleLink,
   CollapsibleLinkContent,
 } from "@/components/ui/collapsible-link";
+import { Protected } from "@/components/auth";
 
 function Sidebar() {
   return (
@@ -24,87 +25,94 @@ function Sidebar() {
         </div>
       </Link>
       <CommonLinks />
-      <CollapsibleLink
-        icon={<GraduationCap className="w-4 h-4" />}
-        label={"Student"}
-        routePrefix="/management/students"
-      >
-        <CollapsibleLinkContent
-          linkList={{
-            links: [
-              { label: "Student List", href: "" },
-              { label: "Create student", href: "/create" },
-            ],
-            prefix: "/management/students",
-          }}
-        />
-      </CollapsibleLink>
 
-      {/* student group */}
-      <CollapsibleLink
-        icon={<GraduationCap className="w-4 h-4" />}
-        label={"Student Groups"}
-        routePrefix="/management/groups"
+      <Protected
+        roles={["ADMIN", "DIRECTOR", "SUPER_ADMIN"]}
+        action="redirect"
+        redirectPath="/management/dashboard"
       >
-        <CollapsibleLinkContent
-          linkList={{
-            links: [
-              { label: "Create Grade", href: "/grades/create" },
-              { label: "Create Section", href: "/sections/create" },
-              { label: "Create Cohort", href: "/cohorts/create" },
-            ],
-            prefix: "/management/groups",
-          }}
-        />
-      </CollapsibleLink>
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Student"}
+          routePrefix="/management/students"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Student List", href: "" },
+                { label: "Create student", href: "/create" },
+              ],
+              prefix: "/management/students",
+            }}
+          />
+        </CollapsibleLink>
 
-      <CollapsibleLink
-        icon={<GraduationCap className="w-4 h-4" />}
-        label={"Teacher"}
-        routePrefix="/management/teachers"
-      >
-        <CollapsibleLinkContent
-          linkList={{
-            links: [{ label: "Create teacher", href: "/create" }],
-            prefix: "/management/teachers",
-          }}
-        />
-      </CollapsibleLink>
+        {/* student group */}
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Student Groups"}
+          routePrefix="/management/groups"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create Grade", href: "/grades/create" },
+                { label: "Create Section", href: "/sections/create" },
+                { label: "Create Cohort", href: "/cohorts/create" },
+              ],
+              prefix: "/management/groups",
+            }}
+          />
+        </CollapsibleLink>
 
-      <CollapsibleLink
-        icon={<GraduationCap className="w-4 h-4" />}
-        label={"Assessment"}
-        routePrefix="/management/assessments"
-      >
-        <CollapsibleLinkContent
-          linkList={{
-            links: [
-              { label: "Create Assessment", href: "/create" },
-              { label: "Assessment List", href: "/list" },
-            ],
-            prefix: "/management/assessments",
-          }}
-        />
-      </CollapsibleLink>
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Teacher"}
+          routePrefix="/management/teachers"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [{ label: "Create teacher", href: "/create" }],
+              prefix: "/management/teachers",
+            }}
+          />
+        </CollapsibleLink>
 
-      <CollapsibleLink
-        icon={<GraduationCap className="w-4 h-4" />}
-        label={"Manage Payment"}
-        routePrefix="/management/payment"
-      >
-        <CollapsibleLinkContent
-          linkList={{
-            links: [
-              { label: "Create Payment Template", href: "/template/create" },
-              {
-                label: "Create Payment Request",
-                href: "/payment-request/create",
-              },
-            ],
-            prefix: "/management/payment",
-          }}
-        />
-      </CollapsibleLink>
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Assessment"}
+          routePrefix="/management/assessments"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create Assessment", href: "/create" },
+                { label: "Assessment List", href: "/list" },
+              ],
+              prefix: "/management/assessments",
+            }}
+          />
+        </CollapsibleLink>
+
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Manage Payment"}
+          routePrefix="/management/payment"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create Payment Template", href: "/template/create" },
+                {
+                  label: "Create Payment Request",
+                  href: "/payment-request/create",
+                },
+              ],
+              prefix: "/management/payment",
+            }}
+          />
+        </CollapsibleLink>
+      </Protected>
     </div>
   );
 }

@@ -20,8 +20,6 @@ function Login() {
   const [submitting, setSubmitting] = useState(false);
 
   const router = useRouter();
-  const session = useSession();
-  console.log(session);
 
   const {
     register,
@@ -45,9 +43,12 @@ function Login() {
       password,
       redirect: false,
     });
+
     setSubmitting(false);
-    if (res?.error) {
-      setServerError(res.error);
+    if (!res?.ok) {
+      setServerError("Username of password is incorrect");
+    } else if (res?.error) {
+      setServerError("Something went wrong!!");
     } else {
       router.push("/management/dashboard");
     }
