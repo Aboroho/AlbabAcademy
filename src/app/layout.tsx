@@ -1,5 +1,6 @@
 "use client";
-import { AuthProvider } from "@/hooks/AuthProvider";
+
+import { SessionProvider } from "next-auth/react";
 import "./global.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,12 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
+    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <html lang="en">
           <body>{children}</body>
         </html>
       </QueryClientProvider>
-    </AuthProvider>
+    </SessionProvider>
   );
 }

@@ -13,18 +13,21 @@ export type IBaseValidationResultFormat = {
   [key: string]: { message: string } | IBaseValidationResultFormat;
 };
 export function showErrors(errors: IBaseValidationResultFormat) {
+  // if (Array.isArray(errors)) {
+  //   let err = errors.flat();
+  // }
   if (!errors || typeof errors !== "object") return null;
   const errorMap = Object.entries(errors).slice(0, 3);
 
   return (
     <div className="space-y-4">
       {errorMap.map((error) => {
-        if (!error[1].hasOwnProperty("message"))
+        if (error && error[1] && !error[1]?.hasOwnProperty("message"))
           return showErrors(error[1] as IBaseValidationResultFormat);
         return (
           <div key={error[0]} className="flex gap-4">
-            <div className="font-semibold text-red-600">[{error[0]}]</div>
-            <div className=" text-red-500">{error[1].message as string}</div>
+            {/* <div className="font-semibold text-red-600">[{error[0]}]</div> */}
+            <div className=" text-red-500">{error[1]?.message as string}</div>
           </div>
         );
       })}

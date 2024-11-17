@@ -27,7 +27,7 @@ function Sidebar() {
       <CollapsibleLink
         icon={<GraduationCap className="w-4 h-4" />}
         label={"Student"}
-        routePrefix="/students"
+        routePrefix="/management/students"
       >
         <CollapsibleLinkContent
           linkList={{
@@ -35,7 +35,7 @@ function Sidebar() {
               { label: "Student List", href: "" },
               { label: "Create student", href: "/create" },
             ],
-            prefix: "/students",
+            prefix: "/management/students",
           }}
         />
       </CollapsibleLink>
@@ -44,7 +44,7 @@ function Sidebar() {
       <CollapsibleLink
         icon={<GraduationCap className="w-4 h-4" />}
         label={"Student Groups"}
-        routePrefix="/groups"
+        routePrefix="/management/groups"
       >
         <CollapsibleLinkContent
           linkList={{
@@ -53,7 +53,7 @@ function Sidebar() {
               { label: "Create Section", href: "/sections/create" },
               { label: "Create Cohort", href: "/cohorts/create" },
             ],
-            prefix: "/groups",
+            prefix: "/management/groups",
           }}
         />
       </CollapsibleLink>
@@ -61,12 +61,12 @@ function Sidebar() {
       <CollapsibleLink
         icon={<GraduationCap className="w-4 h-4" />}
         label={"Teacher"}
-        routePrefix="/teachers"
+        routePrefix="/management/teachers"
       >
         <CollapsibleLinkContent
           linkList={{
             links: [{ label: "Create teacher", href: "/create" }],
-            prefix: "/teachers",
+            prefix: "/management/teachers",
           }}
         />
       </CollapsibleLink>
@@ -74,7 +74,7 @@ function Sidebar() {
       <CollapsibleLink
         icon={<GraduationCap className="w-4 h-4" />}
         label={"Assessment"}
-        routePrefix="/assessments"
+        routePrefix="/management/assessments"
       >
         <CollapsibleLinkContent
           linkList={{
@@ -82,7 +82,7 @@ function Sidebar() {
               { label: "Create Assessment", href: "/create" },
               { label: "Assessment List", href: "/list" },
             ],
-            prefix: "/assessments",
+            prefix: "/management/assessments",
           }}
         />
       </CollapsibleLink>
@@ -90,7 +90,7 @@ function Sidebar() {
       <CollapsibleLink
         icon={<GraduationCap className="w-4 h-4" />}
         label={"Manage Payment"}
-        routePrefix="/payment"
+        routePrefix="/management/payment"
       >
         <CollapsibleLinkContent
           linkList={{
@@ -101,7 +101,7 @@ function Sidebar() {
                 href: "/payment-request/create",
               },
             ],
-            prefix: "/payment",
+            prefix: "/management/payment",
           }}
         />
       </CollapsibleLink>

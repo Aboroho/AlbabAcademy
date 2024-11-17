@@ -6,8 +6,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { IAuthContext, useAuth } from "@/hooks/AuthProvider";
+
 import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "username required"),
@@ -17,8 +18,11 @@ const loginSchema = z.object({
 function Login() {
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { loginAction } = useAuth() as IAuthContext;
+
   const router = useRouter();
+  const session = useSession();
+  console.log(session);
+
   const {
     register,
     handleSubmit,
@@ -36,13 +40,16 @@ function Login() {
 
     setServerError("");
     setSubmitting(true);
-    const loginStatus = await loginAction({ username, password });
+    const res = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
     setSubmitting(false);
-    if (!loginStatus) {
-      setServerError("username or password is incorrect");
+    if (res?.error) {
+      setServerError(res.error);
     } else {
       router.push("/dashboard");
-      console.log("log in successfull");
     }
   }
   return (

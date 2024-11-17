@@ -3,13 +3,18 @@
 import { Button } from "@/components/button";
 import { Popover, PopoverTrigger } from "@/components/shadcn/ui/popover";
 import { Skeleton } from "@/components/shadcn/ui/skeleton";
-import { IAuthContext, useAuth } from "@/hooks/AuthProvider";
+
 import { PopoverContent } from "@radix-ui/react-popover";
 import { LayoutDashboard, LogIn, LogOut } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 export default function LoginComponent() {
-  const { isLogin, logOut, user, isLoading } = useAuth() as IAuthContext;
+  const session = useSession();
+
+  const isLogedIn = session.status === "authenticated";
+  const isLoading = session.status === "loading";
+  const user = session.data?.user;
 
   function renderSkeleton() {
     return (
@@ -23,7 +28,7 @@ export default function LoginComponent() {
 
       {!isLoading && (
         <>
-          {!isLogin && (
+          {!isLogedIn && (
             <Link href="/login">
               <Button
                 variant="link"
@@ -35,7 +40,7 @@ export default function LoginComponent() {
             </Link>
           )}
 
-          {isLogin && (
+          {isLogedIn && (
             <>
               <Popover>
                 <PopoverTrigger>
@@ -66,7 +71,7 @@ export default function LoginComponent() {
                       variant="link"
                       size="link"
                       className="justify-start "
-                      onClick={async () => await logOut()}
+                      onClick={async () => await signOut({ redirect: false })}
                     >
                       <LogOut className="w-4 h-4" /> Logout
                     </Button>

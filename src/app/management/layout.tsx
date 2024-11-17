@@ -1,6 +1,6 @@
 import Sidebar from "@/containers/dashboard/sidebar";
 import TopNav from "@/containers/dashboard/topnav";
-import { Protected } from "@/hooks/AuthProvider";
+import { Protected } from "@/components/auth";
 import { Toaster } from "react-hot-toast";
 
 import React from "react";

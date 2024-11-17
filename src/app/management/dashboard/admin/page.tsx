@@ -1,5 +1,4 @@
-import { Protected } from "@/hooks/AuthProvider";
-import React from "react";
+import { Protected } from "@/components/auth";
 
 function AdminDashboard() {
   return (

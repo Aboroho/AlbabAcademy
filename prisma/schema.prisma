@@ -17,8 +17,21 @@ enum Role {
   TEACHER
   ADMIN
   STAFF
+  DIRECTOR
   SUPER_ADMIN
 }
+
+enum NoticeTarget {
+  STUDENT
+  TEACHER
+  ADMIN
+  STAFF
+  DIRECTOR
+  SUPER_ADMIN
+  PUBLIC
+  USER
+}
+
 
 enum CohortStatus {
   ACTIVE
@@ -48,6 +61,61 @@ enum PaymentMethod {
   CASH
 }
 
+enum StudentStatus {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+  SUSPENDED
+  TRANSFERRED
+  ON_LEAVE
+  DROPPED
+  PENDING
+  EXPELLED
+}
+
+enum HRStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+  SUSPENDED
+  RETIRED
+  RESIGNED
+  TERMINATED
+  PROBATION
+  TRANSFERRED
+  PENDING
+}
+
+enum RESIDENTIAL_STATUS {
+  RESIDENTIAL
+  NON_RESIDENTIAL
+}
+
+enum AssessmentStatus {
+  PENDING
+  IN_PROGRESS
+  CANCELED
+  PUBLISHED
+}
+
+enum AttendenceStatus {
+  PRESENT
+  ABSENT
+  NO_DATA
+  LATE
+  BUNK
+}
+
+enum MediaStatus {
+  TEMP
+  ACTIVE
+}
+
+enum PermissionStatus {
+  GRANTED
+  REVOKED
+}
+
 
 model Address {
   id           Int    @id @default(autoincrement())
@@ -56,27 +124,101 @@ model Address {
   union        String? @db.VarChar(15)
   village      String? @db.VarChar(15)
   
-  student Student[]
-  teacher Teacher[]
+  student     Student?
+  teacher     Teacher?
+  admin       Admin?
+  director    Director?
+  staff       Staff?
 }
 
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique @db.VarChar(12)
-  password  String   @db.VarChar(128)
+  username  String   @unique @db.VarChar(32)
+  password  String   @db.VarChar(256)
   role      Role
-  phone     String   @unique @db.VarChar(11)
-  email     String?  @unique @db.VarChar(32)
+  phone     String   @unique @db.VarChar(15)
+  email     String?  @unique @db.VarChar(64)
   avatar    String?  @db.VarChar(512)
 
   createdAt DateTime @default(now()) @db.Timestamp
 
-  students Student[]
-  teachers Teacher[]
-  payments Payment[]
+  student     Student?
+  teachers    Teacher?
+  director    Director?
+  admin       Admin?
+  staff       Staff?
 
-  assessments Assessment[]
+  payments      Payment[]
+  permissions   UserPermission[]
+  notifications Notification[]
+  paymet_received Payout[]
+  
+
+  assessments_created Assessment[]
+  media Media[]
+
+  
+}
+
+
+// user permission
+model Permission {
+  id             Int      @id @default(autoincrement())
+  permission_name String   @unique
+  description     String?
+
+  users         UserPermission[]
+}
+
+model UserPermission {
+  id            Int         @id @default(autoincrement())
+  user_id       Int
+  permission_id Int
+  permission_status PermissionStatus  @default(GRANTED)
+
+  user          User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  permission    Permission  @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, permission_id])  
+}
+
+model Student {
+  id                  Int      @id @default(autoincrement())
+  student_id          String   @unique @db.VarChar(32)
+  full_name           String   @db.VarChar(32)
+  father_name         String   @db.VarChar(32)
+  mother_name         String   @db.VarChar(32)
+  guardian_phone      String   @db.VarChar(11)
+  gender              Gender
+  date_of_birth       DateTime
+  residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)
+  student_status      StudentStatus      @default(ACTIVE)
+
+  user_id             Int      @unique
+  user                User     @relation(fields: [user_id], references: [id])
+  cohort_id           Int
+  cohort              Cohort   @relation(fields: [cohort_id], references: [id])
+  address_id          Int?      @unique
+  address             Address?  @relation(fields: [address_id], references: [id])
+
+  attendence_record   StudentAttendence[]
+  feedbacks_given StudentFeedBack[]
+  
+  roll                Int
+  @@unique([roll, cohort_id])
+  
+}
+
+model StudentFeedBack {
+  id              Int         @id@default(autoincrement())
+  message         String      
+  
+  student_id      Int
+  student         Student     @relation(fields: [student_id], references: [id], onDelete: Cascade)
+
+  teacher_id      Int
+  teacher         Teacher     @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
 }
 
 model Teacher {
@@ -88,30 +230,100 @@ model Teacher {
   subject_expertise String?   @db.VarChar(128)
   date_of_joining   DateTime? @default(now()) @db.Timestamp
   qualification     String?  @db.VarChar(128)
+  status    HRStatus     @default(ACTIVE)
 
-  user_id           Int      @unique
-  user              User     @relation(fields: [user_id], references: [id])
+  user_id             Int      @unique
+  user                User     @relation(fields: [user_id], references: [id])
 
-  address_id        Int
-  address           Address @relation(fields: [address_id], references: [id])
+  address_id          Int      @unique
+  address             Address @relation(fields: [address_id], references: [id])
 
-  AssessmentSubject AssessmentSubject[]
+  assessment_subjects AssessmentSubject[]
   section Section[]
+
+  attendence_record   TeacherAttendence[]
+
+  feedbacks_received           StudentFeedBack[]
+
+  sessions CohortTeacherSchedule[]
+}
+
+model Admin {
+  id          Int       @id @default(autoincrement())
+ 
+  full_name   String   @db.VarChar(32)
+  description String?
+  status      HRStatus  @default(ACTIVE)
+
+  user_id     Int       @unique
+  user        User      @relation(fields: [user_id], references: [id])
+  address_id  Int      @unique
+  address     Address @relation(fields: [address_id], references: [id])
+}
+
+model Director {
+  id            Int      @id @default(autoincrement())
+ 
+  full_name     String   @db.VarChar(32)
+  designation   String   @db.VarChar(64)
+  department    String?  @db.VarChar(64) 
+  start_date    DateTime? 
+  end_date      DateTime? 
+  status        HRStatus   @default(ACTIVE)
+
+  address_id    Int      @unique
+  address       Address   @relation(fields: [address_id], references: [id])
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       Int      @unique
+  
+}
+
+model Staff {
+  id            Int      @id @default(autoincrement())
+ 
+  full_name     String   @db.VarChar(32)
+  designation   String   @db.VarChar(64)
+  department    String?  @db.VarChar(64) 
+  start_date    DateTime? 
+  end_date      DateTime? 
+  status        HRStatus  @default(ACTIVE)
+
+  user_id       Int      @unique
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  address_id    Int      @unique
+  address       Address @relation(fields: [address_id], references: [id])
+  
 }
 
 
 model Grade {
   id       Int       @id @default(autoincrement())
   name     String    @unique
-  sections Section[] 
+  description String?
 
+  sections Section[] 
   assessments Assessment[]
+
+  courses Course[]
+}
+
+model Course{
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(64)
+  description String?
+
+  grade_id    Int?
+  grade       Grade?    @relation(fields: [grade_id], references: [id], onDelete: SetNull)
+
+  @@unique([name, grade_id])
 }
 
 
 model Section {
   id               Int      @id @default(autoincrement())
   name             String
+  description      String
+
   grade_id         Int
   grade            Grade    @relation(fields: [grade_id], references: [id], onDelete: Restrict)
 
@@ -135,46 +347,64 @@ model Cohort {
 
   student Student[]
 
-  @@index([section_id,name])
-}
-
-
-enum RESIDENTIAL_STATUS {
-  RESIDENTIAL
-  NON_RESIDENTIAL
-}
-
-model Student {
-  id                  Int      @id @default(autoincrement())
-  student_id          String   @unique @db.VarChar(32)
-
-  user_id             Int
-  user                User     @relation(fields: [user_id], references: [id])
-
-  cohort_id           Int
-  cohort              Cohort   @relation(fields: [cohort_id], references: [id])
-
-  roll                Int  
-     
-  full_name           String   @db.VarChar(32)
-  father_name         String   @db.VarChar(32)
-  mother_name         String   @db.VarChar(32)
-  guardian_phone      String   @db.VarChar(11)
-  gender              Gender
-  date_of_birth       DateTime
-  residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)
-
-  address_id          Int
-  address             Address  @relation(fields: [address_id], references: [id])
   
-  @@unique([roll, cohort_id])
+  @@index([section_id,name])
+  
 }
 
-enum AssessmentStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  GRADED
+model CohortSchedule {
+  id          Int       @id@default(autoincrement())
+  name        String    @unique
+  status      CohortStatus  @default(INACTIVE)
+
+  sessions CohortTeacherSchedule[]
+}
+
+model CohortTeacherSchedule {
+  id        Int         @id@default(autoincrement())
+  
+  course_name String
+  week_day    Int
+
+  cohort_schedule_id    Int
+  cohort      CohortSchedule      @relation(fields: [cohort_schedule_id], references: [id], onDelete: Cascade)
+
+  teacher_id          Int
+  teacher             Teacher     @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+
+  
+}
+
+
+model StudentAttendence {
+  id                Int                   @id @default(autoincrement())
+  date              DateTime
+  status            AttendenceStatus
+
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  
+  
+  student_id        Int               
+  student           Student               @relation(fields: [student_id], references: [id], onDelete: Cascade)
+
+  @@unique([date, student_id])
+}
+
+model TeacherAttendence {
+  id                Int                   @id @default(autoincrement())
+  date              DateTime
+  status            AttendenceStatus
+
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  
+  teacher_id        Int                  
+  teacher           Teacher             @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
 }
 
 
@@ -195,7 +425,7 @@ model Assessment {
   creator_id        Int?
   creator           User?            @relation(fields: [creator_id], references: [id], onDelete: SetNull)
 
-  assessment_status AssessmentStatus
+  status           AssessmentStatus  @default(PENDING)
   created_at        DateTime         @default(now())
 
   grade_id          Int
@@ -211,6 +441,7 @@ model AssessmentSubject {
   
   subject_name           String    @db.VarChar(32)
   total_mark     Int
+  status         AssessmentStatus @default(PENDING)
 
   teacher_id     Int?
   teacher        Teacher?    @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
@@ -220,6 +451,16 @@ model AssessmentSubject {
   
 
   @@unique([assessment_id, subject_name])
+}
+
+model AssessmentResult {
+  student_id                Int      
+  assessment_subject_id     Int      
+  mark                      Int
+  status                    AssessmentStatus  @default(PENDING)
+  remark                    String?
+
+  @@unique([student_id, assessment_subject_id])
 }
 
 
@@ -233,15 +474,14 @@ model PaymentTemplateField {
   payment_template_id  Int
   payment_template    PaymentTemplate    @relation(fields: [payment_template_id], references: [id], onDelete: Cascade)
 
-  
- 
 }
 
 model PaymentTemplate {
-  id          Int                    @id @default(autoincrement())
-  name        String                 @db.VarChar(30)
-  description String?
-  createdAt   DateTime               @default(now())
+  id              Int                    @id @default(autoincrement())
+  name            String                 @db.VarChar(30)
+  description     String?
+  
+  createdAt       DateTime               @default(now())
 
  
   template_fields PaymentTemplateField[]
@@ -265,7 +505,8 @@ model PaymentRequest {
 
   payment_target_type PaymentTargetTypes
 
-  payments         Payment[]         
+  payments         Payment[]
+  createdAt        DateTime        @default(now())         
   
 }
 
@@ -287,9 +528,118 @@ model Payment {
 
 }
 
+model Payout{
+  id          Int         @id @default(autoincrement())
+  amount      Int     
+
+  description Int
+  user_id     Int?
+  paid_to     User?        @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  create_at   DateTime    @default(now())
+}
+
+
+model NoticeCategory{
+  id            Int      @id @default(autoincrement())
+  name          String   @unique 
+  notice_target NoticeTarget  @default(PUBLIC)    
+  description   String?
+
+
+  notices Notice[]
+}
+
+
+model Notice {
+  id        Int      @id @default(autoincrement())
+  
+  title         String
+  description   String
+  priority      Int     @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  notice_category_id Int?
+  notice_category    NoticeCategory?  @relation(fields: [notice_category_id], references: [id])
+}
 
 
 
+
+
+// Settings Model
+model Setting {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       String
+  description String?
+}
+
+model SiteSetting {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  value       String 
+  description String?
+}
+
+enum StaticPageStatus {
+  PUBLIESHED
+  DRAFTS
+}
+
+
+model StaticPage {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(128)
+  description String   @db.VarChar(256)
+  body        String   @db.Text
+  parent      String? 
+  status      StaticPageStatus @default(DRAFTS)
+
+  resources StaticPageResource[]  
+  @@unique([parent, title])
+  
+}
+
+model StaticPageResource {
+  id          Int  @id @default(autoincrement())
+
+  page_id     Int
+  page        StaticPage    @relation(fields: [page_id], references: [id], onDelete: Cascade)
+
+  media_id    Int
+  media       Media        @relation(fields: [media_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  
+  type      String
+  message   String
+  is_read   Boolean  @default(false)
+  priority  Int      @default(0)
+
+  created_at DateTime @default(now())
+
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id   Int
+}
+
+
+model Media {
+  id            Int      @id @default(autoincrement())
+  media_url     String
+  file_type     String
+  uploaded_at   DateTime @default(now())
+  status        MediaStatus @default(TEMP)
+  
+  user_id Int
+  uploaded_by   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+
+  static_pagees StaticPageResource[]
+}
 
 
 

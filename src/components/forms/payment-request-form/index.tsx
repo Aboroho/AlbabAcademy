@@ -210,7 +210,7 @@ function PaymentRequestForm({
                 {renderButton ? (
                   renderButton(form.formState.isSubmitting)
                 ) : (
-                  <Button type="submit">Submit Section Info</Button>
+                  <Button type="submit">Create Request</Button>
                 )}
               </div>
             </>

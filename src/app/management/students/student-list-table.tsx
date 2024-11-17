@@ -23,7 +23,6 @@ import { useGetStudents } from "@/client-actions/queries/student-queries";
 //   useUpdateStudentFullDetails,
 // } from "@/client-actions/mutations/studentMutation";
 
-import { Protected } from "@/hooks/AuthProvider";
 import { IStudentResponse } from "@/types/response_types";
 import { isEmpty } from "@/components/forms/form-utils";
 import { Popover } from "@/components/shadcn/ui/popover";
@@ -32,6 +31,7 @@ import { Badge } from "@/components/shadcn/ui/badge";
 import AlertDialog from "@/components/ui/modal/AlertDialog";
 import toast from "react-hot-toast";
 import TableSkeleton from "@/components/ui/skeleton/table-skeleton";
+import { Protected } from "@/components/auth";
 
 export type IStudentTableRow = {
   id: number;

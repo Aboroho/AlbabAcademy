@@ -89,3 +89,24 @@ export const POST = withMiddleware(
     return apiResponse({ data: paymentRequest });
   }
 );
+
+export const GET = withMiddleware(authenticate, authorizeAdmin, async (req) => {
+  const { searchParams } = new URL(req.url);
+
+  // join filters
+  const payments = searchParams.get("payments");
+  const paymentTemplate = searchParams.get("payment_template");
+  // const limit = searchParams.get("limit")
+
+  const include: { [key: string]: boolean } = {};
+  if (payments === "true") include.payments = true;
+  if (paymentTemplate) include.payment_template = true;
+
+  const paymentRequestList = await prismaQ.paymentRequest.findMany({
+    include: {
+      ...include,
+    },
+  });
+
+  return apiResponse({ data: paymentRequestList });
+});
