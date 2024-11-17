@@ -49,7 +49,7 @@ function Login() {
     if (res?.error) {
       setServerError(res.error);
     } else {
-      router.push("/dashboard");
+      router.push("/management/dashboard");
     }
   }
   return (
