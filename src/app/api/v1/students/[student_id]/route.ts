@@ -10,7 +10,7 @@ import { apiResponse } from "@/app/api/utils/handleResponse";
 import { parseJSONData } from "@/app/api/utils/parseIncomingData";
 import { prismaQ } from "@/app/api/utils/prisma";
 import { studentUpdateValidationSchema } from "@/app/api/validationSchema/studentSchema";
-import { IStudentResponse } from "@/types/response_types";
+// import { IStudentResponse } from "@/types/response_types";
 
 export const GET = withMiddleware(
   authenticate,
@@ -118,7 +118,7 @@ export const PUT = withMiddleware(
       return student;
     });
 
-    const flattenedStudent: IStudentResponse = {
+    const flattenedStudent = {
       ...student,
       cohort: omitFields(student.cohort, ["section"]),
       section: omitFields(student.cohort.section, ["grade"]),
