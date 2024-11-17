@@ -322,7 +322,7 @@ model Course{
 model Section {
   id               Int      @id @default(autoincrement())
   name             String
-  description      String
+  description      String?
 
   grade_id         Int
   grade            Grade    @relation(fields: [grade_id], references: [id], onDelete: Restrict)
