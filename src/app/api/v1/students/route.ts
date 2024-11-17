@@ -13,10 +13,10 @@ import { omitFields } from "../../utils/excludeFields";
 
 import { validateFileAndMove } from "../../utils/fileUploader";
 import { Role } from "@prisma/client";
-import {
-  IStudentResponse,
-  IStudentResponseWithPaymentInfo,
-} from "@/types/response_types";
+// import {
+//   IStudentResponse,
+//   IStudentResponseWithPaymentInfo,
+// } from "@/types/response_types";
 
 // create student
 export const POST = withMiddleware(
