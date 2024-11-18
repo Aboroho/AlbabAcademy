@@ -41,6 +41,7 @@ function Sidebar() {
               links: [
                 { label: "Student List", href: "" },
                 { label: "Create student", href: "/create" },
+                { label: "Student payments", href: "/payments" },
               ],
               prefix: "/management/students",
             }}

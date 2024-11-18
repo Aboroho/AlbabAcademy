@@ -26,15 +26,12 @@ function AlertDialog({
       ref={deleteModalRef}
       trigger={children}
       title={title || "Confirm Action"}
-      description={message ? message : "Are you sure to do this action"}
+      description={message ? message : "Are you sure to do this action?"}
     >
       <div className="bg-white ">
         <div className="flex justify-end gap-2">
           <Button
-            className={cn(
-              "bg-red-500 hover:bg-red-600",
-              confirmButtonClassName
-            )}
+            className={cn("bg-red-500 hover:bg-inital", confirmButtonClassName)}
             onClick={() => {
               onConfirm();
               deleteModalRef.current?.close();

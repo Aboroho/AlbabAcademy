@@ -119,10 +119,10 @@ enum PermissionStatus {
 
 model Address {
   id           Int    @id @default(autoincrement())
-  district     String? @db.VarChar(15)
-  sub_district String? @db.VarChar(15)
-  union        String? @db.VarChar(15)
-  village      String? @db.VarChar(15)
+  district     String? @db.VarChar(32)
+  sub_district String? @db.VarChar(32)
+  union        String? @db.VarChar(32)
+  village      String? @db.VarChar(32)
   
   student     Student?
   teacher     Teacher?
@@ -134,7 +134,7 @@ model Address {
 
 model User {
   id        Int      @id @default(autoincrement())
-  username  String   @unique @db.VarChar(32)
+  username  String   @unique @db.VarChar(64)
   password  String   @db.VarChar(256)
   role      Role
   phone     String   @unique @db.VarChar(15)
@@ -186,10 +186,10 @@ model UserPermission {
 model Student {
   id                  Int      @id @default(autoincrement())
   student_id          String   @unique @db.VarChar(32)
-  full_name           String   @db.VarChar(32)
-  father_name         String   @db.VarChar(32)
-  mother_name         String   @db.VarChar(32)
-  guardian_phone      String   @db.VarChar(11)
+  full_name           String   @db.VarChar(64)
+  father_name         String   @db.VarChar(64)
+  mother_name         String   @db.VarChar(64)
+  guardian_phone      String   @db.VarChar(15)
   gender              Gender
   date_of_birth       DateTime
   residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)
@@ -224,8 +224,8 @@ model StudentFeedBack {
 model Teacher {
   id                Int      @unique @default(autoincrement())
  
-  full_name         String   @db.VarChar(32)
-  designation       String   @db.VarChar(32)
+  full_name         String   @db.VarChar(64)
+  designation       String   @db.VarChar(64)
   description       String?   @db.VarChar(512)
   subject_expertise String?   @db.VarChar(128)
   date_of_joining   DateTime? @default(now()) @db.Timestamp
@@ -251,7 +251,7 @@ model Teacher {
 model Admin {
   id          Int       @id @default(autoincrement())
  
-  full_name   String   @db.VarChar(32)
+  full_name   String   @db.VarChar(64)
   description String?
   status      HRStatus  @default(ACTIVE)
 
@@ -264,7 +264,7 @@ model Admin {
 model Director {
   id            Int      @id @default(autoincrement())
  
-  full_name     String   @db.VarChar(32)
+  full_name     String   
   designation   String   @db.VarChar(64)
   department    String?  @db.VarChar(64) 
   start_date    DateTime? 
@@ -281,7 +281,7 @@ model Director {
 model Staff {
   id            Int      @id @default(autoincrement())
  
-  full_name     String   @db.VarChar(32)
+  full_name     String   @db.VarChar(64)
   designation   String   @db.VarChar(64)
   department    String?  @db.VarChar(64) 
   start_date    DateTime? 
@@ -309,7 +309,7 @@ model Grade {
 
 model Course{
   id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(64)
+  name      String    
   description String?
 
   grade_id    Int?
@@ -409,14 +409,14 @@ model TeacherAttendence {
 
 
 model AssessmentType {
-  name      String   @id @db.VarChar(20)
+  name      String   @id 
 }
 
 
 model Assessment {
   id                Int              @id @default(autoincrement())
   
-  title             String           @db.VarChar(128)
+  title             String           
   description       String?          @db.Text
   assessment_type   String?          @db.VarChar(20)
   date              DateTime
@@ -439,7 +439,7 @@ model Assessment {
 model AssessmentSubject {
   id             Int       @id @default(autoincrement())
   
-  subject_name           String    @db.VarChar(32)
+  subject_name           String   
   total_mark     Int
   status         AssessmentStatus @default(PENDING)
 
@@ -478,7 +478,7 @@ model PaymentTemplateField {
 
 model PaymentTemplate {
   id              Int                    @id @default(autoincrement())
-  name            String                 @db.VarChar(30)
+  name            String                 
   description     String?
   
   createdAt       DateTime               @default(now())

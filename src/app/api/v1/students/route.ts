@@ -47,8 +47,6 @@ export const POST = withMiddleware(
         data: refinedUser,
       });
 
-      console.log(user);
-
       // validate and create address
       const parsedAddress = parsedStudent.address;
       const address = await prismaQ.address.create({
@@ -93,10 +91,10 @@ export const POST = withMiddleware(
           data: {
             payment_target_type: "STUDENT",
             title:
-              "Initial Payment for " +
+              "Initial Payment for #" +
               student.student_id +
               " - " +
-              student.father_name,
+              student.full_name,
             payment_template_id: parsedStudent.payment_template_id,
           },
         });

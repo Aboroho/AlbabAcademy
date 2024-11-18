@@ -122,3 +122,22 @@ export const monthNames = [
   "November",
   "December",
 ] as const;
+
+type FlattenedObject = { [key: string]: any };
+
+export function flattenObject(
+  obj: Record<string, any>,
+  parentKey: string = "",
+  result: FlattenedObject = {}
+): FlattenedObject {
+  for (const [key, value] of Object.entries(obj)) {
+    const newKey = parentKey ? `${parentKey}_${key}` : key;
+
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      flattenObject(value, key, result); // Recursively flatten the nested object
+    } else {
+      result[newKey] = value; // Assign the value if it's a primitive or an array
+    }
+  }
+  return result;
+}

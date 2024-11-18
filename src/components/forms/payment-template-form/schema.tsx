@@ -14,7 +14,7 @@ export const paymentTemplateCreateSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Name is required" })
-    .max(30, { message: "Name cannot exceed 30 characters" }),
+    .max(256, { message: "Name cannot exceed 30 characters" }),
   description: z
     .string()
     .max(1024, "Description is too large")
