@@ -160,7 +160,13 @@ function StudentDetailsForm({
           </div>
         )}
 
-        <form action="" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          action=""
+          onSubmit={form.handleSubmit(onSubmit)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.preventDefault();
+          }}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="personal-details space-y-8 ">
               <div className="space-y-4 p-4 pb-8 rounded-md border shadow-md ">
@@ -214,8 +220,8 @@ function StudentDetailsForm({
 
               {!updateEnabled && (
                 <FormSection title="Payment">
-                  <p className="text-red-500 flex items-center">
-                    <AlertCircleIcon className="w-5 h-5 inline-block mr-2" />
+                  <p className="text-red-500 flex items-start">
+                    <AlertCircleIcon className="w-5 h-5 inline-block mr-2 mt-[2px]" />
                     Please double-check your information before submitting to
                     ensure accurate processing.
                   </p>

@@ -94,3 +94,13 @@ export function getStudentDefaultUpdateFormData(
   };
   return data;
 }
+
+// export function goNextInputOnEnter(e : React.KeyboardEvent<HTMLInputElement>){
+//   if (e.key === 'Enter'){
+//     e.preventDefault()
+//     const form = e.currentTarget.form;
+//     if(!form) return;
+//     const index = Array.from(form.elements).indexOf(e.currentTarget);
+//     form.elements[index + 1]?.focus();
+//   }
+// }

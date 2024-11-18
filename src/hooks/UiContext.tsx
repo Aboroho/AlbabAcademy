@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 
 export type UiData = {
   title: string;
+  sideBarStatus: boolean;
 };
 
 export type UiContext = {
@@ -19,6 +20,7 @@ export const UiContextProvider = ({
 }) => {
   const [ui, setUi] = useState<UiData>({
     title: "",
+    sideBarStatus: false,
   });
 
   const updateUi = (data: UiData) => {

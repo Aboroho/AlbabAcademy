@@ -61,7 +61,7 @@ export default function LoginComponent() {
                 </PopoverTrigger>
                 <PopoverContent className="p-4 text-primary">
                   <div className="bg-white px-4 py-2 shadow-md rounded-md flex flex-col gap-1 text-left">
-                    <Link href="/dashboard">
+                    <Link href="/management/dashboard">
                       <Button variant="link" size="link" className="text-left">
                         <LayoutDashboard className="w-4 h-4" /> Dashboard
                       </Button>

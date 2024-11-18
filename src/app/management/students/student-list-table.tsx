@@ -253,7 +253,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
 
   if (isLoading) return <TableSkeleton />;
   return (
-    <div className="p-8">
+    <div className="p-2 lg:p-4">
       {/* <SearchFilter
         filterList={[
           { label: "name", value: "Name" },

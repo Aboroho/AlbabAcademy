@@ -73,6 +73,7 @@ export const Combobox = React.forwardRef<HTMLButtonElement, Props>(
 
       onSelect(newValue);
       setOpen(false);
+      triggerRef.current?.focus();
     }
 
     function renderSelectedValue() {
@@ -89,7 +90,16 @@ export const Combobox = React.forwardRef<HTMLButtonElement, Props>(
 
     return (
       <Popover open={open && !disabled} onOpenChange={setOpen}>
-        <PopoverTrigger asChild ref={triggerRef}>
+        <PopoverTrigger
+          asChild
+          ref={triggerRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              setOpen(true);
+            }
+          }}
+        >
           <div className="flex gap-3 items-center">
             <Button
               ref={ref}

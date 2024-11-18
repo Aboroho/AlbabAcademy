@@ -55,6 +55,10 @@ function PaymentTemplateDetailsForm({
     name: "template_fields",
   });
 
+  function addNewField() {
+    prepend({ amount: 0, description: "" });
+  }
+
   const reset = form.reset;
   const errors = form.formState.errors;
 
@@ -140,7 +144,7 @@ function PaymentTemplateDetailsForm({
             <FormSection title="Template Fields">
               <Button
                 size="sm"
-                onClick={() => prepend({ amount: 0, description: "" })}
+                onClick={addNewField}
                 className="mb-4 bg-green-600 hover:bg-green-700"
               >
                 <PlusIcon className="w-3 h-3" />
@@ -156,6 +160,12 @@ function PaymentTemplateDetailsForm({
                     label="Description"
                     {...form.register(`template_fields.${index}.description`)}
                     error={errors.template_fields?.[index]?.description}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        form.setFocus(`template_fields.${index}.amount`);
+                      }
+                    }}
                   />
                   <InputField
                     type="number"
@@ -164,6 +174,12 @@ function PaymentTemplateDetailsForm({
                     {...form.register(`template_fields.${index}.amount`, {
                       valueAsNumber: true,
                     })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        addNewField();
+                      }
+                    }}
                     rightIcon={
                       <Cross1Icon
                         className="w-4 h-4 text-red-500 cursor-pointer"

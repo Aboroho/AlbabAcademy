@@ -14,6 +14,7 @@ type Props = {
 
 function IconLink({ href, icon, label, rightIcon, selected, active }: Props) {
   function renderContent() {
+    console.log(label, selected);
     return (
       <div className="w-full items-center justify-center cursor-pointer select-none">
         <div className="flex w-full items-center justify-center">

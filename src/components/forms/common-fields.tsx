@@ -637,9 +637,11 @@ export type PaymentOnEnrollRefType = {
 };
 export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
   const form = useFormContext();
+
   const paymentTemplateId = form.watch("payment_template_id");
   const paymentStatus = form.watch("payment_status");
   const errors = form.formState.errors;
+
   const { data: paymentTemplates } = useGetPaymentTemplates();
   const [selectedTemplate, setSelectedTemplate] =
     useState<IPaymentTemplateResponse>();
@@ -746,24 +748,10 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
               value ? field.onChange(value) : field.onChange(undefined)
             }
             error={errors.payment_status as FieldError}
+            disabled={!paymentTemplateId}
           />
         )}
       />
-
-      {/* <Button
-        onClick={() =>
-          handleDownloadInvoice({
-            name: "Rifat",
-            grade: "Class 1",
-            section: "A",
-            cohort: "CA",
-            mobile: "01990059129",
-            studentId: "334",
-          })
-        }
-      >
-        Download Inv
-      </Button> */}
     </div>
   );
 });
