@@ -13,6 +13,7 @@ import {
   IStudentResponse,
 } from "@/types/response_types";
 import { generateQueryParamsFromObject } from "@/lib/utils";
+import { StudentListDTO } from "@/app/api/services/types/dto.types";
 
 export type IGetStudentsQueryFilter = {
   grade_id?: number;
@@ -24,6 +25,7 @@ export type IGetStudentsQueryFilter = {
   cohort_name?: string;
 };
 
+export type StudentListViewModel = StudentListDTO;
 export const useGetStudents = (
   queryOptions?: CustomQueryOptions,
   filter?: IGetStudentsQueryFilter
@@ -37,7 +39,7 @@ export const useGetStudents = (
       const res = await api(route, {
         method: "get",
       });
-      if (res?.success) return res.data as IStudentResponse[];
+      if (res?.success) return res.data as StudentListViewModel;
     },
     ...DEFAULT_QUERY_FILTER,
     ...queryOptions,

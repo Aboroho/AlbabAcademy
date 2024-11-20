@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import _ from "lodash";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -140,4 +141,37 @@ export function flattenObject(
     }
   }
   return result;
+}
+
+/**
+ * Converts an object of key-value pairs into a query string.
+ *
+ * @param params - An object containing key-value pairs to be converted.
+ * @returns A query string starting with '?' or an empty string if the object is empty.
+ */
+export function toQueryString(params?: Record<string, any>): string {
+  if (!params || typeof params !== "object") {
+    return "";
+  }
+
+  const queryString = Object.entries(params)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, value]) => value !== undefined && value !== null) // Exclude undefined or null values
+    .map(
+      ([key, value]) =>
+        `${key}=${Array.isArray(value) ? value.join(",") : String(value)}`
+    )
+    .join("&");
+
+  return queryString ? `${queryString}` : "";
+}
+
+export default function queryStringToObject(queryString?: string) {
+  if (!queryString) return {};
+  return _.fromPairs(
+    queryString
+      .split("&")
+      .map((pair) => pair.split("="))
+      .map(([key, value]) => [key, decodeURIComponent(value)])
+  );
 }

@@ -8,6 +8,7 @@ import { apiResponse } from "../../utils/handleResponse";
 import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 
+// update payment status
 export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
   const { payment_id, payment_action } = await parseJSONData(req);
 
@@ -15,11 +16,7 @@ export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
   if (!payment_action) throw new APIError("No action found");
 
   if (["PAID", "FAILED"].includes(payment_action)) {
-    const res = await prismaQ.payment.update({
-      select: {
-        status: true,
-        id: true,
-      },
+    const payment = await prismaQ.payment.update({
       where: {
         id: payment_id as number,
       },
@@ -28,8 +25,13 @@ export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
       },
     });
 
-    if (res.status === payment_action && res.id === payment_id)
-      return apiResponse({ data: { id: res.id, status: res.status } });
+    if (payment.status === payment_action && payment.id === payment_id)
+      return apiResponse({
+        data: {
+          ...payment,
+          payment_status: payment.status,
+        },
+      });
 
     throw new APIError("Some error occured in the server side", 500);
   }

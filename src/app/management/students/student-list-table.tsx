@@ -52,10 +52,11 @@ function StudentListTable({ students: defaultStudents }: Props) {
   const [studentTableRows, setStudentTableRows] = useState<IStudentTableRow[]>(
     [] as IStudentTableRow[]
   );
-  const { data: fetchedStudents, isLoading } = useGetStudents({
+  const { data, isLoading } = useGetStudents({
     enabled: isEmpty(defaultStudents),
   });
-  const students = defaultStudents || fetchedStudents;
+  const students = defaultStudents || data?.students;
+  // const studentCount = data?.count;
 
   useEffect(() => {
     if (students) {

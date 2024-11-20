@@ -115,7 +115,7 @@ type Props = {
   fees: {
     amount: number;
     description: string;
-    id: number;
+    id?: number;
     [key: string]: unknown;
   }[];
 };

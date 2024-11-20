@@ -5,7 +5,13 @@ import {
   IPaymentRequestResponse,
   IPaymentTemplateResponse,
 } from "@/types/response_types";
-import { PaymentMethod, PaymentStatus } from "@prisma/client";
+
+import {
+  PaymentDetailsDTO,
+  PaymentDTO,
+  StudentPaymentListDTO,
+} from "@/app/api/services/types/dto.types";
+import { useEffect, useState } from "react";
 
 export const useGetPaymentTemplates = (
   queryOptions?: CustomQueryOptions
@@ -89,64 +95,49 @@ export const useGetPaymentRequestById = (
   return query;
 };
 
-export type StudentPaymentResponse = {
-  id: number;
-  status: PaymentStatus;
-  paymentMethod: PaymentMethod;
-  createdAt: Date;
-  updatedAt: Date;
-  for_month: string;
-  for_year: string;
-  payment_request_title: string;
-  student: {
-    phone: string;
-    full_name: string;
-    student_id: string;
-    user_id: number;
-    cohort_id: number;
-    cohort_name: string;
-    section_name: string;
-    section_id: number;
-    grade_name: string;
-    grade_id: number;
-  };
-  payment_fields: {
-    id: number;
-    description: string;
-    amount: number;
-    payment_template_id: number;
-  }[];
-};
+export type StudentPaymentListViewModel = StudentPaymentListDTO;
+export type PaymentViewModel = PaymentDTO;
+export type PaymentDetailsViewModel = PaymentDetailsDTO;
 
 export type PaymentQueryFilter = {
   page: number;
+  pageSize: number;
+  grade_id?: number;
 };
 
-export const useGetStudentPayments = (
+export const useGetStudentPaymentList = (
   queryOptions?: CustomQueryOptions,
   filter?: PaymentQueryFilter
 ) => {
+  const [queryKey, setQueryKey] = useState("");
   const page = filter?.page;
+  const pageSize = filter?.pageSize;
+  const gradeId = filter?.grade_id;
   let route = "/students/payments?";
 
-  if (page) route += `page=${page}&`;
+  if (page) route += `page=${page}`;
+  if (pageSize) route += `&page_size=${pageSize}`;
+  if (gradeId) route += `&grade_id=${gradeId}`;
 
+  useEffect(() => setQueryKey(route), [route]);
   const query = useQuery({
-    queryKey: ["student-payments"],
+    queryKey: ["student-payment", route],
     queryFn: async () => {
       const res = await api(route, {
         method: "get",
       });
       if (res?.success) {
-        return res.data as StudentPaymentResponse[];
+        const data = res.data as StudentPaymentListDTO;
+        return data as StudentPaymentListViewModel;
       }
     },
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,
 
-    refetchOnWindowFocus: true,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+
+    refetchOnWindowFocus: false,
 
     ...queryOptions,
   });
-  return query;
+  return { ...query, queryKey: ["student-payment", queryKey] };
 };

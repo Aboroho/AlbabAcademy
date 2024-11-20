@@ -266,7 +266,7 @@ export const UserFields = ({
  *
  * Shared Select Grade
  */
-export const SelectGradeField = () => {
+export const SelectGradeField = ({ hideLabel }: { hideLabel?: boolean }) => {
   const {
     control,
     formState: { errors },
@@ -285,7 +285,7 @@ export const SelectGradeField = () => {
           selectedValue={grade_id?.toString()}
           isLoading={isLoading}
           error={errors.grade_id as FieldError}
-          label="Grade"
+          label={!hideLabel ? "Grade" : ""}
           placeholder="Select Grade"
           onSelect={valueAsIntF(field.onChange)}
           triggerClassName="w-full"
@@ -529,9 +529,10 @@ export const SelectPaymentTarget = ({
 }: {
   targetType: (typeof PaymentTargetTypes.options)[number] | undefined | null;
 }) => {
-  const { data: students } = useGetStudents({
+  const { data: studentData } = useGetStudents({
     enabled: targetType === "STUDENT",
   });
+  const students = studentData?.students;
   const { data: teachers } = useGetTeachers({
     enabled: targetType === "TEACHER",
   });
