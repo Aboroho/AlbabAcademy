@@ -42,12 +42,10 @@ import {
   getStudentDefaultUpdateFormData,
   updateStudent,
 } from "./utils";
-import {
-  IStudentResponse,
-  IStudentResponseWithPaymentInfo,
-} from "@/types/response_types";
+import { IStudentResponse } from "@/types/response_types";
 
 import { AlertCircleIcon } from "lucide-react";
+import { StudentDTO } from "@/app/api/services/types/dto.types";
 
 type FormData = IStudentCreateFormData | IStudentUpdateFormData;
 
@@ -113,18 +111,21 @@ function StudentDetailsForm({
     } else {
       res = await createMutation.mutateAsync(data as IStudentCreateFormData);
       if (res?.success) {
-        const data = res.data as IStudentResponseWithPaymentInfo;
+        const { student, payment } = res.data as {
+          student: StudentDTO;
+          payment: { id: number; payment_status: string };
+        };
 
         // for initial payment, the invoice will be downloaded automatically
-        if (data.payment && data.payment.status === "PAID") {
+        if (payment && payment.payment_status === "PAID") {
           paymentOnEnrollRef.current?.downloadInvoice({
-            cohort: data.cohort.name,
-            grade: data.grade.name,
-            mobile: data.user.phone,
-            name: data.full_name,
-            section: data.section.name,
-            studentId: data.student_id,
-            paymentId: data.payment.id.toString(),
+            cohort: student.cohort.name,
+            grade: student.grade.name,
+            mobile: student.user.phone,
+            name: student.full_name,
+            section: student.section.name,
+            studentId: student.student_id,
+            paymentId: payment.id.toString(),
           });
         }
       }

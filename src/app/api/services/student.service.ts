@@ -1,4 +1,4 @@
-import { Prisma, Role } from "@prisma/client";
+import { PaymentStatus, Prisma, Role } from "@prisma/client";
 import { prismaQ } from "../utils/prisma";
 import {
   StudentDTO,
@@ -37,7 +37,13 @@ export interface IStudentService {
   ): Promise<StudentPaymentListDTO>;
   findById(id: number): Promise<StudentProfileDTO | undefined>;
   delete(id: number): Promise<boolean>;
-  create(student: unknown): Promise<StudentProfileDTO | undefined>;
+  create(student: unknown): Promise<
+    | {
+        student: StudentDTO;
+        payment?: { id: number; payment_status: PaymentStatus };
+      }
+    | undefined
+  >;
   update(id: number, student: unknown): Promise<StudentProfileDTO | undefined>;
 
   /**
@@ -430,7 +436,7 @@ export class StudentService implements IStudentService {
   async create(studentData: any) {
     const createSchema = this.getStudentCreateSchema();
 
-    const { student } = await prismaQ.$transaction(async (prismaQ) => {
+    const { student, payment } = await prismaQ.$transaction(async (prismaQ) => {
       const parsedStudent = await createSchema.parseAsync(studentData);
       const parsedUser = parsedStudent.user;
 
@@ -478,6 +484,9 @@ export class StudentService implements IStudentService {
       // initial payment
       if (parsedStudent.payment_template_id && parsedStudent.payment_status) {
         const paymentRequest = await prismaQ.paymentRequest.create({
+          select: {
+            id: true,
+          },
           data: {
             payment_target_type: "STUDENT",
             title:
@@ -489,19 +498,29 @@ export class StudentService implements IStudentService {
           },
         });
         const payment = await prismaQ.payment.create({
+          select: {
+            id: true,
+            status: true,
+          },
           data: {
             payment_request_id: paymentRequest.id,
             user_id: user.id,
             status: parsedStudent.payment_status,
           },
         });
-        return { student, payment };
+        return {
+          student,
+          payment: { id: payment.id, payment_status: payment.status },
+        };
       }
 
       return { student };
     });
 
-    return this.studentProfileDataToProfileDTO(student);
+    return {
+      student: this.studentProfileDataToProfileDTO(student),
+      payment: payment,
+    };
   }
 
   async update(id: number, studentData: any) {
