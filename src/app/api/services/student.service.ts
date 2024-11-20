@@ -115,6 +115,7 @@ const studentProfileSelectOptions = studentValidator({
     date_of_birth: true,
     guardian_phone: true,
     student_status: true,
+    gender: true,
   },
 });
 
@@ -206,6 +207,7 @@ export class StudentService implements IStudentService {
       father_name: student.father_name,
       mother_name: student.mother_name,
       guardian_phone: student.guardian_phone,
+      gender: student.gender,
     };
   }
 
@@ -482,6 +484,10 @@ export class StudentService implements IStudentService {
       });
 
       // initial payment
+      console.log(
+        parsedStudent.payment_template_id,
+        parsedStudent.payment_status
+      );
       if (parsedStudent.payment_template_id && parsedStudent.payment_status) {
         const paymentRequest = await prismaQ.paymentRequest.create({
           select: {

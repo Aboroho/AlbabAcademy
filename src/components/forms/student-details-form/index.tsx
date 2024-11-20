@@ -42,10 +42,10 @@ import {
   getStudentDefaultUpdateFormData,
   updateStudent,
 } from "./utils";
-import { IStudentResponse } from "@/types/response_types";
 
 import { AlertCircleIcon } from "lucide-react";
 import { StudentDTO } from "@/app/api/services/types/dto.types";
+import { StudentProfileViewModel } from "@/client-actions/queries/student-queries";
 
 type FormData = IStudentCreateFormData | IStudentUpdateFormData;
 
@@ -57,7 +57,7 @@ function StudentDetailsForm({
   isLoading,
   updateEnabled,
   formTitle,
-}: FormDetailsProps<IStudentResponse, FormData>) {
+}: FormDetailsProps<StudentProfileViewModel, FormData>) {
   const schema = updateEnabled ? studentUpdateSchema : studentCreateSchema;
 
   const form = useForm<FormData>({
@@ -115,6 +115,8 @@ function StudentDetailsForm({
           student: StudentDTO;
           payment: { id: number; payment_status: string };
         };
+
+        console.log(res.data);
 
         // for initial payment, the invoice will be downloaded automatically
         if (payment && payment.payment_status === "PAID") {

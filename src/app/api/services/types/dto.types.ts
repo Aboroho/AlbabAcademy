@@ -1,5 +1,6 @@
 import {
   Address,
+  Gender,
   PaymentStatus,
   RESIDENTIAL_STATUS,
   StudentStatus,
@@ -41,7 +42,8 @@ export type StudentProfileDTO = {
   mother_name: string;
   guardian_phone: string;
   date_of_birth: string;
-  address: AddressDTO | null;
+  address: AddressDTO;
+  gender: Gender;
 } & StudentDTO;
 
 export type StudentPaymentDTO = Omit<PaymentDetailsDTO, "user"> & {

@@ -2,8 +2,9 @@ import { api } from "@/client-actions/helper";
 import { IStudentCreateFormData, IStudentUpdateFormData } from "./schema";
 
 import toast from "react-hot-toast";
-import { IStudentResponse } from "@/types/response_types";
+
 import { omitFields } from "@/app/api/utils/excludeFields";
+import { StudentProfileViewModel } from "@/client-actions/queries/student-queries";
 
 export async function updateStudent(
   data: IStudentUpdateFormData,
@@ -75,18 +76,16 @@ export function getStudentDefaultCreateFormData(): IStudentCreateFormData {
 }
 
 export function getStudentDefaultUpdateFormData(
-  student?: IStudentResponse
+  student?: StudentProfileViewModel
 ): IStudentUpdateFormData {
   if (!student) return {} as IStudentUpdateFormData;
 
   const data: IStudentUpdateFormData = {
-    ...omitFields(student, [
-      "address_id",
-      "grade",
-      "section",
-      "cohort",
-      "user_id",
-    ]),
+    ...omitFields(student, ["grade", "section", "cohort"]),
+    user: omitFields(student.user, ["createdAt", "role", "id"]),
+    address: {},
+    gender: student.gender,
+    cohort_id: student.cohort.id,
     student_id: student.student_id,
     grade_id: student.grade.id,
     section_id: student.section.id,

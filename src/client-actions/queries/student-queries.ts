@@ -10,10 +10,12 @@ import {
   IGradeResponse,
   ISectionResponse,
   ISectionResponseWithParent,
-  IStudentResponse,
 } from "@/types/response_types";
 import { generateQueryParamsFromObject } from "@/lib/utils";
-import { StudentListDTO } from "@/app/api/services/types/dto.types";
+import {
+  StudentListDTO,
+  StudentProfileDTO,
+} from "@/app/api/services/types/dto.types";
 
 export type IGetStudentsQueryFilter = {
   grade_id?: number;
@@ -47,18 +49,19 @@ export const useGetStudents = (
   return query;
 };
 
+export type StudentProfileViewModel = StudentProfileDTO;
 export const useGetStudentById = (
   id: number | null | undefined,
   queryOptions?: CustomQueryOptions
 ) => {
   const query = useQuery({
-    queryKey: ["byId", "student", id],
+    queryKey: ["student", id],
     queryFn: async () => {
-      if (!id) return {} as IStudentResponse;
+      if (!id) return {} as StudentProfileViewModel;
       const res = await api("/students/" + id, {
         method: "get",
       });
-      if (res?.success) return res.data as IStudentResponse;
+      if (res?.success) return res.data as StudentProfileViewModel;
     },
 
     ...DEFAULT_QUERY_FILTER,

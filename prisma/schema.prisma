@@ -199,8 +199,8 @@ model Student {
   user                User     @relation(fields: [user_id], references: [id])
   cohort_id           Int
   cohort              Cohort   @relation(fields: [cohort_id], references: [id])
-  address_id          Int?      @unique
-  address             Address?  @relation(fields: [address_id], references: [id])
+  address_id          Int      @unique
+  address             Address  @relation(fields: [address_id], references: [id])
 
   attendence_record   StudentAttendence[]
   feedbacks_given StudentFeedBack[]
