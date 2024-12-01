@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **School Management System**
 
-## Getting Started
+A robust and user-friendly platform for managing student enrollment, payments, and academic structure with seamless online access for both students and administrators.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## **Features**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### **Student Enrollment Flow**
+- Assign students to a cohort linked to a section and grade.
+- Ensure each student has a **unique roll number** within their cohort.
+- Collect mandatory information during enrollment with optional fields editable later.
+- Enable students to create a **username** and **password** for secure dashboard access.
+- Provide the ability to **update or reset passwords** after initial setup.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### **Payment Flow**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### **Payment Templates**
+- Create reusable payment templates with details such as `[description]` and `[amount]`.
+- Support multiple fields in a template for dynamic total calculation.
+- Automatically generate **detailed invoices** using template field data.
 
-## Learn More
+#### **Payment Request Creation**
+- Generate payment requests using payment templates for:
+  - Individual students.
+  - Entire grades, sections, or cohorts.
+  - Teachers.
+- Automatically create payment entries in the payments table for each target group member.
+- Notify members about payment requests.
 
-To learn more about Next.js, take a look at the following resources:
+#### **Enrollment-Linked Payments**
+- Option to select a payment template for enrollment fees.
+- If payment is marked as paid:
+  - **Invoice automatically generated and downloaded** upon enrollment completion.
+- If payment is not marked as paid:
+  - Payment can be completed later by the student or admin.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## **Technology Stack**
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Backend**: Node.js, Express
+- **Database**: Prisma (PostgreSQL/MySQL)
+- **Authentication**: NextAuth.js
+- **Styling**: Tailwind CSS
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
