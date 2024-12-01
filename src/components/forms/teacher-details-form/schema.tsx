@@ -17,7 +17,7 @@ export const teacherCreateSchema = z.object({
     .max(32, { message: "Designation must be 32 characters or less" }),
   description: z
     .string()
-    .max(512, { message: "Description must be 512 characters or less" })
+    .max(1024, { message: "Description must be 1024 characters or less" })
     .optional()
     .nullable(),
   subject_expertise: z
@@ -27,6 +27,7 @@ export const teacherCreateSchema = z.object({
     .nullable(),
   date_of_joining: z
     .union([z.string().optional(), z.date().optional()])
+    .optional()
     .nullable(),
   qualification: z
     .string()

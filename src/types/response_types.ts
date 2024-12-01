@@ -41,7 +41,7 @@ export interface IStudentResponse extends Student {
   grade: IGradeResponse;
 }
 
-export interface IStudentResponseWithPaymentInfo extends IStudentResponse {
+export interface StudentResponseWithPaymentInfo extends IStudentResponse {
   payment?: IPaymentResponse;
 }
 

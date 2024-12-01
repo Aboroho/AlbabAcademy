@@ -1,6 +1,7 @@
 "use client";
 
 import { useGetTeacherById } from "@/client-actions/queries/teacher-queries";
+import { Button } from "@/components/button";
 
 import TeacherDetailsForm from "@/components/forms/teacher-details-form";
 import React from "react";
@@ -19,6 +20,13 @@ function UpdateFormContainer({ teacherId }: Props) {
         defaultData={teacher}
         isLoading={isLoading}
         updateEnabled={true}
+        renderButton={(isSubmitting) => {
+          return (
+            <Button type="submit" disabled={isSubmitting}>
+              Update Teacher
+            </Button>
+          );
+        }}
       />
     </div>
   );

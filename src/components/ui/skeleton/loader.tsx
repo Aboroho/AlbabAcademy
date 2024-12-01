@@ -3,7 +3,7 @@ import React from "react";
 
 function Loader() {
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center">
       <Image
         alt="loader"
         className="w-[80px]  animate-pulse"

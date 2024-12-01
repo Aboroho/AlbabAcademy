@@ -226,7 +226,7 @@ model Teacher {
  
   full_name         String   @db.VarChar(64)
   designation       String   @db.VarChar(64)
-  description       String?   @db.VarChar(512)
+  description       String?   @db.VarChar(1024)
   subject_expertise String?   @db.VarChar(128)
   date_of_joining   DateTime? @default(now()) @db.Timestamp
   qualification     String?  @db.VarChar(128)

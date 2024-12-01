@@ -60,8 +60,11 @@ export function getTeacherDefaultUpdateFormData(
   teacher?: ITeacherResponse
 ): ITeacherUpdateFormData {
   if (!teacher) return {} as ITeacherUpdateFormData;
+  console.log(teacher);
   return {
     ...omitFields(teacher, ["address_id", "user_id", "grades", "id"]),
-    date_of_joining: new Date(teacher.date_of_joining || ""),
+    date_of_joining: teacher.date_of_joining
+      ? new Date(teacher.date_of_joining || "")
+      : null,
   };
 }

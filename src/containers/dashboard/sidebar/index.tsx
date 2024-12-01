@@ -73,7 +73,10 @@ function Sidebar() {
         >
           <CollapsibleLinkContent
             linkList={{
-              links: [{ label: "Create teacher", href: "/create" }],
+              links: [
+                { label: " Teacher's List", href: "" },
+                { label: "Create teacher", href: "/create" },
+              ],
               prefix: "/management/teachers",
             }}
           />

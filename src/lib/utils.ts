@@ -175,3 +175,23 @@ export default function queryStringToObject(queryString?: string) {
       .map(([key, value]) => [key, decodeURIComponent(value)])
   );
 }
+
+export function formatDate(
+  inputDate: string | Date,
+  options?: { includeHour?: boolean; includeMinute?: boolean }
+): string {
+  const date = new Date(inputDate);
+
+  const _options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: options?.includeHour ? "numeric" : undefined,
+    minute: options?.includeMinute ? "numeric" : undefined,
+    hour12: true,
+  };
+
+  const formattedDate = date.toLocaleString("en-US", _options);
+
+  return formattedDate.replace(",", "").replace("AM", "AM").replace("PM", "PM");
+}

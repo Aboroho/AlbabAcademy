@@ -21,7 +21,7 @@ import {
 } from "@/components/shadcn/ui/table";
 import AlertDialog from "@/components/ui/modal/AlertDialog";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { PaymentStatus } from "@prisma/client";
 import { pdf } from "@react-pdf/renderer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -173,26 +173,6 @@ function StudentPaymentList() {
     } else {
       toast.error(res.message);
     }
-  }
-
-  function formatDate(inputDate: string | Date): string {
-    const date = new Date(inputDate);
-
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-
-    const formattedDate = date.toLocaleString("en-US", options);
-
-    return formattedDate
-      .replace(",", "")
-      .replace("AM", "AM")
-      .replace("PM", "PM");
   }
 
   // if (isLoading) return <TableSkeleton />;

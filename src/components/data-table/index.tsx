@@ -102,7 +102,7 @@ function DataTable<TData, TValue>({
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="max-w-[200px]">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

@@ -77,3 +77,13 @@ export type PaymentDetailsDTO = PaymentDTO & {
   }[];
   user: Omit<User, "password" | "permission" | "createdAt">;
 };
+
+export type PaymentDetailsListDTO = PaymentDetailsDTO[];
+
+export type TeacherDTO = {
+  id: number;
+  full_name: string;
+  user: UserDTO;
+  designation: string;
+  subject_expertise: string;
+};
