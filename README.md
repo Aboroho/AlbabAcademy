@@ -1,7 +1,10 @@
 # **School Management System**
 
 A robust and user-friendly platform for managing student enrollment, payments, and academic structure with seamless online access for both students and administrators.
-[![Visit Albab Academy](https://img.shields.io/badge/Visit-Albab%20Academy-blue?style=for-the-badge)](https://albabacademy.org)
+
+<a href="https://albabacademy.org" target="_blank">
+  <img src="https://img.shields.io/badge/Visit-Albab%20Academy-blue?style=for-the-badge" alt="Visit Albab Academy">
+</a>
 ---
 
 ## **Features**
