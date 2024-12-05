@@ -8,7 +8,7 @@ function HeroSection() {
   return (
     <div className="w-full  bg-accent bg-gradient-to-b lg:bg-gradient-to-r from-white  to-brand/15 -z-20 border-b border-brand/50">
       <div className=" hero-pattern relative ">
-        <div className="relative z-20">
+        <div className=" z-20">
           <div className=" container h-[768px] flex flex-col py-10 lg:flex-row lg:py-0 items-center justify-between ">
             <div className="text-center lg:text-left mb-10 lg:mb-0 w-full lg:w-[50%] lg:pr-6">
               <h2 className="text-sx font-semi-bold uppercase">
@@ -26,9 +26,13 @@ function HeroSection() {
               </p>
               <div className="mt-4 flex flex-col lg:flex-row gap-4 ">
                 <div>
-                  <Button className="max-w-fit">Explore our curriculum</Button>
+                  <Link href="#curriculum ">
+                    <Button className="max-w-fit">
+                      Explore our curriculum
+                    </Button>
+                  </Link>
                 </div>
-                <Link href="/contact">
+                <Link href="#footer">
                   <Button className="bg-brand/80 hover:bg-brand/90 max-w-fit">
                     <PhoneOutgoing className="w-4 h-4" /> Contact Us
                   </Button>

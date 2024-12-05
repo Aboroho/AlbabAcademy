@@ -14,7 +14,7 @@ export type Navlink = {
   collapsible?: boolean;
   children?: Array<Navlink>;
   icon?: JSX.Element;
-  description?: string,
+  description?: string;
   popoverTitle?: string;
   popOverIcon?: JSX.Element;
 };
@@ -48,7 +48,7 @@ export const topNavLinks: Navlink[] = [
   },
   {
     label: "Contact",
-    path: "/contact",
+    path: "#footer",
     activePrefix: "/contact",
     icon: <PhoneOutgoing className="w-4 h-4" />,
   },

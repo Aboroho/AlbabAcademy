@@ -41,7 +41,7 @@ function CurriculumSection() {
   }
   return (
     <section>
-      <div className="py-[5rem] container">
+      <div className="py-[5rem] container" id="curriculum">
         <div className="text-center mx-auto lg:w-[60%]">
           <div className="flex justify-center">
             <BookOpen className="w-12 h-12 text-brand" />
