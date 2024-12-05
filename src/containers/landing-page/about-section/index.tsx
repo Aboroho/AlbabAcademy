@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 
 import StudentReading from "@/assets/images/children-reading.jpg";
 import StudentReading2 from "@/assets/images/student-reading.webp";
@@ -6,11 +6,15 @@ import { Button } from "@/components/button";
 import Image from "next/image";
 import LogoAbstract from "@/assets/images/logo_abstract.png";
 
+import Blob1 from "@/assets/images/blob-1.svg";
+import Blob2 from "@/assets/images/blob-1.svg";
 function AboutSection() {
   return (
     <div className="py-[5rem] relative bg-accent">
-      <Image
-        src="/assets/images/blob-1.svg"
+      <Blob1 className="w-[500px] h-[500px]  fill-brand/30 absolute -left-[250px] top-[270px] lg:top-0  opacity-60 -z-100" />
+      <Blob2 className="w-[500px] h-[500px]   fill-red-100  absolute -bottom-[100px] -right-[200px] -z-100" />
+      {/* <Image
+        src={Blob1}
         alt="blob"
         width={500}
         height={500}
@@ -22,7 +26,7 @@ function AboutSection() {
         width={500}
         height={500}
         className="w-[500px] h-[500px]   fill-red-100  absolute -bottom-[100px] -right-[200px] -z-100"
-      />
+      /> */}
 
       <div className="container text-center relative z-10">
         <div className="flex items-center flex-col gap-2 ">

@@ -5,7 +5,7 @@ function HeroVideo() {
     <div className="w-full relative">
       <video
         className="w-full h-full"
-        src="https://www.albabacademy.org/wp-content/uploads/2024/10/video.mp4"
+        src="/assets/video/intro.mp4"
         controls
       ></video>
     </div>
