@@ -41,6 +41,9 @@ export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
     include: {
       template_fields: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return apiResponse({ data: templates });
 });

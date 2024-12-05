@@ -57,6 +57,7 @@ function Sidebar() {
           <CollapsibleLinkContent
             linkList={{
               links: [
+                { label: "Groups", href: "/" },
                 { label: "Create Grade", href: "/grades/create" },
                 { label: "Create Section", href: "/sections/create" },
                 { label: "Create Cohort", href: "/cohorts/create" },

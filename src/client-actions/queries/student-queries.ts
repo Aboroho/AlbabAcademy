@@ -204,3 +204,36 @@ export const useGetCohortById = (
   });
   return query;
 };
+
+export type StudentGroupViewModel = {
+  id: number;
+  name: string;
+  sections?: {
+    id: number;
+    name: string;
+    cohorts?: {
+      id: number;
+      name: string;
+    }[];
+  }[];
+};
+
+export const useGetStudentGroup = (queryOptions?: CustomQueryOptions) => {
+  const route = "/groups";
+
+  const query = useQuery({
+    queryKey: ["student-groups", "all"],
+    queryFn: async () => {
+      const res = await api(route, {
+        method: "get",
+      });
+      if (res?.success) return res.data as StudentGroupViewModel[];
+    },
+
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+
+    ...queryOptions,
+  });
+  return query;
+};
