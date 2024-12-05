@@ -19,7 +19,8 @@ export const POST = withMiddleware(
   }
 );
 
-export const GET = withMiddleware(authenticate, authorizeAdmin, async () => {
-  const studentList = await studentService.findAll();
+export const GET = withMiddleware(authenticate, authorizeAdmin, async (req) => {
+  const searchParams = Object.fromEntries(new URL(req.nextUrl).searchParams);
+  const studentList = await studentService.findAll(searchParams);
   return apiResponse({ data: studentList });
 });

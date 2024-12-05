@@ -107,6 +107,7 @@ function Sidebar() {
             linkList={{
               links: [
                 { label: "Create Payment Template", href: "/template/create" },
+                { label: " Payment Templates", href: "/template" },
                 {
                   label: "Create Payment Request",
                   href: "/payment-request/create",

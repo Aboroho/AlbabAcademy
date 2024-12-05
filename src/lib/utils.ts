@@ -26,6 +26,7 @@ export async function imageToDataUrl(file: File) {
  */
 export function generateQueryParamsFromObject(obj: object) {
   return Object.entries(obj || {})
+    .filter(([, value]) => value)
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
 }

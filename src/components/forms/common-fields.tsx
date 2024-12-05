@@ -266,7 +266,13 @@ export const UserFields = ({
  *
  * Shared Select Grade
  */
-export const SelectGradeField = ({ hideLabel }: { hideLabel?: boolean }) => {
+export const SelectGradeField = ({
+  hideLabel,
+  disabled,
+}: {
+  hideLabel?: boolean;
+  disabled?: boolean;
+}) => {
   const {
     control,
     formState: { errors },
@@ -293,6 +299,7 @@ export const SelectGradeField = ({ hideLabel }: { hideLabel?: boolean }) => {
             label: grade.name,
             value: grade.id.toString(),
           }))}
+          disabled={disabled}
         />
       )}
     />

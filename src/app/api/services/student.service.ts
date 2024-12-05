@@ -150,6 +150,7 @@ export class StudentService implements IStudentService {
   getStudentPrismaFilter(studentQueryFilter?: object) {
     const DEFAULT_PAGE = 1;
     const DEFAULT_PAGE_SIZE = 50;
+
     const { data } = studentQueryFilterSchema.safeParse(studentQueryFilter);
 
     const where: Prisma.StudentWhereInput = {

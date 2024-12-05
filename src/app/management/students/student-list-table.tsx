@@ -2,7 +2,6 @@
 
 import DataTable from "@/components/data-table";
 
-// import SimpleDropDown from "@/components/primitives/SimplePopover";
 import { Button } from "@/components/ui/button";
 import {
   CaretSortIcon,
@@ -15,13 +14,8 @@ import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 
 import Link from "next/link";
-// import SearchFilter from "@/components/data-table/SearchFilter";
 
 import { useGetStudents } from "@/client-actions/queries/student-queries";
-// import {
-//   useDeleteStudent,
-//   useUpdateStudentFullDetails,
-// } from "@/client-actions/mutations/studentMutation";
 
 import { IStudentResponse } from "@/types/response_types";
 import { isEmpty } from "@/components/forms/form-utils";
@@ -32,6 +26,8 @@ import AlertDialog from "@/components/ui/modal/AlertDialog";
 import toast from "react-hot-toast";
 import TableSkeleton from "@/components/ui/skeleton/table-skeleton";
 import { Protected } from "@/components/auth";
+import { FormProvider, useForm } from "react-hook-form";
+import { SelectGradeField } from "@/components/forms/common-fields";
 
 export type IStudentTableRow = {
   id: number;
@@ -52,9 +48,17 @@ function StudentListTable({ students: defaultStudents }: Props) {
   const [studentTableRows, setStudentTableRows] = useState<IStudentTableRow[]>(
     [] as IStudentTableRow[]
   );
-  const { data, isLoading } = useGetStudents({
-    enabled: isEmpty(defaultStudents),
-  });
+  const form = useForm<{ grade_id: number; section_id: number }>({});
+  const gradeId = form.watch("grade_id");
+  const sectionId = form.watch("section_id");
+
+  const filter = { grade_id: gradeId, section_id: sectionId };
+  const { data, isLoading } = useGetStudents(
+    {
+      enabled: isEmpty(defaultStudents),
+    },
+    filter
+  );
   const students = defaultStudents || data?.students;
   // const studentCount = data?.count;
 
@@ -252,7 +256,6 @@ function StudentListTable({ students: defaultStudents }: Props) {
     []
   );
 
-  if (isLoading) return <TableSkeleton />;
   return (
     <div className="p-2 lg:p-4">
       {/* <SearchFilter
@@ -264,12 +267,14 @@ function StudentListTable({ students: defaultStudents }: Props) {
         onSearch={(filter, query) => console.log(filter, query)}
       /> */}
 
-      <DataTable
-        data={studentTableRows}
-        columns={columns}
-        // loading={isLoading}
-        // activeRowId={activeRowId}
-      />
+      <FormProvider {...form}>
+        <div className="my-4 flex max-w-[268px]">
+          <SelectGradeField disabled={isLoading} />
+        </div>
+      </FormProvider>
+
+      {isLoading && <TableSkeleton />}
+      {!isLoading && <DataTable data={studentTableRows} columns={columns} />}
     </div>
   );
 }
