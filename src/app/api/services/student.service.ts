@@ -335,6 +335,7 @@ export class StudentService implements IStudentService {
           status: true,
           paymentMethod: true,
           amount: true,
+          payment_request_entry_id: true,
           user: {
             select: {
               student: {
@@ -367,7 +368,7 @@ export class StudentService implements IStudentService {
           payment_method: payment.paymentMethod,
           payment_status: payment.status,
           amount: payment.amount,
-
+          payment_request_entry_id: payment.payment_request_entry_id as number,
           student: this.studentDefaultDataToDTO(payment.user.student),
           payment_fields: payment.payment_request_entry
             ?.payment_details as Array<{ details: string; amount: number }>,
@@ -422,7 +423,7 @@ export class StudentService implements IStudentService {
   async create(studentData: any) {
     const createSchema = this.getStudentCreateSchema();
 
-    const { student, payment } = await prismaQ.$transaction(async (prismaQ) => {
+    const { student } = await prismaQ.$transaction(async (prismaQ) => {
       const parsedStudent = await createSchema.parseAsync(studentData);
       const parsedUser = parsedStudent.user;
 
@@ -469,44 +470,44 @@ export class StudentService implements IStudentService {
 
       // initial payment
 
-      if (parsedStudent.payment_template_id && parsedStudent.payment_status) {
-        const paymentRequest = await prismaQ.paymentRequest.create({
-          select: {
-            id: true,
-          },
-          data: {
-            payment_target_type: "STUDENT",
-            title:
-              "Initial Payment for #" +
-              student.student_id +
-              " - " +
-              student.full_name,
-            payment_template_id: parsedStudent.payment_template_id,
-          },
-        });
-        const payment = await prismaQ.payment.create({
-          select: {
-            id: true,
-            status: true,
-          },
-          data: {
-            payment_request_id: paymentRequest.id,
-            user_id: user.id,
-            status: parsedStudent.payment_status,
-          },
-        });
-        return {
-          student,
-          payment: { id: payment.id, payment_status: payment.status },
-        };
-      }
+      // if (parsedStudent.payment_template_id && parsedStudent.payment_status) {
+      //   const paymentRequest = await prismaQ.paymentRequest.create({
+      //     select: {
+      //       id: true,
+      //     },
+      //     data: {
+      //       payment_target_type: "STUDENT",
+      //       title:
+      //         "Initial Payment for #" +
+      //         student.student_id +
+      //         " - " +
+      //         student.full_name,
+      //       payment_template_id: parsedStudent.payment_template_id,
+      //     },
+      //   });
+      //   const payment = await prismaQ.payment.create({
+      //     select: {
+      //       id: true,
+      //       status: true,
+      //     },
+      //     data: {
+      //       payment_request_id: paymentRequest.id,
+      //       user_id: user.id,
+      //       status: parsedStudent.payment_status,
+      //     },
+      //   });
+      //   return {
+      //     student,
+      //     payment: { id: payment.id, payment_status: payment.status },
+      //   };
+      // }
 
       return { student };
     });
 
     return {
       student: this.studentProfileDataToProfileDTO(student),
-      payment: payment,
+      payment: undefined,
     };
   }
 

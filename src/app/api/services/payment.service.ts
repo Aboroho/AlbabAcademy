@@ -14,17 +14,13 @@ const paymentDetailsDefaultSelectOptions = paymentValidator({
     id: true,
     createdAt: true,
     updatedAt: true,
-    payment_request: {
+    amount: true,
+    payment_request_entry_id: true,
+    payment_request_entry: {
       select: {
-        forMonth: true,
-        forYear: true,
-        title: true,
         id: true,
-        payment_template: {
-          select: {
-            template_fields: true,
-          },
-        },
+        payment_details: true,
+        payment_request: true,
       },
     },
     paymentMethod: true,
@@ -61,16 +57,17 @@ export default class PaymentService implements IPaymentService {
     return {
       created_at: payment.createdAt.toString(),
       id: payment.id,
-      payment_fields: payment.payment_request.payment_template.template_fields,
+      payment_fields: payment.payment_request_entry?.payment_details as {
+        details: string;
+        amount: number;
+      }[],
       payment_method: payment.paymentMethod,
-      payment_request: payment.payment_request,
+      payment_request: payment.payment_request_entry?.payment_request,
       payment_status: payment.status,
       user: payment.user,
       update_at: payment.updatedAt.toString(),
-      amount: payment.payment_request.payment_template.template_fields.reduce(
-        (acc, cur) => acc + cur.amount,
-        0
-      ),
+      amount: payment.amount,
+      payment_request_entry_id: payment.payment_request_entry_id as number,
     };
   }
   getPaymentPrismaFilter(): Prisma.PaymentWhereInput {
