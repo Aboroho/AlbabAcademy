@@ -9,6 +9,7 @@ import {
 import {
   PaymentDetailsDTO,
   PaymentDTO,
+  PaymentRequestEntryDTO,
   StudentPaymentListDTO,
 } from "@/app/api/services/types/dto.types";
 import { useEffect, useState } from "react";
@@ -54,18 +55,28 @@ export const useGetPaymentTemplateById = (
   return query;
 };
 
-export const useGetPaymentRequest = (
-  queryOptions?: CustomQueryOptions
-  // filter?: {}
+export type PaymentRequestEntryViewModel = PaymentRequestEntryDTO;
+export const useGetPaymentRequestEntry = (
+  queryOptions?: CustomQueryOptions,
+  filter?: {
+    target: "teacher" | "student";
+    page?: number;
+    pageSize?: number;
+  }
 ) => {
+  const target = filter?.target || "student";
+  const page = filter?.page || 1;
+  const pageSize = Math.min(filter?.pageSize || 50, 100);
+
+  const route = `/payment/payment-request?target=${target}&page=${page}&pageSize=${pageSize}`;
   const query = useQuery({
-    queryKey: ["payment-requests", "all"],
+    queryKey: ["payment-requests-entry", target, page, pageSize],
     queryFn: async () => {
-      const res = await api("/payment/payment-request", {
+      const res = await api(route, {
         method: "get",
       });
       if (res?.success) {
-        return res.data as IPaymentRequestResponse[];
+        return res.data as PaymentRequestEntryViewModel[];
       }
     },
     ...DEFAULT_QUERY_FILTER,

@@ -536,25 +536,32 @@ export const SelectPaymentTarget = ({
 }: {
   targetType: (typeof PaymentTargetTypes.options)[number] | undefined | null;
 }) => {
-  const { data: studentData } = useGetStudents({
+  const { data: studentData, isLoading: studentLoading } = useGetStudents({
     enabled: targetType === "STUDENT",
   });
   const students = studentData?.students;
-  const { data: teachers } = useGetTeachers({
+  const { data: teachers, isLoading: teacherLoading } = useGetTeachers({
     enabled: targetType === "TEACHER",
   });
 
-  const { data: grades } = useGetGradeList({
+  const { data: grades, isLoading: gradeLoading } = useGetGradeList({
     enabled: targetType === "GRADE",
   });
 
-  const { data: sections } = useGetSectionList({
+  const { data: sections, isLoading: sectionLoading } = useGetSectionList({
     enabled: targetType === "SECTION",
   });
 
-  const { data: cohorts } = useGetCohortList({
+  const { data: cohorts, isLoading: cohortLoading } = useGetCohortList({
     enabled: targetType === "COHORT",
   });
+
+  const isLoading =
+    studentLoading ||
+    teacherLoading ||
+    gradeLoading ||
+    sectionLoading ||
+    cohortLoading;
   const form = useFormContext<{ payment_targets: number[] }>();
 
   const placeholder = `Select ${targetType?.toLowerCase() || "target"}s`;
@@ -620,7 +627,8 @@ export const SelectPaymentTarget = ({
           defaultValue={form.watch("payment_targets")?.map((v) => v.toString())}
           options={options}
           error={form.formState.errors.payment_targets as FieldError}
-          disabled={!targetType}
+          disabled={!targetType || isLoading}
+          isLoading={isLoading}
         />
       )}
     />
@@ -666,7 +674,10 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
     const fileName =
       "invoice-student-" + details.name + "-" + details.studentId;
     const data = {
-      fees: selectedTemplate.template_fields,
+      fees: selectedTemplate.template_fields.map((f) => ({
+        details: f.description,
+        amount: f.amount,
+      })),
       mobile: details.mobile,
       name: details.name,
       studentGrade: details.grade,
@@ -676,7 +687,9 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
       paymentId: details.paymentId,
     };
     try {
-      const blob = await pdf(<StudentInvoice {...data} />).toBlob();
+      const blob = await pdf(
+        <StudentInvoice {...data} paymentDetails={[]} />
+      ).toBlob();
 
       saveAs(blob, fileName);
     } catch (err) {

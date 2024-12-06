@@ -7,10 +7,11 @@ import {
   Document,
   StyleSheet,
   Font,
+  Image,
 } from "@react-pdf/renderer";
 
-import { monthNames, numberToWords } from "@/lib/utils";
-
+import { formatDate, monthNames, numberToWords } from "@/lib/utils";
+import Logo from "@/assets/images/logo_abstract.png";
 // Styles similar to your Tailwind classes but for react-pdf
 const styles = StyleSheet.create({
   borderTop: {
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: "#16a34a",
+    color: "#896F11",
     fontWeight: "bold",
   },
   schoolInfo: {
@@ -114,9 +115,13 @@ type Props = {
   mobile: string;
   fees: {
     amount: number;
-    description: string;
+    details: string;
     id?: number;
     [key: string]: unknown;
+  }[];
+  paymentDetails?: {
+    amount: number;
+    date: Date | string;
   }[];
 };
 const StudentInvoice = ({
@@ -129,6 +134,7 @@ const StudentInvoice = ({
   studentID,
   mobile,
   fees,
+  paymentDetails,
 }: Props) => {
   const total = fees.reduce((acc, cur) => acc + cur.amount, 0);
   const date = new Date();
@@ -139,7 +145,17 @@ const StudentInvoice = ({
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>Albab Academy</Text>
+            <View
+              style={{
+                display: "flex",
+                gap: 4,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Image src={Logo.src} style={{ height: 42, width: "auto" }} />
+              <Text style={styles.title}>Albab Academy</Text>
+            </View>
             <Text style={styles.schoolInfo}>
               House no 51, M A Bari Road (Air Club)
             </Text>
@@ -171,6 +187,17 @@ const StudentInvoice = ({
                 <Text style={styles.schoolInfo}>Student Name: </Text>
                 <Text style={styles.fontSmall}>{name}</Text>
               </Text>
+
+              <Text>
+                <Text style={styles.schoolInfo}>Student ID: </Text>
+                <Text style={styles.fontSmall}>{studentID}</Text>
+              </Text>
+              <Text>
+                <Text style={styles.schoolInfo}>Phone: </Text>
+                <Text style={styles.fontSmall}>{mobile}</Text>
+              </Text>
+            </View>
+            <View>
               <Text>
                 <Text style={styles.schoolInfo}>Grade/Class: </Text>
                 <Text style={styles.fontSmall}>{studentGrade}</Text>
@@ -182,16 +209,6 @@ const StudentInvoice = ({
               <Text>
                 <Text style={styles.schoolInfo}>Cohort/Group: </Text>
                 <Text style={styles.fontSmall}>{studentCohort}</Text>
-              </Text>
-              <Text>
-                <Text style={styles.schoolInfo}>Student ID: </Text>
-                <Text style={styles.fontSmall}>{studentID}</Text>
-              </Text>
-            </View>
-            <View>
-              <Text>
-                <Text style={styles.schoolInfo}>Phone: </Text>
-                <Text style={styles.fontSmall}>{mobile}</Text>
               </Text>
             </View>
           </View>
@@ -222,9 +239,9 @@ const StudentInvoice = ({
             </View>
             {/* Table Rows */}
             {fees.map((fee) => (
-              <View style={styles.tableRow} key={fee.id || fee.description}>
+              <View style={styles.tableRow} key={fee.details}>
                 <Text style={[styles.tableCell, { flex: 1 }]}>
-                  {fee.description}
+                  {fee.details}
                 </Text>
                 <Text style={[styles.tableCell, { flex: 1 }]}>
                   {fee.amount.toFixed(2)} Taka
@@ -238,7 +255,6 @@ const StudentInvoice = ({
             ))}
           </View>
         </View>
-
         {/* Total Section */}
         <View style={styles.total}>
           <View
@@ -262,11 +278,80 @@ const StudentInvoice = ({
               {total.toFixed(2)} Taka
             </Text>
           </View>
-          {total > 0 && (
+          {/* {total > 0 && (
             <Text style={{ fontSize: 10, paddingTop: 6 }}>
               {numberToWords(total)} Taka Only
             </Text>
-          )}
+          )} */}
+        </View>
+
+        <View style={[styles.section]}>
+          <Text style={{ fontSize: 14, paddingBottom: 10 }}>Payments</Text>
+          <View style={styles.table}>
+            {/* Table Header */}
+            <View style={styles.tableRow}>
+              <Text
+                style={[
+                  styles.tableCell,
+                  { flex: 1, fontWeight: "bold", fontSize: 12 },
+                ]}
+              >
+                Paid Amount (TK)
+              </Text>
+              <Text
+                style={[
+                  styles.tableCell,
+                  { flex: 1, fontWeight: "bold", fontSize: 12 },
+                ]}
+              >
+                Date
+              </Text>
+            </View>
+            {/* Table Rows */}
+            {paymentDetails?.map((pd) => (
+              <View style={styles.tableRow} key={pd.amount}>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {pd.amount} Taka
+                </Text>
+                <Text style={[styles.tableCell, { flex: 1 }]}>
+                  {formatDate(pd.date)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Due Section */}
+        <View style={styles.total}>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              style={{
+                border: "1px solid #000",
+                padding: "4 10",
+                borderRight: "0",
+              }}
+            >
+              Due
+            </Text>
+            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
+              {total -
+                (paymentDetails?.reduce((sum, cur) => sum + cur.amount, 0) ||
+                  0)}{" "}
+              Taka
+            </Text>
+          </View>
+          {/* {total > 0 && (
+            <Text style={{ fontSize: 10, paddingTop: 6 }}>
+              {numberToWords(total)} Taka Only
+            </Text>
+          )} */}
         </View>
 
         {/* Signature Section */}

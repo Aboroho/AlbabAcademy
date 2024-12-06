@@ -108,8 +108,8 @@ function StudentPaymentList() {
     if (!payment) return;
 
     const forDate =
-      payment.payment_request.forMonth +
-      (payment.payment_request.forYear
+      payment.payment_request?.forMonth +
+      (payment.payment_request?.forYear
         ? "," + payment.payment_request.forYear
         : "");
     const invoice = (
@@ -122,10 +122,11 @@ function StudentPaymentList() {
         studentSection={payment.student.section.name}
         studentID={payment.student.student_id}
         forDate={forDate}
+        paymentDetails={[{ amount: payment.amount, date: payment.created_at }]}
       />
     );
 
-    const fileName = `invoice-${payment.payment_request.title}-${payment.student.student_id}`;
+    const fileName = `invoice-${payment.payment_request?.title}-${payment.student.student_id}`;
     const blob = await pdf(invoice).toBlob();
 
     saveAs(blob, fileName);
@@ -242,7 +243,7 @@ function StudentPaymentList() {
                   {formatDate(payment.update_at)}
                 </TableCell>
                 <TableCell className="text-right">
-                  {payment.payment_request.title}
+                  {payment.payment_request?.title}
                 </TableCell>
                 <TableCell className="text-right bg-green">
                   {["PROCESSING", "FAILED"].includes(

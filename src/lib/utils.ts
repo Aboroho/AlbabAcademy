@@ -193,6 +193,5 @@ export function formatDate(
   };
 
   const formattedDate = date.toLocaleString("en-US", _options);
-
-  return formattedDate.replace(",", "").replace("AM", "AM").replace("PM", "PM");
+  return formattedDate;
 }

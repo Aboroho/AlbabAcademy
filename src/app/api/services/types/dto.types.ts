@@ -1,6 +1,9 @@
 import {
   Address,
   Gender,
+  Payment,
+  PaymentRequest,
+  PaymentRequestEntry,
   PaymentStatus,
   RESIDENTIAL_STATUS,
   StudentStatus,
@@ -62,17 +65,18 @@ export type PaymentDTO = {
   update_at: string;
   created_at: string;
   payment_method: string;
-  payment_request: {
+  payment_request_entry_id: number;
+  payment_request?: {
     forMonth?: string | null;
     forYear?: string | null;
-    title: string;
-    id: number;
+    title?: string;
+    id?: number;
   };
 };
 
 export type PaymentDetailsDTO = PaymentDTO & {
   payment_fields: {
-    description: string;
+    details: string;
     amount: number;
   }[];
   user: Omit<User, "password" | "permission" | "createdAt">;
@@ -86,4 +90,39 @@ export type TeacherDTO = {
   user: UserDTO;
   designation: string;
   subject_expertise: string;
+};
+
+export type PaymentRequestEntryDTO = Omit<
+  PaymentRequestEntry,
+  "payment_details"
+> & {
+  payment_request: PaymentRequest;
+  payment_details: {
+    details: string;
+    amount: number;
+  }[];
+  payments: Payment[];
+  user: {
+    id: number;
+    phone: string;
+    email?: string;
+    student?: {
+      id: number;
+      student_id: string;
+      full_name: string;
+      roll: string;
+      cohort: {
+        name: string;
+        id: number;
+        section: {
+          name: string;
+          id: number;
+          grade: {
+            name: string;
+            id: number;
+          };
+        };
+      };
+    };
+  };
 };

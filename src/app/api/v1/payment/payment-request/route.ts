@@ -8,6 +8,7 @@ import { apiResponse } from "@/app/api/utils/handleResponse";
 import { parseJSONData } from "@/app/api/utils/parseIncomingData";
 import { prismaQ } from "@/app/api/utils/prisma";
 import { paymentRequestCreateValidationSchema } from "@/app/api/validationSchema/paymentSchema";
+import { Role } from "@prisma/client";
 
 export const POST = withMiddleware(
   authenticate,
@@ -23,29 +24,21 @@ export const POST = withMiddleware(
     // transaction
     const paymentRequest = await prismaQ.$transaction(async (prismaQ) => {
       const paymentRequest = await prismaQ.paymentRequest.create({
-        data: omitFields(parsedPaymentRequest, ["payment_targets"]),
+        data: omitFields(parsedPaymentRequest, [
+          "payment_targets",
+          "payment_details",
+          "stipend",
+        ]),
       });
 
-      if (["TEACHER", "STUDENT"].includes(paymentTargetType)) {
-        const paymentInfo = paymentTargets
-          .map((id) => ({
-            user_id: id,
-            payment_request_id: paymentRequest.id,
-          }))
-          .filter(
-            (target, index, self) =>
-              // Check if there is any previous occurrence of the same pair to resolve the multiple payment issue
-              index ===
-              self.findIndex(
-                (t) =>
-                  t.user_id === target.user_id &&
-                  t.payment_request_id === target.payment_request_id
-              )
-          );
+      const amount = parsedPaymentRequest.payment_details.reduce(
+        (sum, cur) => sum + cur.amount,
+        0
+      );
 
-        await prismaQ.payment.createMany({
-          data: paymentInfo,
-        });
+      let targetsUsers: Array<number>;
+      if (["TEACHER", "STUDENT"].includes(paymentTargetType)) {
+        targetsUsers = paymentTargets;
       } else {
         // structure
         const query: any = {
@@ -76,36 +69,103 @@ export const POST = withMiddleware(
           },
         });
 
-        const paymentInfo = studentUserIds.map((u) => ({
-          user_id: u.user_id,
-          payment_request_id: paymentRequest.id,
-        }));
-        await prismaQ.payment.createMany({
-          data: paymentInfo,
-        });
+        targetsUsers = studentUserIds.map((st) => st.user_id);
       }
+
+      const paymentRequestEntries = targetsUsers
+        .map((userId) => ({
+          user_id: userId,
+          payment_request_id: paymentRequest.id,
+          amount: amount,
+          stipend: parsedPaymentRequest.stipend,
+          payment_details: parsedPaymentRequest.payment_details,
+        }))
+        .filter(
+          (target, index, self) =>
+            // Check if there is any previous occurrence of the same pair to resolve the multiple payment issue
+            index ===
+            self.findIndex(
+              (t) =>
+                t.user_id === target.user_id &&
+                t.payment_request_id === target.payment_request_id
+            )
+        );
+
+      await prismaQ.paymentRequestEntry.createMany({
+        data: paymentRequestEntries,
+      });
     });
 
     return apiResponse({ data: paymentRequest });
   }
 );
 
-export const GET = withMiddleware(authenticate, authorizeAdmin, async (req) => {
+export const GET = withMiddleware(async (req) => {
   const { searchParams } = new URL(req.url);
 
-  // join filters
-  const payments = searchParams.get("payments");
-  const paymentTemplate = searchParams.get("payment_template");
-  // const limit = searchParams.get("limit")
+  // // join filters
+  const target = searchParams.get("target");
+  const page = parseInt(searchParams.get("page") || "") || 1;
+  const pageSize = parseInt(searchParams.get("pageSize") || "") || 50;
 
-  const include: { [key: string]: boolean } = {};
-  if (payments === "true") include.payments = true;
-  if (paymentTemplate) include.payment_template = true;
-
-  const paymentRequestList = await prismaQ.paymentRequest.findMany({
+  const paymentRequestList = await prismaQ.paymentRequestEntry.findMany({
     include: {
-      ...include,
+      payment_request: true,
+      payments: true,
+      user: {
+        select: {
+          username: true,
+          id: true,
+          phone: true,
+          email: true,
+          ...(target === "student"
+            ? {
+                student: {
+                  select: {
+                    student_id: true,
+                    id: true,
+                    roll: true,
+                    full_name: true,
+                    cohort: {
+                      select: {
+                        name: true,
+                        section: {
+                          select: {
+                            name: true,
+                            grade: {
+                              select: {
+                                name: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              }
+            : {
+                teachers: {
+                  select: {
+                    full_name: true,
+                    id: true,
+                    designation: true,
+                  },
+                },
+              }),
+        },
+      },
     },
+
+    where: {
+      ...(target && {
+        user: {
+          role: target.toUpperCase() as Role,
+        },
+      }),
+    },
+    skip: (page - 1) * pageSize,
+    take: pageSize,
   });
 
   return apiResponse({ data: paymentRequestList });

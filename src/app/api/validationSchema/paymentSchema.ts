@@ -63,18 +63,11 @@ export const paymentTemplateUpdateValidationSchema = paymentTemplateUpdateSchema
         message: "Payment template name must be unique",
         code: "custom",
       });
-
-    // const payment = await prismaQ.paymentRequest.findFirst({
-    //   where : {
-    //     payment_template_id : data.id
-    //   }
-    // })
-
-    // if (payment) ctx.addIssue({path : ['name'], code : 'custom', message : 'Some payment request refering to this template, editing may'})
   });
 
 // PaymentRequest schema
-export const paymentRequestCreateValidationSchema = paymentRequestCreateSchema;
+export const paymentRequestCreateValidationSchema =
+  paymentRequestCreateSchema.omit({ payment_template_id: true });
 export const paymentRequestUpdateValidationSchema = paymentRequestUpdateSchema;
 
 // Payment schema

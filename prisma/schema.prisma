@@ -150,6 +150,7 @@ model User {
   staff       Staff?
 
   payments      Payment[]
+   payment_request_entries PaymentRequestEntry[]
   permissions   UserPermission[]
   notifications Notification[]
   paymet_received Payout[]
@@ -158,7 +159,7 @@ model User {
   assessments_created Assessment[]
   media Media[]
 
-  
+ 
 }
 
 
@@ -485,12 +486,12 @@ model PaymentTemplate {
 
  
   template_fields PaymentTemplateField[]
-  payment_request PaymentRequest[]
 
    @@unique([name])
 
  
 }
+
 
 
 model PaymentRequest {
@@ -500,31 +501,51 @@ model PaymentRequest {
   forMonth         String?            @db.VarChar(32)
   forYear          String?            @db.VarChar(32)
 
-  payment_template_id Int
-  payment_template  PaymentTemplate    @relation(fields: [payment_template_id], references: [id])
-
   payment_target_type PaymentTargetTypes
 
-  payments         Payment[]
   createdAt        DateTime        @default(now())         
   
+
+  payment_request_entries PaymentRequestEntry[]
+}
+
+model PaymentRequestEntry {
+  id               Int                @id @default(autoincrement())
+
+  amount    Int
+  stipend         Int               @default(0)
+
+  payments         Payment[]
+
+  payment_details  Json[]
+
+  payment_request_id Int
+  payment_request     PaymentRequest    @relation(fields: [payment_request_id], references: [id])
+
+  user_id         Int?
+  user            User?            @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  createdAt        DateTime        @default(now())  
+  updatedAt        DateTime        @updatedAt    
 }
 
 model Payment {
   id               Int             @id @default(autoincrement())
   status           PaymentStatus   @default(PROCESSING)
   paymentMethod    PaymentMethod   @default(CASH)
+
+  amount          Int
  
   user_id           Int
   user             User            @relation(fields: [user_id], references: [id])
 
-  payment_request_id Int
-  payment_request   PaymentRequest  @relation(fields: [payment_request_id], references: [id])
+  payment_request_entry_id Int?
+  payment_request_entry   PaymentRequestEntry?  @relation(fields: [payment_request_entry_id], references: [id], onDelete: SetNull)
 
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
 
-  @@unique([user_id, payment_request_id])
+
 
 }
 

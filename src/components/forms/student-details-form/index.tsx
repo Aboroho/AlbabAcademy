@@ -16,7 +16,6 @@ import { StudentDateOfBirthField, StudentRollField } from "./form-fields";
 import { ApiResponse, FormDetailsProps } from "@/types/common";
 
 import {
-  FormSection,
   isEmpty,
   isNotEmpty,
   noRecordFoundFallback,
@@ -27,7 +26,6 @@ import {
 
 import {
   AddressFields,
-  PaymentOnEnroll,
   PaymentOnEnrollRefType,
   SelectCohortField,
   SelectGenderField,
@@ -43,7 +41,7 @@ import {
   updateStudent,
 } from "./utils";
 
-import { AlertCircleIcon } from "lucide-react";
+// import { AlertCircleIcon } from "lucide-react";
 import { StudentDTO } from "@/app/api/services/types/dto.types";
 import { StudentProfileViewModel } from "@/client-actions/queries/student-queries";
 
@@ -116,7 +114,7 @@ function StudentDetailsForm({
           payment: { id: number; payment_status: string };
         };
 
-        console.log(res.data);
+        // console.log(res.data);
 
         // for initial payment, the invoice will be downloaded automatically
         if (payment && payment.payment_status === "PAID") {
@@ -221,7 +219,7 @@ function StudentDetailsForm({
                 />
               </div>
 
-              {!updateEnabled && (
+              {/* {!updateEnabled && (
                 <FormSection title="Payment">
                   <p className="text-red-500 flex items-start">
                     <AlertCircleIcon className="w-5 h-5 inline-block mr-2 mt-[2px]" />
@@ -230,7 +228,7 @@ function StudentDetailsForm({
                   </p>
                   <PaymentOnEnroll ref={paymentOnEnrollRef} />
                 </FormSection>
-              )}
+              )} */}
 
               {!hiddenFields.includes("user") && (
                 <UserFields update={!!studentId} hiddenFields={hiddenFields} />

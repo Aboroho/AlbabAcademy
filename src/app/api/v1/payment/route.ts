@@ -9,6 +9,37 @@ import { parseJSONData } from "../../utils/parseIncomingData";
 import { prismaQ } from "../../utils/prisma";
 
 // update payment status
+export const POST = withMiddleware(
+  authenticate,
+  authorizeAdmin,
+  async (req) => {
+    const { payment_request_entry_id, amount } = await parseJSONData(req);
+
+    if (!payment_request_entry_id)
+      throw new APIError("No payment_request_entry_id provide", 400);
+    if (!amount) throw new APIError("Amount is required");
+
+    const paymentRequestEntry = await prismaQ.paymentRequestEntry.findUnique({
+      where: {
+        id: payment_request_entry_id,
+      },
+    });
+
+    if (!paymentRequestEntry) throw new APIError("No entry found!!");
+
+    const payment = await prismaQ.payment.create({
+      data: {
+        amount: amount,
+        payment_request_entry_id,
+        status: "PAID",
+        user_id: paymentRequestEntry.user_id as number,
+      },
+    });
+
+    return apiResponse({ data: payment });
+  }
+);
+
 export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
   const { payment_id, payment_action } = await parseJSONData(req);
 

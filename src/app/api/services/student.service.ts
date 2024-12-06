@@ -313,47 +313,14 @@ export class StudentService implements IStudentService {
       skip,
     } = this.getStudentPrismaFilter(studentQueryFilter);
 
-    console.log(JSON.stringify(studentWhereInput));
     const paymentWhereInput: Prisma.PaymentWhereInput = {
       user: {
         student: studentWhereInput,
       },
-      payment_request: {
-        payment_target_type: {
-          in: ["STUDENT", "COHORT", "SECTION", "GRADE"],
-        },
-      },
-    };
-
-    const paymentSelectInput = {
-      createdAt: true,
-      updatedAt: true,
-      id: true,
-      status: true,
-      paymentMethod: true,
-
-      user: {
-        select: {
-          student: {
-            select: this.studentDefaultSelectOptions,
-          },
-        },
-      },
-      payment_request: {
-        select: {
-          id: true,
-          title: true,
-          forMonth: true,
-          forYear: true,
-          payment_template: {
-            select: {
-              template_fields: {
-                select: {
-                  amount: true,
-                  description: true,
-                },
-              },
-            },
+      payment_request_entry: {
+        payment_request: {
+          payment_target_type: {
+            in: ["STUDENT", "COHORT", "SECTION", "GRADE"],
           },
         },
       },
@@ -361,7 +328,27 @@ export class StudentService implements IStudentService {
 
     const [payments, count] = await prismaQ.$transaction([
       prismaQ.payment.findMany({
-        select: paymentSelectInput,
+        select: {
+          createdAt: true,
+          updatedAt: true,
+          id: true,
+          status: true,
+          paymentMethod: true,
+          amount: true,
+          user: {
+            select: {
+              student: {
+                select: this.studentDefaultSelectOptions,
+              },
+            },
+          },
+          payment_request_entry: {
+            select: {
+              payment_details: true,
+              payment_request: true,
+            },
+          },
+        },
         where: paymentWhereInput,
         take,
         skip,
@@ -379,20 +366,16 @@ export class StudentService implements IStudentService {
           update_at: payment.updatedAt.toString(),
           payment_method: payment.paymentMethod,
           payment_status: payment.status,
-          amount:
-            payment.payment_request.payment_template.template_fields.reduce(
-              (acc, field) => acc + field.amount,
-              0
-            ),
+          amount: payment.amount,
 
           student: this.studentDefaultDataToDTO(payment.user.student),
-          payment_fields:
-            payment.payment_request.payment_template.template_fields,
+          payment_fields: payment.payment_request_entry
+            ?.payment_details as Array<{ details: string; amount: number }>,
           payment_request: {
-            id: payment.payment_request.id,
-            title: payment.payment_request.title,
-            forMonth: payment.payment_request.forMonth,
-            forYear: payment.payment_request.forYear,
+            id: payment.payment_request_entry?.payment_request.id,
+            title: payment.payment_request_entry?.payment_request.title,
+            forMonth: payment.payment_request_entry?.payment_request.forMonth,
+            forYear: payment.payment_request_entry?.payment_request.forYear,
           },
         };
       }
@@ -485,10 +468,7 @@ export class StudentService implements IStudentService {
       });
 
       // initial payment
-      console.log(
-        parsedStudent.payment_template_id,
-        parsedStudent.payment_status
-      );
+
       if (parsedStudent.payment_template_id && parsedStudent.payment_status) {
         const paymentRequest = await prismaQ.paymentRequest.create({
           select: {

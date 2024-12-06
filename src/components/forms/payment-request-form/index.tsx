@@ -7,7 +7,12 @@ import {
   paymentRequestCreateSchema,
   paymentRequestUpdateSchema,
 } from "./schema";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FormSection,
@@ -33,6 +38,8 @@ import { IPaymentRequestResponse } from "@/types/response_types";
 import { useMutation } from "@tanstack/react-query";
 
 import { createPaymentRequest, updatePaymentRequest } from "./utils";
+import { PlusIcon } from "lucide-react";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 type FormData = IPaymentRequestCreateFormData;
 function PaymentRequestForm({
@@ -56,12 +63,29 @@ function PaymentRequestForm({
       payment_targets: [],
       payment_template_id: Infinity,
       title: "",
+      payment_details: [],
+      stipend: 0,
     },
   });
   const errors = form.formState.errors;
   const reset = form.reset;
   const paymentTemplateId = form.watch("payment_template_id");
   const { data: paymentTemplates } = useGetPaymentTemplates();
+
+  const { prepend, fields, remove } = useFieldArray({
+    control: form.control,
+    name: "payment_details",
+  });
+
+  useEffect(() => {
+    const paymentTemplate = paymentTemplates?.find(
+      (template) => template.id === paymentTemplateId
+    );
+    if (!paymentTemplate) return;
+    paymentTemplate.template_fields.map((fields) => {
+      prepend({ details: fields.description, amount: fields.amount });
+    });
+  }, [paymentTemplateId, paymentTemplates, prepend]);
 
   useEffect(() => {
     if (isNotEmpty(paymentRequest) && paymentRequest) {
@@ -88,6 +112,7 @@ function PaymentRequestForm({
   });
 
   async function onSubmit(data: FormData) {
+    console.log(data);
     let res: ApiResponse | undefined;
     if (updateEnabled) {
       res = await updateMutation.mutateAsync(data);
@@ -98,6 +123,21 @@ function PaymentRequestForm({
     }
 
     if (res && !res.success) return resolveFormError<FormData>(res, form);
+  }
+
+  const totalAmount = form
+    .watch("payment_details")
+    ?.reduce((sum, cur) => sum + cur.amount, 0);
+
+  const stipend = form.watch("stipend");
+  const payableAmount = Math.max(0, totalAmount - stipend);
+
+  if (stipend > payableAmount && !form.formState.errors.stipend) {
+    form.setError(
+      "stipend",
+      { message: "Stipend must be less than or equal to the total amount" },
+      { shouldFocus: true }
+    );
   }
 
   if (isLoading) return renderFormSkeleton();
@@ -182,6 +222,76 @@ function PaymentRequestForm({
                   error={errors.payment_template_id}
                 />
               )}
+            />
+          )}
+
+          {!updateEnabled && (
+            <FormSection title="Payment Fields">
+              <Button
+                size="sm"
+                onClick={() => prepend({ details: "", amount: 0 })}
+                className="mb-4 bg-green-600 hover:bg-green-700"
+              >
+                <PlusIcon className="w-3 h-3" />
+                Add New Field
+              </Button>
+
+              {fields.map((field, index) => (
+                <div
+                  className="flex gap-2 flex-nowrap items-start"
+                  key={field.id}
+                >
+                  <InputField
+                    label="Description"
+                    {...form.register(`payment_details.${index}.details`)}
+                    error={errors.payment_details?.[index]?.details}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        form.setFocus(`payment_details.${index}.amount`);
+                      }
+                    }}
+                  />
+                  <InputField
+                    type="number"
+                    error={errors.payment_details?.[index]?.amount}
+                    label="Amount"
+                    {...form.register(`payment_details.${index}.amount`, {
+                      valueAsNumber: true,
+                    })}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        prepend({ details: "", amount: 0 });
+                      }
+                    }}
+                    rightIcon={
+                      <Cross1Icon
+                        className="w-4 h-4 text-red-500 cursor-pointer"
+                        onClick={() => remove(index)}
+                      />
+                    }
+                  />
+                </div>
+              ))}
+
+              <div className="text-right font-bold">
+                Total Amount: {totalAmount} ৳
+              </div>
+              <div className="text-right font-bold">
+                Stipend: {stipend || 0} ৳
+              </div>
+              <div className="text-right font-bold">
+                Payable amount: {payableAmount} ৳
+              </div>
+            </FormSection>
+          )}
+
+          {!updateEnabled && (
+            <InputField
+              {...form.register("stipend")}
+              label="Stipend (Taka)"
+              error={errors.stipend}
             />
           )}
 

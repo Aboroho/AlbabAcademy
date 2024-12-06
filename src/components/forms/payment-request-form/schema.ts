@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { z_notInfRefine } from "../form-utils";
 
 export const PaymentTargetTypes = z.enum(
   ["STUDENT", "TEACHER", "GRADE", "SECTION", "COHORT"],
@@ -25,7 +24,15 @@ export const paymentRequestCreateSchema = z.object({
   forYear: z.string().optional().nullable(),
   payment_template_id: z
     .number({ message: "Payment template required" })
-    .refine(...z_notInfRefine("Template Id")),
+    .optional()
+    .nullable(),
+  payment_details: z.array(
+    z.object({
+      details: z.string().min(1, "Details Required"),
+      amount: z.number(),
+    })
+  ),
+  stipend: z.number().default(0),
   payment_target_type: PaymentTargetTypes,
   payment_targets: z.array(z.number()).min(1, "Target is required"),
 });
