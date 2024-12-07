@@ -135,12 +135,18 @@ function PaymentRequestForm({
   if (stipend > payableAmount && !form.formState.errors.stipend) {
     form.setError(
       "stipend",
-      { message: "Stipend must be less than or equal to the total amount" },
+      {
+        message: "Stipend must be less than or equal to the total amount",
+        type: "custom",
+      },
       { shouldFocus: true }
     );
   }
 
-  if (stipend <= payableAmount && form.formState.errors.stipend) {
+  if (
+    stipend <= payableAmount &&
+    form.formState.errors.stipend?.type === "custom"
+  ) {
     form.clearErrors("stipend");
   }
 
@@ -292,10 +298,20 @@ function PaymentRequestForm({
           )}
 
           {!updateEnabled && (
-            <InputField
-              {...form.register("stipend")}
-              label="Stipend (Taka)"
-              error={errors.stipend}
+            <Controller
+              control={form.control}
+              name="stipend"
+              render={({ field }) => (
+                <InputField
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(parseInt(e.target.value));
+                  }}
+                  label="Stipend (Taka)"
+                  error={errors.stipend}
+                  type="number"
+                />
+              )}
             />
           )}
 

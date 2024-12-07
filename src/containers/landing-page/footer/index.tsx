@@ -8,8 +8,8 @@ import LogoDesktop from "@/assets/images/logo_desktop.png";
 function Footer() {
   return (
     <footer className=" border-t bg-primary text-slate-100  -z-20" id="footer">
-      <div className="relative">
-        <div className=" z-20">
+      <div className=" hero-pattern">
+        <div className="relative z-20">
           <div className="container">
             <div className="footer-top pt-[5rem] pb-[3rem]">
               <div className="space-y-5 pb-5 border-b border-slate-50/50">

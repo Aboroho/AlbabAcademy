@@ -48,7 +48,7 @@ export const topNavLinks: Navlink[] = [
   },
   {
     label: "Contact",
-    path: "#footer",
+    path: "/contact",
     activePrefix: "/contact",
     icon: <PhoneOutgoing className="w-4 h-4" />,
   },

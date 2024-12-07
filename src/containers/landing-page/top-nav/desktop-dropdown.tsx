@@ -76,6 +76,11 @@ function DesktopDropDown({ link }: Props) {
     );
   }
 
+  const activePath =
+    link.activePrefix === link.path
+      ? pathName === link.path
+      : pathName.startsWith(link.activePrefix ?? "");
+
   return (
     <Popover onOpenChange={handleOpen} open={open}>
       <PopoverTrigger asChild>
@@ -85,8 +90,7 @@ function DesktopDropDown({ link }: Props) {
           variant="link"
           size="link"
           className={cn(
-            pathName.startsWith(link.activePrefix ?? "") ||
-              (open && " bg-primary text-primary-foreground")
+            activePath || (open && " bg-primary text-primary-foreground")
           )}
         >
           {link.icon} {link.label}
