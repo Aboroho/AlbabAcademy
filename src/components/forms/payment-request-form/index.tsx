@@ -140,6 +140,10 @@ function PaymentRequestForm({
     );
   }
 
+  if (stipend <= payableAmount && form.formState.errors.stipend) {
+    form.clearErrors("stipend");
+  }
+
   if (isLoading) return renderFormSkeleton();
   if (updateEnabled && (isEmpty(paymentRequestId) || isEmpty(paymentRequest)))
     return noRecordFoundFallback();

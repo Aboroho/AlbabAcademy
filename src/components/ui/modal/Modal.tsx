@@ -41,7 +41,6 @@ export const Modal = forwardRef<ModalRefType, Props>(function Modal(
       },
     };
   });
-  console.log("redered");
   return (
     <Dialog onOpenChange={() => setOpen(!open)} open={open}>
       <DialogTrigger asChild ref={triggerRef}>

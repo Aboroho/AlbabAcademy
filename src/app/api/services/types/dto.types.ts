@@ -126,3 +126,8 @@ export type PaymentRequestEntryDTO = Omit<
     };
   };
 };
+
+export type PaymentRequestEntryListDTO = {
+  count: number;
+  entries: PaymentRequestEntryDTO[];
+};

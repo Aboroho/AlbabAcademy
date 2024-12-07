@@ -9,7 +9,7 @@ import {
 import {
   PaymentDetailsDTO,
   PaymentDTO,
-  PaymentRequestEntryDTO,
+  PaymentRequestEntryListDTO,
   StudentPaymentListDTO,
 } from "@/app/api/services/types/dto.types";
 import { useEffect, useState } from "react";
@@ -55,7 +55,8 @@ export const useGetPaymentTemplateById = (
   return query;
 };
 
-export type PaymentRequestEntryViewModel = PaymentRequestEntryDTO;
+export type PaymentRequestEntryListViewModel = PaymentRequestEntryListDTO;
+
 export const useGetPaymentRequestEntry = (
   queryOptions?: CustomQueryOptions,
   filter?: {
@@ -76,7 +77,7 @@ export const useGetPaymentRequestEntry = (
         method: "get",
       });
       if (res?.success) {
-        return res.data as PaymentRequestEntryViewModel[];
+        return res.data as PaymentRequestEntryListViewModel;
       }
     },
     ...DEFAULT_QUERY_FILTER,

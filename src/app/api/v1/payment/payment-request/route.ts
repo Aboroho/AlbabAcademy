@@ -108,33 +108,37 @@ export const GET = withMiddleware(async (req) => {
   const page = parseInt(searchParams.get("page") || "") || 1;
   const pageSize = parseInt(searchParams.get("pageSize") || "") || 50;
 
-  const paymentRequestList = await prismaQ.paymentRequestEntry.findMany({
-    include: {
-      payment_request: true,
-      payments: true,
-      user: {
-        select: {
-          username: true,
-          id: true,
-          phone: true,
-          email: true,
-          ...(target === "student"
-            ? {
-                student: {
-                  select: {
-                    student_id: true,
-                    id: true,
-                    roll: true,
-                    full_name: true,
-                    cohort: {
-                      select: {
-                        name: true,
-                        section: {
-                          select: {
-                            name: true,
-                            grade: {
-                              select: {
-                                name: true,
+  const [paymentRequestList, count] = await prismaQ.$transaction([
+    prismaQ.paymentRequestEntry.findMany({
+      include: {
+        payment_request: true,
+        payments: true,
+
+        user: {
+          select: {
+            // _count : true,
+            username: true,
+            id: true,
+            phone: true,
+            email: true,
+            ...(target === "student"
+              ? {
+                  student: {
+                    select: {
+                      student_id: true,
+                      id: true,
+                      roll: true,
+                      full_name: true,
+                      cohort: {
+                        select: {
+                          name: true,
+                          section: {
+                            select: {
+                              name: true,
+                              grade: {
+                                select: {
+                                  name: true,
+                                },
                               },
                             },
                           },
@@ -142,31 +146,40 @@ export const GET = withMiddleware(async (req) => {
                       },
                     },
                   },
-                },
-              }
-            : {
-                teachers: {
-                  select: {
-                    full_name: true,
-                    id: true,
-                    designation: true,
+                }
+              : {
+                  teachers: {
+                    select: {
+                      full_name: true,
+                      id: true,
+                      designation: true,
+                    },
                   },
-                },
-              }),
+                }),
+          },
         },
       },
-    },
 
-    where: {
-      ...(target && {
-        user: {
-          role: target.toUpperCase() as Role,
-        },
-      }),
-    },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
+      where: {
+        ...(target && {
+          user: {
+            role: target.toUpperCase() as Role,
+          },
+        }),
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prismaQ.paymentRequestEntry.count({
+      where: {
+        ...(target && {
+          user: {
+            role: target.toUpperCase() as Role,
+          },
+        }),
+      },
+    }),
+  ]);
 
-  return apiResponse({ data: paymentRequestList });
+  return apiResponse({ data: { count, entries: paymentRequestList } });
 });
