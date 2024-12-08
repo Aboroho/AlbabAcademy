@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef } from "react";
 
 type Props = {
   trigger?: string | React.ReactNode;
@@ -25,24 +25,21 @@ export const Modal = forwardRef<ModalRefType, Props>(function Modal(
   { trigger, children, title, description, className }: Props,
   ref
 ) {
-  const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+
   useImperativeHandle(ref, () => {
     return {
       trigger: () => {
-        // triggerRef.current?.click();
-        setOpen(true);
+        triggerRef.current?.click();
       },
       close: () => {
-        // closeRef.current?.click();
-        console.log("close", closeRef.current);
-        setOpen(false);
+        closeRef.current?.click();
       },
     };
   });
   return (
-    <Dialog onOpenChange={() => setOpen(!open)} open={open}>
+    <Dialog /*onOpenChange={() => setOpen(!open)} open={open}*/>
       <DialogTrigger asChild ref={triggerRef}>
         {trigger}
       </DialogTrigger>
@@ -59,7 +56,7 @@ export const Modal = forwardRef<ModalRefType, Props>(function Modal(
 
         {children}
 
-        <DialogClose ref={closeRef}></DialogClose>
+        <DialogClose ref={closeRef}>close</DialogClose>
       </DialogContent>
     </Dialog>
   );

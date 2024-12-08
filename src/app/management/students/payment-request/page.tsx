@@ -8,26 +8,27 @@ import {
 import { Button } from "@/components/button";
 import { Accordion } from "@/components/shadcn/ui/accordion";
 import { Badge } from "@/components/shadcn/ui/badge";
-import InputField from "@/components/ui/input-field";
-import { Modal, ModalRefType } from "@/components/ui/modal/Modal";
+
 import { cn, formatDate } from "@/lib/utils";
 import { Payment } from "@prisma/client";
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@radix-ui/react-accordion";
+} from "@/components/shadcn/ui/accordion";
 import { pdf } from "@react-pdf/renderer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash";
 import { DownloadIcon } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { saveAs } from "file-saver";
 import StudentInvoice from "@/components/invoice/student-invoice";
 import { PaginationWithLinks } from "@/components/ui/pagination-with-links";
 import { useSearchParams } from "next/navigation";
 import { Skeleton } from "@/components/shadcn/ui/skeleton";
+
+import PaymentModal from "./payment-modal";
 
 function renderSkeleton() {
   const textPlaceHolder = <Skeleton className="w-[100px] h-4 inline-block" />;
@@ -60,7 +61,6 @@ function renderSkeleton() {
 type Props = {};
 
 function StudentPaymentRequest({}: Props) {
-  const [paymentAmount, setPaymentAmount] = useState(0);
   const [lastModifiedPaymentRequestId, setLastModifiedPaymentRequestId] =
     useState<number>();
   const [lastModifiedPaymentId, setLastModifiedPaymedId] = useState<number>();
@@ -72,8 +72,6 @@ function StudentPaymentRequest({}: Props) {
     { target: "student", page, pageSize }
   );
   const { count, entries: paymentRequestEntries } = data || {};
-
-  const paymentModalRef = useRef<ModalRefType>(null);
 
   const queryClient = useQueryClient();
 
@@ -107,11 +105,15 @@ function StudentPaymentRequest({}: Props) {
         ["payment-requests-entry", "student", page, pageSize],
         (oldPaymentEntries?: PaymentRequestEntryListViewModel) => {
           if (isEmpty(oldPaymentEntries)) return;
-          return oldPaymentEntries?.entries?.map((entries) => {
+          const entries = oldPaymentEntries?.entries?.map((entries) => {
             if (entries.id === payment.payment_request_entry_id)
               entries.payments.push(payment);
             return entries;
           });
+          return {
+            count: oldPaymentEntries.count,
+            entries,
+          };
         }
       );
     },
@@ -150,19 +152,21 @@ function StudentPaymentRequest({}: Props) {
     saveAs(blob, fileName);
   }
 
-  async function handlePayment(payment_request_entry_id: number) {
+  async function handlePayment(
+    amount: number,
+    payment_request_entry_id: number
+  ) {
     toast.loading("Payment processing...", { id: "payment" });
     try {
       await paymentMutation.mutateAsync({
         payment_request_entry_id,
-        amount: paymentAmount,
+        amount,
       });
       toast.success("Payment successfull");
     } catch (err: any) {
       toast.error(err.message);
     } finally {
       toast.dismiss("payment");
-      paymentModalRef.current?.close();
     }
   }
 
@@ -210,7 +214,7 @@ function StudentPaymentRequest({}: Props) {
                       "bg-slate-200 border-2 border-yellow-500"
                   )}
                 >
-                  <AccordionTrigger asChild={true}>
+                  <AccordionTrigger>
                     <div
                       key={pr.id}
                       className="grid grid-cols-11 py-4 pr-2 hover:bg-slate-200 cursor-pointer rounded-md text-center border-b border-gray-300"
@@ -244,49 +248,13 @@ function StudentPaymentRequest({}: Props) {
                         onClick={(e) => e.stopPropagation()}
                         className="flex gap-1 justify-center"
                       >
-                        <Modal
-                          ref={paymentModalRef}
-                          title="Payment"
+                        <PaymentModal
+                          due={due}
+                          paymentReqId={pr.id}
                           description={`Payment for ${pr.user.student?.full_name}, [${pr.user.student?.cohort.section.grade.name}]`}
-                          trigger={
-                            <Button
-                              size="sm"
-                              disabled={due === 0}
-                              className="bg-green-600 mr-2 hover:bg-green-700 "
-                            >
-                              Pay Now
-                            </Button>
-                          }
-                        >
-                          <div>
-                            Total payable amount is
-                            <span className="font-bold "> {due}</span> ৳
-                          </div>
-                          <InputField
-                            label="Amount"
-                            type="number"
-                            placeholder="Enter amount"
-                            value={paymentAmount}
-                            onChange={(e) =>
-                              setPaymentAmount(
-                                Math.min(parseInt(e.target.value), due)
-                              )
-                            }
-                          />
-                          {paymentAmount <= 0 && (
-                            <div className="text-red-500">Invalide amount</div>
-                          )}
-                          <Button
-                            size="sm"
-                            className="bg-green-600 hover:bg-green-700"
-                            onClick={() => handlePayment(pr.id)}
-                            disabled={
-                              paymentAmount <= 0 || paymentMutation.isPending
-                            }
-                          >
-                            Pay Now
-                          </Button>
-                        </Modal>
+                          disabled={paymentMutation.isPending}
+                          handlePayment={handlePayment}
+                        />
 
                         <Button
                           size="sm"
