@@ -29,7 +29,7 @@ export default function LoginComponent() {
       {!isLoading && (
         <>
           {!isLogedIn && (
-            <Link href="/login">
+            <Link href="/pre-login">
               <Button
                 variant="link"
                 size="link"

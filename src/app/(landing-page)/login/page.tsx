@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 const loginSchema = z.object({
@@ -18,6 +18,8 @@ const loginSchema = z.object({
 function Login() {
   const [serverError, setServerError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
 
   const router = useRouter();
 
@@ -56,6 +58,7 @@ function Login() {
   return (
     <div className="w-full max-h-screen min-h-[50vh]  flex justify-center items-center ">
       <div className="p-4 w-[360px] md:w-[540px] max-h-fit ">
+        <h1 className="text-2xl mb-8">{mode?.toUpperCase()} </h1>
         {serverError && (
           <div className="serverError bg-red-200 text-red-800 p-4 rounded-md mb-6">
             {serverError}
