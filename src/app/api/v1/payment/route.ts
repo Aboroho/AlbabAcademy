@@ -69,3 +69,8 @@ export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
 
   throw new APIError("Unknow action provide, must be `PAY` or `FAIL`", 400);
 });
+
+export const GET = withMiddleware(authenticate, authorizeAdmin, () => {
+  // const searchParams = Object.fromEntries(new URL(req.nextUrl).searchParams);
+  // const startDate = searchParams['start']
+});
