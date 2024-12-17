@@ -178,10 +178,15 @@ export const AddressFields = ({ title }: { title?: string }) => {
     <FormSection title={title || "Address"}>
       <InputField
         error={errors.address?.district}
+        label="Full Address"
+        {...form.register("address.fullAddress")}
+      />
+      {/* <InputField
+        error={errors.address?.district}
         label="District"
         {...form.register("address.district")}
-      />
-      <InputField
+      /> */}
+      {/* <InputField
         error={errors.address?.sub_district}
         label="Sub District"
         {...form.register("address.sub_district")}
@@ -195,7 +200,7 @@ export const AddressFields = ({ title }: { title?: string }) => {
         error={errors.address?.village}
         label="Village"
         {...form.register("address.village")}
-      />
+      /> */}
     </FormSection>
   );
 };
@@ -685,6 +690,7 @@ export const PaymentOnEnroll = forwardRef<PaymentOnEnrollRefType>(({}, ref) => {
       studentCohort: details.cohort,
       studentID: details.studentId,
       paymentId: details.paymentId,
+      stipend: 0,
     };
     try {
       const blob = await pdf(

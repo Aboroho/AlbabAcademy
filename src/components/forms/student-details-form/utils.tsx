@@ -70,6 +70,7 @@ export function getStudentDefaultCreateFormData(): IStudentCreateFormData {
       sub_district: null,
       union: null,
       village: null,
+      fullAddress: null,
     },
   };
   return res;
@@ -83,7 +84,7 @@ export function getStudentDefaultUpdateFormData(
   const data: IStudentUpdateFormData = {
     ...omitFields(student, ["grade", "section", "cohort"]),
     user: omitFields(student.user, ["createdAt", "role", "id"]),
-    address: {},
+    address: student.address,
     gender: student.gender,
     cohort_id: student.cohort.id,
     student_id: student.student_id,

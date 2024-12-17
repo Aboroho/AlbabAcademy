@@ -114,6 +114,7 @@ function StudentPaymentList() {
         : "");
     const invoice = (
       <StudentInvoice
+        stipend={payment.payment_request?.stipend || 0}
         fees={payment.payment_fields}
         mobile={payment.student.user.phone}
         name={payment.student.full_name}

@@ -347,6 +347,7 @@ export class StudentService implements IStudentService {
             select: {
               payment_details: true,
               payment_request: true,
+              stipend: true,
             },
           },
         },
@@ -377,6 +378,7 @@ export class StudentService implements IStudentService {
             title: payment.payment_request_entry?.payment_request.title,
             forMonth: payment.payment_request_entry?.payment_request.forMonth,
             forYear: payment.payment_request_entry?.payment_request.forYear,
+            stipend: payment.payment_request_entry?.stipend,
           },
         };
       }

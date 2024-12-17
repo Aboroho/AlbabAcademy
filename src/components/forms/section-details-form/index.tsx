@@ -105,6 +105,11 @@ function SectionDetailsForm({
   if (isLoading) return renderFormSkeleton();
   if (updateEnabled && (isEmpty(sectionId) || isEmpty(section)))
     return noRecordFoundFallback();
+
+  const disableForm =
+    !form.formState.isDirty ||
+    form.formState.isSubmitting ||
+    form.formState.isLoading;
   return (
     <div>
       {/* Form Title section */}
@@ -121,7 +126,7 @@ function SectionDetailsForm({
         </div>
       )}
       <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-1/2">
           <FormSection title="Section Details">
             <InputField
               label="Section Name"
@@ -170,11 +175,13 @@ function SectionDetailsForm({
             />
           </FormSection>
 
-          <div>
+          <div className="mt-4">
             {renderButton ? (
-              renderButton(form.formState.isSubmitting)
+              renderButton(disableForm)
             ) : (
-              <Button type="submit">Submit Section Info</Button>
+              <Button type="submit" disabled={disableForm}>
+                Submit Section Info
+              </Button>
             )}
           </div>
         </form>

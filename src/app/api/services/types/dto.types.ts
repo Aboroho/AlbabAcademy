@@ -71,6 +71,7 @@ export type PaymentDTO = {
     forYear?: string | null;
     title?: string;
     id?: number;
+    stipend?: number;
   };
 };
 

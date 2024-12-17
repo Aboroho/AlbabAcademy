@@ -85,7 +85,10 @@ function GradeDetailsForm({
   if (isLoading) return renderFormSkeleton();
   if (updateEnabled && (isEmpty(gradeId) || isEmpty(grade)))
     return noRecordFoundFallback();
-
+  const disableForm =
+    !form.formState.isDirty ||
+    form.formState.isSubmitting ||
+    form.formState.isLoading;
   return (
     <div>
       {/* Form Title section */}
@@ -101,15 +104,17 @@ function GradeDetailsForm({
           {showErrors(errors as { [key: string]: { message: string } })}
         </div>
       )}
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-1/2">
         <FormSection>
           <InputField label="Grade Name" {...form.register("name")} />
         </FormSection>
-        <div>
+        <div className="mt-4">
           {renderButton ? (
-            renderButton(form.formState.isSubmitting)
+            renderButton(disableForm)
           ) : (
-            <Button type="submit">Submit Grade Info</Button>
+            <Button type="submit" disabled={disableForm}>
+              Submit Grade Info
+            </Button>
           )}
         </div>
       </form>

@@ -101,6 +101,10 @@ function CohortDetailsFrom({
   if (updateEnabled && (isEmpty(cohortId) || isEmpty(cohort)))
     return noRecordFoundFallback();
 
+  const disableForm =
+    !form.formState.isDirty ||
+    form.formState.isSubmitting ||
+    form.formState.isLoading;
   return (
     <div>
       {/* Form Title section */}
@@ -116,7 +120,7 @@ function CohortDetailsFrom({
           {showErrors(errors as { [key: string]: { message: string } })}
         </div>
       )}
-      <div className="lg:max-w-1/2">
+      <div className="lg:w-1/2">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormSection>
@@ -132,11 +136,13 @@ function CohortDetailsFrom({
                 {...form.register("description")}
               />
             </FormSection>
-            <div>
+            <div className="mt-4">
               {renderButton ? (
-                renderButton(form.formState.isSubmitting)
+                renderButton(disableForm)
               ) : (
-                <Button type="submit">Submit Cohort Info</Button>
+                <Button type="submit" disabled={disableForm}>
+                  Submit Cohort Info
+                </Button>
               )}
             </div>
           </form>

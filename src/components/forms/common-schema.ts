@@ -16,6 +16,11 @@ export const PaymentStatus = z.enum(["PROCESSING", "PAID", "FAILED"], {
 });
 
 export const addressCreateSchema = z.object({
+  fullAddress: z
+    .string()
+    .max(512, { message: "Full address must be 255 characters or less" })
+    .optional()
+    .nullable(),
   district: z
     .string()
     .max(15, { message: "District must be 15 characters or less" })

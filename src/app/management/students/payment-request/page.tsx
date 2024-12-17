@@ -130,6 +130,7 @@ function StudentPaymentRequest({}: Props) {
         : "");
     const invoice = (
       <StudentInvoice
+        stipend={paymentRequest.stipend}
         fees={paymentRequest.payment_details}
         mobile={paymentRequest.user.phone}
         name={paymentRequest.user.student?.full_name || ""}
@@ -179,12 +180,12 @@ function StudentPaymentRequest({}: Props) {
             <div>Group</div>
             <div>Roll</div>
             <div>Payment Request</div>
-            <div>Amount to pay</div>
+            <div>Amount to Pay</div>
             <div>Stipend</div>
-            <div>Paid amount</div>
-            <div>Payment due</div>
+            <div>Paid Amount</div>
+            <div>Payment Due</div>
             <div>Issue Date</div>
-            <div>Payment status</div>
+            <div>Payment Status</div>
             <div>Action</div>
           </div>
 

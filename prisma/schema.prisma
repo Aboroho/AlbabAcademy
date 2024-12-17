@@ -119,6 +119,7 @@ enum PermissionStatus {
 
 model Address {
   id           Int    @id @default(autoincrement())
+  fullAddress  String? @db.VarChar(512)
   district     String? @db.VarChar(32)
   sub_district String? @db.VarChar(32)
   union        String? @db.VarChar(32)

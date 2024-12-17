@@ -123,6 +123,7 @@ type Props = {
     amount: number;
     date: Date | string;
   }[];
+  stipend: number;
 };
 const StudentInvoice = ({
   invoiceID,
@@ -135,6 +136,7 @@ const StudentInvoice = ({
   mobile,
   fees,
   paymentDetails,
+  stipend = 0,
 }: Props) => {
   const total = fees.reduce((acc, cur) => acc + cur.amount, 0);
   const date = new Date();
@@ -172,12 +174,16 @@ const StudentInvoice = ({
         </View>
 
         {/* Month Info */}
-        <View style={[styles.section, styles.borderBottom]}>
-          <Text>
-            <Text style={styles.schoolInfo}>For Month: </Text>
-            {forDate && <Text style={{ fontSize: 12 }}>{forDate}</Text>}
-          </Text>
-        </View>
+        {forDate && (
+          <View style={[styles.section, styles.borderBottom]}>
+            <Text>
+              <Text>
+                <Text style={styles.schoolInfo}>For Month: </Text>
+                {<Text style={{ fontSize: 12 }}>{forDate}</Text>}
+              </Text>
+            </Text>
+          </View>
+        )}
 
         {/* Student Info */}
         <View style={styles.section}>
@@ -272,10 +278,66 @@ const StudentInvoice = ({
                 borderRight: "0",
               }}
             >
-              Total
+              Sub Total
             </Text>
             <Text style={{ border: "1px solid #000", padding: "4 10" }}>
               {total.toFixed(2)} Taka
+            </Text>
+          </View>
+          {/* {total > 0 && (
+            <Text style={{ fontSize: 10, paddingTop: 6 }}>
+              {numberToWords(total)} Taka Only
+            </Text>
+          )} */}
+        </View>
+        <View style={styles.total}>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              style={{
+                border: "1px solid #000",
+                padding: "4 10",
+                borderRight: "0",
+              }}
+            >
+              Stipend
+            </Text>
+            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
+              {stipend.toFixed(2)} Taka
+            </Text>
+          </View>
+          {/* {total > 0 && (
+            <Text style={{ fontSize: 10, paddingTop: 6 }}>
+              {numberToWords(total)} Taka Only
+            </Text>
+          )} */}
+        </View>
+        <View style={styles.total}>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+
+              flexDirection: "row",
+            }}
+          >
+            <Text
+              style={{
+                border: "1px solid #000",
+                padding: "4 10",
+                borderRight: "0",
+              }}
+            >
+              Payable
+            </Text>
+            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
+              {(total - stipend).toFixed(2)} Taka
             </Text>
           </View>
           {/* {total > 0 && (
