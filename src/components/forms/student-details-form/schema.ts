@@ -55,9 +55,16 @@ export const studentBaseSchema = z.object({
     .max(32, { message: "Mother's name must be 32 characters or fewer" }),
   gender: GenderEnum,
 
-  guardian_phone: z
-    .string()
-    .length(11, { message: "Phone number must be exactly 11 characters" }),
+  guardian_phone: z.preprocess(
+    (phone) => (isEmpty(phone) ? undefined : phone),
+    z
+      .string()
+      .regex(/^\d+$/g, "Invalid phone number")
+      .length(11, { message: "Phone number must be exactly 11 digits" })
+
+      .optional()
+      .nullable()
+  ),
   date_of_birth: z.preprocess(
     (arg) => {
       return typeof arg === "string" || arg instanceof Date

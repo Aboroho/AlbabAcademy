@@ -138,7 +138,7 @@ model User {
   username  String   @unique @db.VarChar(64)
   password  String   @db.VarChar(256)
   role      Role
-  phone     String   @unique @db.VarChar(15)
+  phone     String?   @unique @db.VarChar(15)
   email     String?  @unique @db.VarChar(64)
   avatar    String?  @db.VarChar(512)
 
@@ -191,7 +191,7 @@ model Student {
   full_name           String   @db.VarChar(64)
   father_name         String   @db.VarChar(64)
   mother_name         String   @db.VarChar(64)
-  guardian_phone      String   @db.VarChar(15)
+  guardian_phone      String?   @db.VarChar(15)
   gender              Gender
   date_of_birth       DateTime
   residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)

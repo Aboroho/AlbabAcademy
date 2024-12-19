@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isEmpty } from "./form-utils";
 
 export const RoleEnum = z.enum([
   "STUDENT",
@@ -60,10 +61,16 @@ export const userCreateSchema = z.object({
     .min(3, { message: "Password must be at least 3 characters long" })
     .max(128, { message: "Password cannot be longer than 128 characters" }),
 
-  phone: z
-    .string()
-    .max(14, { message: "Phone number must be exactly 14 characters" })
-    .min(11, { message: "Phone number must be at least 11 characters" }),
+  phone: z.preprocess(
+    (phone) => (isEmpty(phone) ? undefined : phone),
+    z
+      .string()
+      .regex(/^\d+$/g, "Invalid phone number")
+      .length(11, { message: "Phone number must be exactly 11 digits" })
+
+      .optional()
+      .nullable()
+  ),
   email: z.preprocess(
     (email) => email || null,
     z

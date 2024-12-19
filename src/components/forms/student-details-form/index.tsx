@@ -188,12 +188,12 @@ function StudentDetailsForm({
                   error={errors.mother_name}
                 />
                 <InputField
-                  label="Phone"
+                  label="Phone (optional)"
                   {...form.register("user.phone")}
                   error={errors.user?.phone}
                 />
                 <InputField
-                  label="Guardian Phone"
+                  label="Guardian Phone (optional)"
                   {...form.register("guardian_phone")}
                   error={errors.guardian_phone}
                 />

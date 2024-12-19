@@ -14,7 +14,6 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
   ctx: z.RefinementCtx,
   updateId?: number
 ) {
-  console.log(updateId);
   const user = await prismaQ.user.findFirst({
     where: {
       AND: [
@@ -24,13 +23,10 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
               username: data.username,
             },
 
-            {
-              phone: data.phone,
-            },
+            data.phone ? { phone: data.phone } : {},
             data.email ? { email: data.email } : {},
           ],
         },
-        // it will skip the updating record
 
         {
           NOT: { id: updateId },
@@ -39,7 +35,6 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
     },
   });
 
-  console.log(user);
   if (user?.email && user?.email === data.email)
     ctx.addIssue({
       path: ["email"],
