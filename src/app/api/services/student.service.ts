@@ -293,6 +293,11 @@ export class StudentService implements IStudentService {
       prismaQ.student.findMany({
         select: this.studentDefaultSelectOptions,
         ...studentPrismaFilter,
+        orderBy: {
+          user: {
+            createdAt: "desc",
+          },
+        },
       }),
       prismaQ.student.count({ where: studentPrismaFilter.where }),
     ]);
