@@ -14,6 +14,7 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
   ctx: z.RefinementCtx,
   updateId?: number
 ) {
+  console.log(data.phone);
   const user = await prismaQ.user.findFirst({
     where: {
       AND: [
@@ -42,7 +43,7 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
       code: "custom",
     });
 
-  if (user?.phone === data.phone)
+  if (user?.phone && user?.phone === data.phone)
     ctx.addIssue({
       path: ["phone"],
       message: "Phone number exists",
