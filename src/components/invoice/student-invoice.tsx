@@ -112,7 +112,7 @@ type Props = {
   studentCohort: string;
   studentSection: string;
   studentID: string;
-  mobile: string;
+  mobile?: string | null;
   fees: {
     amount: number;
     details: string;
@@ -139,6 +139,9 @@ const StudentInvoice = ({
   stipend = 0,
 }: Props) => {
   const total = fees.reduce((acc, cur) => acc + cur.amount, 0);
+  const paid = paymentDetails?.reduce((sum, cur) => sum + cur.amount, 0) || 0;
+
+  const due = total - paid - stipend;
   const date = new Date();
   const dateToday = monthNames[date.getMonth()] + "," + date.getFullYear();
   return (
@@ -403,10 +406,7 @@ const StudentInvoice = ({
               Due
             </Text>
             <Text style={{ border: "1px solid #000", padding: "4 10" }}>
-              {total -
-                (paymentDetails?.reduce((sum, cur) => sum + cur.amount, 0) ||
-                  0)}{" "}
-              Taka
+              {due} Taka
             </Text>
           </View>
           {/* {total > 0 && (

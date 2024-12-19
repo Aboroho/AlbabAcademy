@@ -645,7 +645,7 @@ export const SelectPaymentTarget = ({
  */
 
 type StudentPaymentInvoiceDetails = {
-  mobile: string;
+  mobile?: string | null;
   name: string;
   grade: string;
   section: string;

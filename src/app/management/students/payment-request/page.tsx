@@ -147,6 +147,8 @@ function StudentPaymentRequest({}: Props) {
       />
     );
 
+    console.log(paymentRequest, paymentRequest.payments);
+
     const fileName = `invoice-${paymentRequest.payment_request?.title}-${paymentRequest.user.student?.student_id}`;
     const blob = await pdf(invoice).toBlob();
 

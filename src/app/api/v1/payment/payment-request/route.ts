@@ -169,6 +169,9 @@ export const GET = withMiddleware(async (req) => {
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
+      orderBy: {
+        createdAt: "desc",
+      },
     }),
     prismaQ.paymentRequestEntry.count({
       where: {
