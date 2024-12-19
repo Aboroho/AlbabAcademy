@@ -43,7 +43,7 @@ export type StudentListDTO = {
 export type StudentProfileDTO = {
   father_name: string;
   mother_name: string;
-  guardian_phone: string;
+  guardian_phone: string | null | undefined;
   date_of_birth: string;
   address: AddressDTO;
   gender: Gender;
