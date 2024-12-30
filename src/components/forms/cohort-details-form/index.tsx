@@ -83,6 +83,7 @@ function CohortDetailsFrom({
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cohorts"] });
+      queryClient.invalidateQueries({ queryKey: ["student-groups", "all"] });
     },
   });
 

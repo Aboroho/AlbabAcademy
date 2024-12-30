@@ -1,9 +1,12 @@
 import { Protected } from "@/components/auth";
+import PaymentSummary from "./payment-summary";
 
 function AdminDashboard() {
   return (
     <Protected redirectPath="/login" roles={["ADMIN"]} action="redirect">
-      <div>AdminDashboard</div>
+      <div className="">
+        <PaymentSummary />
+      </div>
     </Protected>
   );
 }

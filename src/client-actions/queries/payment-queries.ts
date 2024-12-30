@@ -13,6 +13,7 @@ import {
   StudentPaymentListDTO,
 } from "@/app/api/services/types/dto.types";
 import { useEffect, useState } from "react";
+import { Payment } from "@prisma/client";
 
 export const useGetPaymentTemplates = (
   queryOptions?: CustomQueryOptions
@@ -152,4 +153,41 @@ export const useGetStudentPaymentList = (
     ...queryOptions,
   });
   return { ...query, queryKey: ["student-payment", queryKey] };
+};
+
+export const useGetPayments = (
+  queryOptions?: CustomQueryOptions,
+  filter?: {
+    startDate?: Date | string | number;
+    endDate?: Date | string | number;
+  }
+) => {
+  let route = "/payment?";
+
+  if (filter?.startDate) route += `start=${filter.startDate}`;
+  if (filter?.endDate) route += `&end=${filter.endDate}`;
+
+  console.log(filter);
+
+  const query = useQuery({
+    queryKey: ["payments", route],
+    queryFn: async () => {
+      const res = await api(route, {
+        method: "get",
+      });
+      if (res?.success) {
+        const data = res.data as Payment[];
+        return data;
+      }
+    },
+
+    staleTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+
+    refetchOnWindowFocus: false,
+
+    ...queryOptions,
+  });
+
+  return query;
 };

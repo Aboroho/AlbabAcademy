@@ -114,7 +114,9 @@ export const Combobox = React.forwardRef<HTMLButtonElement, Props>(
               {renderSelectedValue()}
               <ChevronsUpDown className="opacity-50" />
             </Button>
-            <div onClick={(e) => e.stopPropagation()}> {rightIcon}</div>
+            {rightIcon && (
+              <div onClick={(e) => e.stopPropagation()}> {rightIcon}</div>
+            )}
           </div>
         </PopoverTrigger>
         <PopoverContent

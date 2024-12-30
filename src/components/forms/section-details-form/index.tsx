@@ -83,10 +83,11 @@ function SectionDetailsForm({
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["sections"] });
+      queryClient.invalidateQueries({ queryKey: ["student-groups", "all"] });
     },
   });
 
-  const { data: teachers } = useGetTeachers({
+  const { data: teachers, isLoading: isTeacherLoading } = useGetTeachers({
     enabled: !(updateEnabled && isEmpty(section)),
   });
   const classTeacherId = form.watch("class_teacher_id");
@@ -141,6 +142,7 @@ function SectionDetailsForm({
               name="class_teacher_id"
               render={({ field }) => (
                 <SelectInput
+                  isLoading={isTeacherLoading}
                   triggerClassName="w-full"
                   label="Select Class Teacher (optional)"
                   onSelect={valueAsIntF(field.onChange)}

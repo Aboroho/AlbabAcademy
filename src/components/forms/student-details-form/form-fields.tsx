@@ -4,8 +4,10 @@ import InputField from "@/components/ui/input-field";
 
 import { Controller, FieldError, useFormContext } from "react-hook-form";
 import { AvatarField } from "../common-fields";
-import DateInput from "@/components/ui/date-input";
+import { DateInput } from "@/components/ui/date-input-2";
 import { isEmpty, valueAsInt } from "../form-utils";
+
+import { cn } from "@/lib/utils";
 
 export const StudentRollField = () => {
   const form = useFormContext();
@@ -44,18 +46,32 @@ export const StudentAvatarField = () => {
 
 export const StudentDateOfBirthField = () => {
   const form = useFormContext();
+  const error = form.formState.errors.date_of_birth;
+
+  const errorLabelClass = error && "text-red-500";
   return (
-    <Controller
-      control={form.control}
-      name="date_of_birth"
-      render={({ field }) => (
-        <DateInput
-          error={form.formState.errors.date_of_birth as FieldError}
-          onDateChange={field.onChange}
-          dateValue={field.value}
-          label="Date of birth"
-        />
+    <div>
+      <div className="label">
+        <label className={cn("font-semibold", errorLabelClass)}>
+          Date of Birth (dd/mm/yyyy)
+        </label>
+      </div>
+      <Controller
+        control={form.control}
+        name="date_of_birth"
+        render={({ field }) => (
+          <DateInput
+            className="p-2"
+            value={field.value}
+            onChange={(date) => {
+              field.onChange(date);
+            }}
+          />
+        )}
+      />
+      {error && typeof error.message === "string" && (
+        <div className="text-red-500 text-sm">{error.message}</div>
       )}
-    />
+    </div>
   );
 };

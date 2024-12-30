@@ -10,7 +10,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 
-import { formatDate, monthNames, numberToWords } from "@/lib/utils";
+import { formatDate, numberToWords } from "@/lib/utils";
 import Logo from "@/assets/images/logo_abstract.png";
 // Styles similar to your Tailwind classes but for react-pdf
 const styles = StyleSheet.create({
@@ -59,7 +59,6 @@ const styles = StyleSheet.create({
   },
   table: {
     width: "100%",
-    borderCollapse: "collapse",
   },
   tableRow: {
     flexDirection: "row",
@@ -142,8 +141,11 @@ const StudentInvoice = ({
   const paid = paymentDetails?.reduce((sum, cur) => sum + cur.amount, 0) || 0;
 
   const due = total - paid - stipend;
-  const date = new Date();
-  const dateToday = monthNames[date.getMonth()] + "," + date.getFullYear();
+  const date = formatDate(new Date(), {
+    includeHour: true,
+    includeMinute: true,
+  });
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -171,7 +173,7 @@ const StudentInvoice = ({
               Payment ID: {invoiceID ?? ""}
             </Text>
             <Text style={{ fontSize: 12, color: "#000" }}>
-              Payment Date: <Text>{dateToday}</Text>
+              Payment Date: <Text>{date}</Text>
             </Text>
           </View>
         </View>
@@ -264,90 +266,40 @@ const StudentInvoice = ({
             ))}
           </View>
         </View>
+
         {/* Total Section */}
-        <View style={styles.total}>
+        <View style={{ width: "50%", marginLeft: "auto", fontSize: 12 }}>
           <View
             style={{
               display: "flex",
-              justifyContent: "flex-end",
-
               flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Text
-              style={{
-                border: "1px solid #000",
-                padding: "4 10",
-                borderRight: "0",
-              }}
-            >
-              Sub Total
-            </Text>
-            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
-              {total.toFixed(2)} Taka
-            </Text>
+            <Text style={{ padding: "4 10" }}>Sub Total</Text>
+            <Text style={{ padding: "4 10" }}>{total} BDT</Text>
           </View>
-          {/* {total > 0 && (
-            <Text style={{ fontSize: 10, paddingTop: 6 }}>
-              {numberToWords(total)} Taka Only
-            </Text>
-          )} */}
-        </View>
-        <View style={styles.total}>
           <View
             style={{
               display: "flex",
-              justifyContent: "flex-end",
-
               flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Text
-              style={{
-                border: "1px solid #000",
-                padding: "4 10",
-                borderRight: "0",
-              }}
-            >
-              Stipend
-            </Text>
-            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
-              {stipend.toFixed(2)} Taka
-            </Text>
+            <Text style={{ padding: "4 10" }}>Stipend</Text>
+            <Text style={{ padding: "4 10" }}>-{stipend} BDT</Text>
           </View>
-          {/* {total > 0 && (
-            <Text style={{ fontSize: 10, paddingTop: 6 }}>
-              {numberToWords(total)} Taka Only
-            </Text>
-          )} */}
-        </View>
-        <View style={styles.total}>
           <View
             style={{
               display: "flex",
-              justifyContent: "flex-end",
-
               flexDirection: "row",
+              justifyContent: "space-between",
+              borderTop: "1px dashed #000",
             }}
           >
-            <Text
-              style={{
-                border: "1px solid #000",
-                padding: "4 10",
-                borderRight: "0",
-              }}
-            >
-              Payable
-            </Text>
-            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
-              {(total - stipend).toFixed(2)} Taka
-            </Text>
+            <Text style={{ padding: "4 10" }}>Payable</Text>
+            <Text style={{ padding: "4 10" }}> {total - stipend} BDT</Text>
           </View>
-          {/* {total > 0 && (
-            <Text style={{ fontSize: 10, paddingTop: 6 }}>
-              {numberToWords(total)} Taka Only
-            </Text>
-          )} */}
         </View>
 
         <View style={[styles.section]}>
@@ -387,42 +339,37 @@ const StudentInvoice = ({
         </View>
 
         {/* Due Section */}
-        <View style={styles.total}>
+        <View style={{ width: "50%", marginLeft: "auto", fontSize: 12 }}>
           <View
             style={{
               display: "flex",
-              justifyContent: "flex-end",
-
               flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <Text
-              style={{
-                border: "1px solid #000",
-                padding: "4 10",
-                borderRight: "0",
-              }}
-            >
-              Due
-            </Text>
-            <Text style={{ border: "1px solid #000", padding: "4 10" }}>
-              {due} Taka
-            </Text>
+            <Text style={{ padding: "4 10" }}>Total Paid</Text>
+            <Text style={{ padding: "4 10", color: "green" }}>{paid} BDT</Text>
           </View>
-          {/* {total > 0 && (
-            <Text style={{ fontSize: 10, paddingTop: 6 }}>
-              {numberToWords(total)} Taka Only
-            </Text>
-          )} */}
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              borderTop: "1px dashed #000",
+            }}
+          >
+            <Text style={{ padding: "4 10" }}>Due</Text>
+            <Text style={{ padding: "4 10", color: "red" }}>{due} BDT</Text>
+          </View>
         </View>
 
         {/* Signature Section */}
         <View style={styles.signatureSection}>
-          <Text style={styles.borderTop}>
-            Depositor&apos;s Signature and Mobile
-          </Text>
-          <Text style={styles.borderTop}>Officer</Text>
-          <Text style={styles.borderTop}>Authorised Officer</Text>
+          <Text style={styles.borderTop}>Chairman</Text>
+          <Text style={styles.borderTop}>Auditor</Text>
+          <Text style={styles.borderTop}>Principal</Text>
+          <Text style={styles.borderTop}>Vice-Principal</Text>
+          <Text style={styles.borderTop}>Accountant</Text>
         </View>
       </Page>
     </Document>

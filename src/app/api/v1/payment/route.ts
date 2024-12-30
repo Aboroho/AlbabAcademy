@@ -70,7 +70,19 @@ export const PUT = withMiddleware(authenticate, authorizeAdmin, async (req) => {
   throw new APIError("Unknow action provide, must be `PAY` or `FAIL`", 400);
 });
 
-export const GET = withMiddleware(authenticate, authorizeAdmin, () => {
-  // const searchParams = Object.fromEntries(new URL(req.nextUrl).searchParams);
-  // const startDate = searchParams['start']
+export const GET = withMiddleware(authenticate, authorizeAdmin, async (req) => {
+  const searchParams = Object.fromEntries(new URL(req.nextUrl).searchParams);
+  const startDate = new Date(searchParams["start"]);
+  const endDate = new Date(searchParams["end"] || new Date());
+
+  const payments = await prismaQ.payment.findMany({
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  });
+
+  return apiResponse({ data: payments });
 });

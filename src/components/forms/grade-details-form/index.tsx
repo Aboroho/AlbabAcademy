@@ -60,6 +60,7 @@ function GradeDetailsForm({
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["grades"] });
+      queryClient.invalidateQueries({ queryKey: ["student-groups", "all"] });
     },
   });
   const createMutation = useMutation({
