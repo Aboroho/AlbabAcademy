@@ -127,12 +127,14 @@ function CohortDetailsFrom({
             <FormSection>
               <InputField
                 label="Cohort Name"
+                placeholder="e.g., Cohort 2021"
                 {...form.register("name")}
                 error={errors.name}
               />
               <SelectGradeField />
               <SelectSectionField />
               <InputField
+                placeholder="Cohort description"
                 label="Description (optional)"
                 {...form.register("description")}
               />

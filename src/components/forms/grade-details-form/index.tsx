@@ -107,7 +107,11 @@ function GradeDetailsForm({
       )}
       <form onSubmit={form.handleSubmit(onSubmit)} className="lg:w-1/2">
         <FormSection>
-          <InputField label="Grade Name" {...form.register("name")} />
+          <InputField
+            label="Grade Name"
+            placeholder="e.g. Grade One"
+            {...form.register("name")}
+          />
         </FormSection>
         <div className="mt-4">
           {renderButton ? (

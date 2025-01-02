@@ -132,6 +132,7 @@ function SectionDetailsForm({
           <FormSection title="Section Details">
             <InputField
               label="Section Name"
+              placeholder="e.g. Seciton A"
               error={form.formState.errors.name}
               {...form.register("name")}
             />

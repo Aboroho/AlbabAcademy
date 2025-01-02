@@ -254,7 +254,8 @@ function PaymentRequestForm({
                   key={field.id}
                 >
                   <InputField
-                    label="Description"
+                    label="Payment Details"
+                    placeholder="e.g. Tuition fee/Transport fee"
                     {...form.register(`payment_details.${index}.details`)}
                     error={errors.payment_details?.[index]?.details}
                     onKeyDown={(e) => {
