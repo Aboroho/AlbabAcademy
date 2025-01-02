@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { Lock, UserIcon } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "username required"),
@@ -66,15 +67,19 @@ function Login() {
         )}
         <form action="" className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <InputField
+            icon={<UserIcon className="w-4 h-4" />}
             label="Username"
             {...register("username")}
             error={errors.username}
+            placeholder="Your username"
           />
           <InputField
-            label="password"
+            icon={<Lock className="w-4 h-4" />}
+            label="Password"
             type="password"
             error={errors.password}
             {...register("password")}
+            placeholder="Your password"
           />
           <Button size="sm" type="submit" disabled={submitting}>
             Log in

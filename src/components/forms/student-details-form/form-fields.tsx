@@ -8,6 +8,7 @@ import { DateInput } from "@/components/ui/date-input-2";
 import { isEmpty, valueAsInt } from "../form-utils";
 
 import { cn } from "@/lib/utils";
+import { Calendar } from "lucide-react";
 
 export const StudentRollField = () => {
   const form = useFormContext();
@@ -51,7 +52,7 @@ export const StudentDateOfBirthField = () => {
   const errorLabelClass = error && "text-red-500";
   return (
     <div>
-      <div className="label">
+      <div className="label mb-2">
         <label className={cn("font-semibold", errorLabelClass)}>
           Date of Birth (dd/mm/yyyy)
         </label>
@@ -61,7 +62,7 @@ export const StudentDateOfBirthField = () => {
         name="date_of_birth"
         render={({ field }) => (
           <DateInput
-            className="p-2"
+            icon={<Calendar className="w-4 h-4" />}
             value={field.value}
             onChange={(date) => {
               field.onChange(date);
@@ -70,7 +71,7 @@ export const StudentDateOfBirthField = () => {
         )}
       />
       {error && typeof error.message === "string" && (
-        <div className="text-red-500 text-sm">{error.message}</div>
+        <div className="text-red-500 text-sm mt-2">{error.message}</div>
       )}
     </div>
   );

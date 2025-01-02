@@ -31,6 +31,7 @@ import {
 } from "./utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ITeacherResponse } from "@/types/response_types";
+import { PhoneIcon, Sparkles } from "lucide-react";
 
 type FormData = ITeacherCreateFormData | ITeacherUpdateFormData;
 
@@ -119,26 +120,33 @@ function TeacherDetailsForm({
               <FormSection title="Personal Details">
                 <InputField
                   label="Teacher's name"
+                  placeholder="e.g., John Doe"
                   {...form.register("full_name")}
                   error={errors.full_name}
                 />
                 <InputField
                   label="Designation"
+                  placeholder="e.g., Lecturer"
                   {...form.register("designation")}
                   error={errors.designation}
                 />
                 <InputField
+                  icon={<PhoneIcon className="w-4 h-4" />}
+                  placeholder="e.g., 017...67890"
                   label="Phone"
                   {...form.register("user.phone")}
                   error={errors.user?.phone}
                 />
                 <InputField
+                  icon={<Sparkles className="w-4 h-4" />}
+                  placeholder="e.g., Mathematics, Physics"
                   label="Subject Expertise (optional)"
                   {...form.register("subject_expertise")}
                   error={errors.subject_expertise}
                 />
                 <InputField
                   label="Short Description (optional)"
+                  placeholder="A brief description of the teacher"
                   {...form.register("description")}
                   error={errors.description}
                 />

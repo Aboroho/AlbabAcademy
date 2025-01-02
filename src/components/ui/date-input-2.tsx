@@ -4,6 +4,7 @@ interface DateInputProps {
   value?: Date;
   onChange: (date: Date) => void;
   className?: string;
+  icon?: JSX.Element;
 }
 
 interface DateParts {
@@ -16,6 +17,7 @@ const DateInput: React.FC<DateInputProps> = ({
   value,
   onChange,
   className,
+  icon,
 }) => {
   const [date, setDate] = React.useState<DateParts>(() => {
     const d = value ? new Date(value) : new Date();
@@ -205,8 +207,13 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div
-      className={`flex border rounded-lg items-center text-sm px-1 ${className}`}
+      className={`flex border rounded-lg items-center text-sm  ${className}`}
     >
+      {icon && (
+        <div className="flex items-center justify-center w-9 h-9 border-r bg-slate-100">
+          {icon}
+        </div>
+      )}
       <input
         type="text"
         ref={dayRef}

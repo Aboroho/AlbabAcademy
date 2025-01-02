@@ -20,7 +20,7 @@ import {
 import InputField from "@/components/ui/input-field";
 
 import { Button } from "@/components/button";
-import { PlusIcon } from "lucide-react";
+import { LayoutTemplate, PlusIcon, ReceiptText } from "lucide-react";
 import { Cross1Icon } from "@radix-ui/react-icons";
 
 import { IPaymentTemplateResponse } from "@/types/response_types";
@@ -129,13 +129,17 @@ function PaymentTemplateDetailsForm({
           <div className="">
             <FormSection title="Payment template info">
               <InputField
+                icon={<LayoutTemplate className="w-4 h-4" />}
+                placeholder="Unique name for the template"
                 {...form.register("name")}
                 label="Template Name"
                 error={errors.name}
               />
               <InputField
                 {...form.register("description")}
+                icon={<ReceiptText className="w-4 h-4" />}
                 label="Template Description (optional)"
+                placeholder="Description of the template"
                 error={errors.description}
               />
             </FormSection>
@@ -157,7 +161,8 @@ function PaymentTemplateDetailsForm({
                   key={field.id}
                 >
                   <InputField
-                    label="Description"
+                    label="Payment Details"
+                    placeholder="e.g., Tuition fee, Admission Fees"
                     {...form.register(`template_fields.${index}.description`)}
                     error={errors.template_fields?.[index]?.description}
                     onKeyDown={(e) => {

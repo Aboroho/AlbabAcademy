@@ -170,12 +170,14 @@ function PaymentRequestForm({
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormSection title="Payment request info">
           <InputField
-            label="Title"
+            label="Payment Request Title"
+            placeholder="e.g. Payment for the month of June"
             {...form.register("title")}
             error={errors.title}
           />
           <InputField
             label="Description (optional)"
+            placeholder="Description of the payment request if needed"
             {...form.register("description")}
             error={errors.description}
           />

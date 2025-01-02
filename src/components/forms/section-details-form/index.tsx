@@ -77,6 +77,7 @@ function SectionDetailsForm({
       queryClient.invalidateQueries({ queryKey: ["sections"] });
     },
   });
+
   const createMutation = useMutation({
     mutationFn: async (data: ISectionCreateFormData) => {
       return await createSection(data);

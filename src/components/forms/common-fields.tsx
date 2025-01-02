@@ -27,7 +27,7 @@ import {
   useGetCohortList,
 } from "@/client-actions/queries/student-queries";
 import { SelectInput } from "../ui/single-select-input";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock, MailIcon, MapPinHouse, UserIcon } from "lucide-react";
 
 import { PaymentTargetTypes } from "./payment-request-form/schema";
 
@@ -177,6 +177,8 @@ export const AddressFields = ({ title }: { title?: string }) => {
   return (
     <FormSection title={title || "Address"}>
       <InputField
+        placeholder="e.g., Mirpur-14, Dhaka, Bangladesh"
+        icon={<MapPinHouse className="w-4 h-4" />}
         error={errors.address?.district}
         label="Full Address"
         {...form.register("address.fullAddress")}
@@ -242,7 +244,9 @@ export const UserFields = ({
       )}
       {!hiddenFields.includes("user.username") && (
         <InputField
+          icon={<UserIcon className="w-4 h-4" />}
           label="Username"
+          placeholder="e.g., rifat71"
           {...form.register("user.username")}
           error={errors.user?.username}
         />
@@ -250,6 +254,8 @@ export const UserFields = ({
       {!update && (
         <InputField
           error={errors.user?.password}
+          icon={<Lock className="w-4 h-4" />}
+          placeholder="e.g., 123456"
           label="Password"
           type="password"
           {...form.register("user.password")}
@@ -257,9 +263,11 @@ export const UserFields = ({
       )}
       {!hiddenFields.includes("user.email") && (
         <InputField
+          icon={<MailIcon className="w-4 h-4" />}
           error={errors.user?.email}
           label="Email (optional)"
           type="email"
+          placeholder="e.g., yourname@gmail.com"
           {...form.register("user.email")}
         />
       )}

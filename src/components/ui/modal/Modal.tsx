@@ -56,7 +56,9 @@ export const Modal = forwardRef<ModalRefType, Props>(function Modal(
 
         {children}
 
-        <DialogClose ref={closeRef}>close</DialogClose>
+        <DialogClose ref={closeRef} className="hidden">
+          close
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );

@@ -44,6 +44,7 @@ import {
 // import { AlertCircleIcon } from "lucide-react";
 import { StudentDTO } from "@/app/api/services/types/dto.types";
 import { StudentProfileViewModel } from "@/client-actions/queries/student-queries";
+import { IdCard, PhoneIcon, User2 } from "lucide-react";
 
 type FormData = IStudentCreateFormData | IStudentUpdateFormData;
 
@@ -173,27 +174,35 @@ function StudentDetailsForm({
               <div className="space-y-4 p-4 pb-8 rounded-md border shadow-md ">
                 <h3 className="text-lg mb-4">Student Personal Details</h3>
                 <InputField
+                  icon={<User2 className="w-4 h-4" />}
                   label="Student name"
+                  placeholder="Student full name"
                   {...form.register("full_name")}
                   error={errors.full_name}
                 />
                 <InputField
                   label="Father's name"
+                  placeholder="Father's full name"
                   {...form.register("father_name")}
                   error={errors.father_name}
                 />
                 <InputField
                   label="Mother's Name"
+                  placeholder="Mother's full name"
                   {...form.register("mother_name")}
                   error={errors.mother_name}
                 />
                 <InputField
+                  icon={<PhoneIcon className="w-4 h-4" />}
                   label="Phone (optional)"
+                  placeholder="e.g. 0170000000"
                   {...form.register("user.phone")}
                   error={errors.user?.phone}
                 />
                 <InputField
                   label="Guardian Phone (optional)"
+                  icon={<PhoneIcon className="w-4 h-4" />}
+                  placeholder="e.g. 0170000000"
                   {...form.register("guardian_phone")}
                   error={errors.guardian_phone}
                 />
@@ -215,7 +224,9 @@ function StudentDetailsForm({
                 <InputField
                   label="Student ID"
                   {...form.register("student_id")}
+                  placeholder="e.g. grade-section-001"
                   error={errors.student_id}
+                  icon={<IdCard className="w-4 h-4" />}
                 />
               </div>
 
