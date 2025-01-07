@@ -141,10 +141,13 @@ const StudentInvoice = ({
   const paid = paymentDetails?.reduce((sum, cur) => sum + cur.amount, 0) || 0;
 
   const due = total - paid - stipend;
-  const date = formatDate(new Date(), {
-    includeHour: true,
-    includeMinute: true,
-  });
+  const date = formatDate(
+    paymentDetails?.[paymentDetails.length - 1].date || new Date(),
+    {
+      includeHour: true,
+      includeMinute: true,
+    }
+  );
 
   return (
     <Document>
@@ -331,7 +334,10 @@ const StudentInvoice = ({
                   {pd.amount} Taka
                 </Text>
                 <Text style={[styles.tableCell, { flex: 1 }]}>
-                  {formatDate(pd.date)}
+                  {formatDate(pd.date, {
+                    includeHour: true,
+                    includeMinute: true,
+                  })}
                 </Text>
               </View>
             ))}
