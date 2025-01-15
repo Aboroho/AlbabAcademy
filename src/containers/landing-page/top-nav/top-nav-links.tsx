@@ -76,19 +76,34 @@ export const topNavLinks: Navlink[] = [
     popOverIcon: <Bell className="w-10 h-10" />,
     children: [
       {
+        label: "General Notices",
+        path: "/notice/general",
+        activePrefix: "/notice/recruitment",
+      },
+      {
+        label: "Admission Notices",
+        path: "/notice/admission",
+        activePrefix: "/notice/admission",
+      },
+      {
+        label: "Announcement",
+        path: "/notice/announcement",
+        activePrefix: "/notice/announcement",
+      },
+      {
         label: "Student Notices",
-        path: "/notice/student",
+        path: "/notice/student_notice",
         activePrefix: "/notice/student",
       },
       {
         label: "Teacher's Notices",
-        path: "/notice/teacher",
-        activePrefix: "/notice/teacher",
+        path: "/notice/teacher_notice",
+        activePrefix: "/notice/teacher_notice",
         collapsible: true,
         children: [
           {
             label: "Recruitment Notices",
-            path: "/notice/recruitments",
+            path: "/notice/recruitment",
             activePrefix: "/notice/recruitment",
           },
         ],

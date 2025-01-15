@@ -14,7 +14,6 @@ async function refineUser<T extends IUserCreateFormData | IUserUpdateFormData>(
   ctx: z.RefinementCtx,
   updateId?: number
 ) {
-  console.log(data.phone);
   const user = await prismaQ.user.findFirst({
     where: {
       AND: [

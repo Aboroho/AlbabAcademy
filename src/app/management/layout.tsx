@@ -38,8 +38,8 @@ function DashboardLayout({ children }: Props) {
 
           {/* main */}
           <main className="@container bg-slate-50 ">
-            <div className="p-2 lg:px-4  overflow-auto">
-              <div className="w-full h-auto overflow-auto bg-white min-h-screen p-4 lg:p-5 pt-6 rounded-md">
+            <div className="px-2 lg:px-4  overflow-auto">
+              <div className="w-full h-auto overflow-auto  min-h-screen   pt-6 rounded-md">
                 <div className=" min-h-64">{children}</div>
               </div>
             </div>

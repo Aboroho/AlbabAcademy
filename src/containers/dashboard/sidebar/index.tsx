@@ -3,7 +3,7 @@ import Image from "next/image";
 import CommonLinks from "./common-links";
 import Link from "next/link";
 
-import { GraduationCap } from "lucide-react";
+import { Bell, GraduationCap } from "lucide-react";
 import {
   CollapsibleLink,
   CollapsibleLinkContent,
@@ -96,6 +96,25 @@ function Sidebar() {
                 { label: "Assessment List", href: "/list" },
               ],
               prefix: "/management/assessments",
+            }}
+          />
+        </CollapsibleLink>
+
+        <CollapsibleLink
+          icon={<Bell className="w-4 h-4" />}
+          label={"Manage Notice"}
+          routePrefix="/management/manage-notice"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create Notice", href: "/create" },
+                {
+                  label: "Notice List",
+                  href: "/list",
+                },
+              ],
+              prefix: "/management/manage-notice",
             }}
           />
         </CollapsibleLink>

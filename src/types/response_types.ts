@@ -4,6 +4,7 @@ import {
   AssessmentSubject,
   Cohort,
   Grade,
+  Notice,
   Payment,
   PaymentRequest,
   PaymentTemplate,
@@ -73,3 +74,5 @@ export interface IPaymentRequestResponse extends PaymentRequest {
   payment_template: IPaymentTemplateResponse;
   payments?: IPaymentResponseDeep[];
 }
+
+export type NoticeResponse = Notice;

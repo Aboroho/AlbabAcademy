@@ -22,14 +22,28 @@ enum Role {
 }
 
 enum NoticeTarget {
+  ALL_USERS
   STUDENT
   TEACHER
   ADMIN
   STAFF
   DIRECTOR
   SUPER_ADMIN
+  SPECIFIC_USER
+}
+
+enum NoticeType {
   PUBLIC
-  USER
+  PRIVATE
+}
+
+enum NoticeCategory{
+  RECRUITMENT
+  ADMISSION
+  ANNOUNCEMENT
+  STUDENT_NOTICE
+  TEACHER_NOTICE
+  GENERAL
 }
 
 
@@ -155,6 +169,7 @@ model User {
   permissions   UserPermission[]
   notifications Notification[]
   paymet_received Payout[]
+  notices       Notice[]
   
 
   assessments_created Assessment[]
@@ -562,32 +577,34 @@ model Payout{
 }
 
 
-model NoticeCategory{
-  id            Int      @id @default(autoincrement())
-  name          String   @unique 
-  notice_target NoticeTarget  @default(PUBLIC)    
-  description   String?
-
-
-  notices Notice[]
+enum NoticeStatus{
+  ACTIVE
+  INACTIVE
+  ARCHIVED
 }
-
 
 model Notice {
   id        Int      @id @default(autoincrement())
   
   title         String
-  description   String
+  description   String   @db.VarChar(10000)
   priority      Int     @default(0)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  notice_category_id Int?
-  notice_category    NoticeCategory?  @relation(fields: [notice_category_id], references: [id])
+  notice_target NoticeTarget
+  notice_type      NoticeType
+  notice_category  NoticeCategory
+  status        NoticeStatus @default(ACTIVE)
+
+  notice_target_id Int?
+  user_id User?         @relation(fields: [notice_target_id], references: [id], onDelete: SetNull)
+
+  attachments    String? @db.VarChar(4072)
+  
+
+  
 }
-
-
-
 
 
 // Settings Model

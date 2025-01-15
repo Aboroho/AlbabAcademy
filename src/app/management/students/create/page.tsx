@@ -2,7 +2,7 @@ import StudentDetailsForm from "@/components/forms/student-details-form";
 
 function CreateStudentPage() {
   return (
-    <div>
+    <div className="bg-white p-4 rounded-md">
       <StudentDetailsForm formTitle="Create  student" />
     </div>
   );

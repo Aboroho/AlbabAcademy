@@ -23,7 +23,7 @@ function Dashboard() {
   if (isLoading) return <Loader />;
   if (!isLogedIn) return null;
 
-  return <div>Dashboard</div>;
+  return null;
 }
 
 export default Dashboard;

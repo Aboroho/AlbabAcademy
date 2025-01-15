@@ -1,28 +1,14 @@
-"use client";
-import { Button } from "@/components/button";
-import InputField from "@/components/ui/input-field";
-import { Modal } from "@/components/ui/modal/Modal";
-import React, { useState } from "react";
+import React from "react";
+import UserNotice from "./userNotice";
 
 type Props = {};
 
-function Notice({}: Props) {
-  const [x, setX] = useState("");
+function NoticePage({}: Props) {
   return (
     <div>
-      <div>Comming soon...</div>
-
-      <Modal trigger={<Button>Open</Button>} title="dlfjk" description="kdjf">
-        <div>
-          <InputField
-            label="ldf"
-            value={x}
-            onChange={(e) => setX(e.target.value)}
-          />
-        </div>
-      </Modal>
+      <UserNotice category="GENERAL" target="ALL_USER" />
     </div>
   );
 }
 
-export default Notice;
+export default NoticePage;

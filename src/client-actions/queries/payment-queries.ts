@@ -167,8 +167,6 @@ export const useGetPayments = (
   if (filter?.startDate) route += `start=${filter.startDate}`;
   if (filter?.endDate) route += `&end=${filter.endDate}`;
 
-  console.log(filter);
-
   const query = useQuery({
     queryKey: ["payments", route],
     queryFn: async () => {

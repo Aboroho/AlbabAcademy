@@ -10,8 +10,9 @@ import { DateRange } from "react-day-picker";
 type Props = {};
 
 function PaymentSummary({}: Props) {
+  const now = new Date();
   const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
+    from: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
     to: new Date(),
   });
 
@@ -31,7 +32,7 @@ function PaymentSummary({}: Props) {
     ) || 0;
   return (
     <div>
-      <h2 className="text-lg">Payment Analytics</h2>
+      <h2 className="text-lg mb-2 font-semibold">Payment Analytics</h2>
       <DateRangePicker
         onUpdate={(values) =>
           setDate({ from: values.range.from, to: values.range.to })

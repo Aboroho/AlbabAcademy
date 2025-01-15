@@ -19,7 +19,7 @@ import {
 import { pdf } from "@react-pdf/renderer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash";
-import { DownloadIcon } from "lucide-react";
+import { DollarSign, DownloadIcon } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { saveAs } from "file-saver";
@@ -174,10 +174,13 @@ function StudentPaymentRequest({}: Props) {
   }
 
   return (
-    <div>
+    <div className="bg-white rounded-md p-4">
+      <h1 className="text-2xl mb-6 flex items-center gap-2">
+        <DollarSign /> Payment Request
+      </h1>
       <div className="max-w-[1536px] overflow-auto max-h-[750px]">
         <div className="w-[1636px] relative">
-          <div className="grid grid-cols-11 text-center font-semibold pb-2 border-b sticky">
+          <div className="grid grid-cols-11 text-center font-semibold pb-2 border-b ">
             <div>Name</div>
             <div>Group</div>
             <div>Roll</div>

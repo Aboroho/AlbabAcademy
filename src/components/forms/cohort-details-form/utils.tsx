@@ -3,6 +3,13 @@ import toast from "react-hot-toast";
 import { api } from "@/client-actions/helper";
 import { ICohortCreateFormData, ICohortUpdateFormData } from "./schema";
 
+/**
+ * Updates the data for a cohort.
+ *
+ * @param data - The updated cohort data.
+ * @param cohortId - The ID of the cohort to update.
+ * @returns The API response, or `undefined` if `cohortId` is falsy.
+ */
 export async function updateCohort(
   data: ICohortUpdateFormData,
   cohortId: number | undefined | null

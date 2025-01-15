@@ -120,3 +120,137 @@ html {
     @apply border border-slate-200 backdrop:blur-sm font-semibold text-[16px] flex flex-col gap-4 bg-gradient-to-r from-red-50 to-white p-4 py-5 rounded-md min-w-[140px] shadow-md;
   }
 }
+
+/* dynamic html */
+
+.dynamic-html-wrapper {
+  /* Set a consistent font family and base styles for the wrapper */
+  font-family: inherit;
+  line-height: 1.5;
+  color: inherit;
+}
+
+/* Reset or normalize styles for headings */
+.dynamic-html-wrapper h1,
+.dynamic-html-wrapper h2,
+.dynamic-html-wrapper h3,
+.dynamic-html-wrapper h4,
+.dynamic-html-wrapper h5,
+.dynamic-html-wrapper h6 {
+  margin: 0.67em 0; /* Default margin */
+  font-weight: bold; /* Default weight */
+  font-size: inherit; /* Use default size, if necessary */
+}
+
+/* Paragraphs */
+.dynamic-html-wrapper p {
+  margin: 1em 0; /* Default paragraph spacing */
+}
+
+/* Lists */
+.dynamic-html-wrapper ul,
+.dynamic-html-wrapper ol {
+  margin: 1em 0;
+  padding-left: 40px; /* Default indentation */
+}
+
+/* List items */
+.dynamic-html-wrapper li {
+  margin: 0.5em 0;
+  list-style-type: disc;
+}
+
+/* Links */
+.dynamic-html-wrapper a {
+  color: blue; /* Default link color */
+  text-decoration: underline;
+}
+
+/* Tables */
+.dynamic-html-wrapper table {
+  border-collapse: collapse; /* Default behavior */
+  width: 100%; /* Stretch tables by default */
+}
+
+.dynamic-html-wrapper th,
+.dynamic-html-wrapper td {
+  padding: 8px; /* Default padding */
+  border: 1px solid #ccc; /* Default border */
+  text-align: left;
+}
+
+/* Images */
+.dynamic-html-wrapper img {
+  max-width: 100%; /* Ensure images are responsive */
+  height: auto;
+}
+
+/* Blockquotes */
+.dynamic-html-wrapper blockquote {
+  margin: 1em 0;
+  padding-left: 10px; /* Indent */
+  border-left: 4px solid #ccc;
+  color: #666; /* Default muted text color */
+  font-style: italic;
+}
+
+/* Code blocks */
+.dynamic-html-wrapper pre,
+.dynamic-html-wrapper code {
+  font-family: monospace, monospace;
+  background-color: #f5f5f5;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.dynamic-html-wrapper pre {
+  overflow-x: auto;
+  padding: 1em;
+  margin: 1em 0;
+}
+
+/* Buttons */
+.dynamic-html-wrapper button {
+  all: unset; /* Reset all button styles */
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
+/* Forms */
+.dynamic-html-wrapper input,
+.dynamic-html-wrapper textarea,
+.dynamic-html-wrapper select {
+  all: unset;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: inherit;
+}
+
+/* Headings specific rules */
+.dynamic-html-wrapper h1 {
+  font-size: 2em; /* Default size for h1 */
+}
+
+.dynamic-html-wrapper h2 {
+  font-size: 1.5em; /* Default size for h2 */
+}
+
+.dynamic-html-wrapper h3 {
+  font-size: 1.17em; /* Default size for h3 */
+}
+
+.dynamic-html-wrapper h4 {
+  font-size: 1em; /* Default size for h4 */
+}
+
+.dynamic-html-wrapper h5 {
+  font-size: 0.83em; /* Default size for h5 */
+}
+
+.dynamic-html-wrapper h6 {
+  font-size: 0.67em; /* Default size for h6 */
+}

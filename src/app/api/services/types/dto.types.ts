@@ -1,6 +1,7 @@
 import {
   Address,
   Gender,
+  Notice,
   Payment,
   PaymentRequest,
   PaymentRequestEntry,
@@ -131,4 +132,10 @@ export type PaymentRequestEntryDTO = Omit<
 export type PaymentRequestEntryListDTO = {
   count: number;
   entries: PaymentRequestEntryDTO[];
+};
+
+export type NoticeDTO = Notice & {};
+export type NoticeListDTO = {
+  count: number;
+  notices: NoticeDTO[];
 };

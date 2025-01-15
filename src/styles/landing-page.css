@@ -4,7 +4,7 @@
 
 @layer utilities {
   .container {
-    @apply px-4 mx-auto w-[91.66%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-[80rem];
+    @apply px-4 mx-auto w-[98.66%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-[80rem];
   }
   .hero-pattern {
     position: relative;
