@@ -64,6 +64,7 @@ export const noticeCreateSchema = z.object({
     z.object({
       name: z.string().max(60, "Too Long").min(2, "Too short"),
       url: z.string().url(),
+      loaded: z.number().default(100).optional(),
     })
   ),
 });

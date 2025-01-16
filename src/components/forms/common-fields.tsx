@@ -5,11 +5,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { ImageUpload } from "../ui/image-upload";
+
 import { Button } from "../button";
 import Image from "next/image";
-
-import { UploadImage } from "@/client-actions/helper";
 
 import InputField from "../ui/input-field";
 import { Controller, FieldError, useFormContext } from "react-hook-form";
@@ -27,7 +25,13 @@ import {
   useGetCohortList,
 } from "@/client-actions/queries/student-queries";
 import { SelectInput } from "../ui/single-select-input";
-import { Loader2, Lock, MailIcon, MapPinHouse, UserIcon } from "lucide-react";
+import {
+  Lock,
+  MailIcon,
+  MapPinHouse,
+  UploadCloud,
+  UserIcon,
+} from "lucide-react";
 
 import { PaymentTargetTypes } from "./payment-request-form/schema";
 
@@ -39,6 +43,7 @@ import { IPaymentTemplateResponse } from "@/types/response_types";
 import { pdf } from "@react-pdf/renderer";
 import StudentInvoice from "../invoice/student-invoice";
 import { saveAs } from "file-saver";
+import { CldUploadButton } from "next-cloudinary";
 
 /**
  * Default Field Value for user
@@ -70,28 +75,27 @@ type Props = {
 };
 export const AvatarField = ({ defaultAvatarUrl, onImageChange }: Props) => {
   // const [image, setImage] = useState<File | null>();
-  const [imageUploading, setImageUploading] = useState(false);
 
-  async function uploadToSever(image: File | null | undefined) {
-    if (!image) return;
-    setImageUploading(true);
+  // async function uploadToSever(image: File | null | undefined) {
+  //   if (!image) return;
+  //   setImageUploading(true);
 
-    try {
-      const res = await UploadImage(image);
+  //   try {
+  //     const res = await UploadImage(image);
 
-      if (res?.success && res.data) {
-        onImageChange(res.data as string);
-      } else {
-        onImageChange("");
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setImageUploading(false);
-    }
-  }
+  //     if (res?.success && res.data) {
+  //       onImageChange(res.data as string);
+  //     } else {
+  //       onImageChange("");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   } finally {
+  //     setImageUploading(false);
+  //   }
+  // }
 
-  const renderImage = (src: string, trigger: () => void) => {
+  const renderImage = (src: string) => {
     return (
       <div className="w-[128px]">
         <div className="w-[128px] h-[128px] rounded-full bg-gray-400 overflow-hidden transition-all">
@@ -100,66 +104,46 @@ export const AvatarField = ({ defaultAvatarUrl, onImageChange }: Props) => {
               <Image src={src} height={128} width={128} alt="Student Avatar" />
             )}
 
-            {!imageUploading && (
+            <CldUploadButton
+              options={{
+                resourceType: "auto",
+                maxFiles: 1,
+              }}
+              signatureEndpoint="/api/v1/cloudinary-signature"
+              uploadPreset="user_avatar"
+              onSuccess={(file) => {
+                if (typeof file.info !== "string" && file.info?.secure_url) {
+                  onImageChange(file.info.secure_url);
+                }
+              }}
+              className="text-xs absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 group-hover:transition-opacity"
+            >
               <Button
-                type="button"
-                onClick={trigger}
-                size="sm"
-                className="opacity-0 text-xs absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 group-hover:transition-opacity"
+                size={"sm"}
+                className="opacity-0 group-hover:opacity-100 group-hover:transition-opacity"
               >
-                Choose image
+                <UploadCloud className="w-5" />
+                Choose
               </Button>
-            )}
+            </CldUploadButton>
 
-            {imageUploading && (
-              <div className="absolute left-0 right-0 top-0 bottom-0 bg-black opacity-35 flex justify-center items-center">
-                <Loader2 className="animate-spin w-10 h-10 text-white" />
-              </div>
-            )}
+            {
+              // <Button
+              //   type="button"
+              //   onClick={trigger}
+              //   size="sm"
+              //   className="opacity-0 text-xs absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 group-hover:transition-opacity"
+              // >
+              //   Choose image
+              // </Button>
+            }
           </div>
         </div>
       </div>
     );
   };
 
-  return (
-    <ImageUpload
-      multiple={false}
-      defaultImageUrl={defaultAvatarUrl}
-      onImageChange={(images) => {
-        if (images.length > 0) {
-          uploadToSever(images[0]);
-        }
-      }}
-      render={(trigger, images, imageUrls, eraseFile) => (
-        <div className="w-[128px]">
-          {renderImage(
-            imageUrls.length > 0
-              ? imageUrls[0]
-              : defaultAvatarUrl
-              ? defaultAvatarUrl
-              : "",
-            trigger
-          )}
-          {imageUrls.length > 0 && !imageUploading && (
-            <div className="text-center">
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 select-none"
-                onClick={() => {
-                  eraseFile(0);
-                  onImageChange("");
-                }}
-              >
-                Reset
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
-    />
-  );
+  return <div>{renderImage(defaultAvatarUrl || "")}</div>;
 };
 
 /**

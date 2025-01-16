@@ -38,6 +38,7 @@ import {
 import { SelectInput } from "@/components/ui/single-select-input";
 import { createNotice, updateNotice } from "./utils";
 import { Cross1Icon } from "@radix-ui/react-icons";
+import { useEdgeStore } from "@/lib/edgestore";
 
 type FormData = NoticeCreateFormData | NoticeUpdateFormData;
 function NoticeForm({
@@ -50,24 +51,27 @@ function NoticeForm({
 }: FormDetailsProps<NoticeResponse, FormData>) {
   const schema = updateEnabled ? noticeUpdateSchema : noticeCreateSchema;
 
+  const defaulValues: FormData = {
+    title: "",
+    description: "",
+    notice_target: "ALL_USERS",
+    notice_type: "PUBLIC",
+    notice_category: "GENERAL",
+    status: "ACTIVE",
+    attachments: [],
+  };
   const form = useForm<FormData>({
     mode: "onChange",
     resolver: zodResolver(schema),
-    defaultValues: {
-      title: "",
-      description: "",
-      notice_target: "ALL_USERS",
-      notice_type: "PUBLIC",
-      notice_category: "GENERAL",
-      status: "ACTIVE",
-      attachments: [],
-    },
+    defaultValues: defaulValues,
   });
 
   const { prepend, fields, remove } = useFieldArray({
     control: form.control,
     name: "attachments",
   });
+
+  const { edgestore } = useEdgeStore();
 
   function addNewField() {
     prepend({ name: "", url: "" });
@@ -114,11 +118,11 @@ function NoticeForm({
     } else {
       res = await createMutation.mutateAsync(data as NoticeCreateFormData);
     }
-
+    if (res?.success) {
+      form.reset(defaulValues);
+    }
     if (res && !res.success) return resolveFormError<FormData>(res, form);
   }
-
-  console.log(form.watch("description"));
 
   if (isLoading) return renderFormSkeleton();
   //   if (updateEnabled && (isEmpty(paymentTemplateId) || isEmpty(paymentTemplate)))
@@ -137,8 +141,8 @@ function NoticeForm({
         </div>
       )}
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex gap-5 space-between py-5">
-          <div className="w-[40%]">
+        <div className="flex flex-col gap-5 space-between py-5 lg:flex-row">
+          <div className="w-full lg:w-[40%]">
             <FormSection title="General Info">
               <InputField
                 icon={<LayoutTemplate className="w-4 h-4" />}
@@ -301,24 +305,27 @@ function NoticeForm({
                 Add New Attachment
               </Button>
 
-              {fields.map((field, index) => (
-                <div
-                  className="flex gap-2 flex-nowrap items-start"
-                  key={field.id}
-                >
-                  <InputField
-                    label="Attachment Name"
-                    placeholder="e.g., Result Sheet"
-                    {...form.register(`attachments.${index}.name`)}
-                    error={errors.attachments?.[index]?.name}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        form.setFocus(`attachments.${index}.name`);
-                      }
-                    }}
-                  />
-                  <InputField
+              {fields.map((field, index) => {
+                const loaded = form.watch(`attachments.${index}.loaded`) || 100;
+                const url = form.watch(`attachments.${index}.url`);
+                return (
+                  <div
+                    className="flex flex-col lg:flex-row gap-2 flex-nowrap items-center"
+                    key={field.id}
+                  >
+                    <InputField
+                      label="Attachment Name"
+                      placeholder="e.g., Result Sheet"
+                      {...form.register(`attachments.${index}.name`)}
+                      error={errors.attachments?.[index]?.name}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          form.setFocus(`attachments.${index}.name`);
+                        }
+                      }}
+                    />
+                    {/* <InputField
                     label="Attachment URL"
                     placeholder="e.g., https:///example.com/image.jpg"
                     {...form.register(`attachments.${index}.url`)}
@@ -335,12 +342,94 @@ function NoticeForm({
                         onClick={() => remove(index)}
                       />
                     }
-                  />
-                </div>
-              ))}
+                  /> */}
+
+                    <div className="lg:mt-8 ">
+                      <div className="flex gap-2 items-center">
+                        <Button className="max-w-full">
+                          <input
+                            type="file"
+                            className="max-w-[200px]"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                form.setValue(`attachments.${index}.url`, "");
+                                const res = await edgestore.publicFiles.upload({
+                                  file: file,
+                                  onProgressChange: (progress: any) => {
+                                    console.log(progress);
+                                    form.setValue(
+                                      `attachments.${index}.loaded`,
+                                      progress
+                                    );
+                                  },
+                                });
+                                form.setValue(
+                                  `attachments.${index}.url`,
+                                  res.url
+                                );
+                              }
+                            }}
+                          />
+                        </Button>
+
+                        <Cross1Icon
+                          className="text-red-500 cursor-pointer"
+                          onClick={() => {
+                            if (url) {
+                              edgestore.publicFiles.delete({
+                                url: form.getValues(`attachments.${index}.url`),
+                              });
+                            }
+                            remove(index);
+                          }}
+                        />
+                      </div>
+
+                      {/* progress */}
+                      {loaded !== 100 && (
+                        <div className="w-[92%] h-3  p-1 rounded-md mt-1">
+                          <div
+                            className="bg-slate-600 h-1 rounded-md transition-all duration-200"
+                            style={{
+                              width: loaded + "%",
+                            }}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* <CldUploadButton
+                    options={{
+                      resourceType: "auto",
+                      maxFiles: 1,
+                    }}
+                    signatureEndpoint="/api/v1/cloudinary-signature"
+                    uploadPreset="notice_attachments"
+                    onSuccess={(file) => {
+                      if (
+                        typeof file.info !== "string" &&
+                        file.info?.secure_url
+                      ) {
+                        form.setValue(
+                          `attachments.${index}.url`,
+                          file.info.secure_url
+                        );
+                      }
+                    }}
+                  >
+                    <Button>
+                      {" "}
+                      <UploadCloud className="w-5" />
+                      Attach File
+                    </Button>
+                  </CldUploadButton> */}
+                  </div>
+                );
+              })}
             </FormSection>
           </div>
-          <div className=" h-full w-[60%]  ">
+          <div className="w-full h-full lg:w-[60%]  ">
             <Editor
               apiKey="aqk6likj1ibk3dqnby2fe1h0l9yr2c2rxn1i05bvmdqwd8v2"
               initialValue={form.getValues("description")}

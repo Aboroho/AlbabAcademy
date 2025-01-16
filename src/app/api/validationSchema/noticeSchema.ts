@@ -4,7 +4,12 @@ export const noticeCreateValidationSchema = noticeCreateSchema.transform(
   (data) => {
     return {
       ...data,
-      attachments: JSON.stringify(data.attachments),
+      attachments: JSON.stringify(
+        data.attachments.map((item) => ({
+          name: item.name,
+          url: item.url,
+        }))
+      ),
     };
   }
 );

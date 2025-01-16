@@ -55,8 +55,6 @@ function TeacherDetailsForm({
   const reset = form.reset;
   const errors = form.formState.errors;
 
-  console.log(form.getFieldState("date_of_joining"));
-
   useEffect(() => {
     if (isNotEmpty(teacher)) {
       reset(getTeacherDefaultUpdateFormData(teacher));
