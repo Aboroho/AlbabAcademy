@@ -81,7 +81,7 @@ export type PaymentDetailsDTO = PaymentDTO & {
     details: string;
     amount: number;
   }[];
-  user: Omit<User, "password" | "permission" | "createdAt">;
+  user?: Omit<User, "password" | "permission" | "createdAt">;
 };
 
 export type PaymentDetailsListDTO = PaymentDetailsDTO[];

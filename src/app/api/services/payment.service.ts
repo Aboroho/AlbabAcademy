@@ -64,7 +64,7 @@ export default class PaymentService implements IPaymentService {
       payment_method: payment.paymentMethod,
       payment_request: payment.payment_request_entry?.payment_request,
       payment_status: payment.status,
-      user: payment.user,
+      user: payment.user || undefined,
       update_at: payment.updatedAt.toString(),
       amount: payment.amount,
       payment_request_entry_id: payment.payment_request_entry_id as number,
