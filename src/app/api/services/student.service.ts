@@ -153,17 +153,20 @@ export class StudentService implements IStudentService {
 
     const { data } = studentQueryFilterSchema.safeParse(studentQueryFilter);
 
-    const where: Prisma.StudentWhereInput = {
-      cohort: {
-        id: data?.cohortId,
-        section: {
-          id: data?.section_id,
-          grade: {
-            id: data?.grade_id,
-          },
-        },
-      },
-    };
+    const where: Prisma.StudentWhereInput =
+      data?.cohortId || data?.grade_id || data?.section_id
+        ? {
+            cohort: {
+              id: data?.cohortId,
+              section: {
+                id: data?.section_id,
+                grade: {
+                  id: data?.grade_id,
+                },
+              },
+            },
+          }
+        : {};
 
     const page = data?.page || DEFAULT_PAGE;
     const pageSize = data?.page_size || DEFAULT_PAGE_SIZE;
@@ -363,10 +366,12 @@ export class StudentService implements IStudentService {
       }),
       prismaQ.payment.count({ where: paymentWhereInput }),
     ]);
-
+    console.log(JSON.stringify(paymentWhereInput));
     const studentsWithPayments: StudentPaymentDTO[] = payments.map(
       (payment) => {
-        if (!payment.user.student) throw new APIError("Something went wrong");
+        if (!payment.user?.student) {
+          console.log(payment);
+        }
         return {
           id: payment.id,
           created_at: payment.createdAt.toString(),
@@ -375,7 +380,9 @@ export class StudentService implements IStudentService {
           payment_status: payment.status,
           amount: payment.amount,
           payment_request_entry_id: payment.payment_request_entry_id as number,
-          student: this.studentDefaultDataToDTO(payment.user.student),
+          student: payment.user?.student
+            ? this.studentDefaultDataToDTO(payment.user.student)
+            : undefined,
           payment_fields: payment.payment_request_entry
             ?.payment_details as Array<{ details: string; amount: number }>,
           payment_request: {
@@ -433,15 +440,6 @@ export class StudentService implements IStudentService {
     const { student } = await prismaQ.$transaction(async (prismaQ) => {
       const parsedStudent = await createSchema.parseAsync(studentData);
       const parsedUser = parsedStudent.user;
-
-      /**
-       * TODO : handle avatar upload
-       */
-      // if (parsedUser.avatar) {
-      //   parsedUser.avatar = await validateFileAndMove(parsedUser.avatar, {
-      //     type: ["image/jpeg", "image/png"],
-      //   });
-      // }
 
       const refinedUser = {
         ...parsedUser,
@@ -528,7 +526,7 @@ export class StudentService implements IStudentService {
     });
     if (!studentInfo || !studentId) throw new APIError("No student found", 404);
 
-    // this step is for validation
+    // for validation only
     if (studentData.user) studentData.user.id = studentInfo.user_id;
     studentData.id = studentId;
 
@@ -536,17 +534,6 @@ export class StudentService implements IStudentService {
 
     const student = await prismaQ.$transaction(async (prismaQ) => {
       const parsedStudent = await studentUpdateSchema.parseAsync(studentData);
-
-      /**
-       * TODO: update avatar
-       */
-      //   const parsedUser = parsedStudent.user;
-      //   if (parsedUser.avatar) {
-      //     parsedUser.avatar = await validateFileAndMove(parsedUser.avatar, {
-      //       type: ["image/jpeg", "image/png"],
-      //     });
-      //   }
-      //   console.log(parsedUser.avatar);
 
       return await prismaQ.student.update({
         where: {

@@ -212,12 +212,13 @@ model Student {
   residential_status  RESIDENTIAL_STATUS @default(NON_RESIDENTIAL)
   student_status      StudentStatus      @default(ACTIVE)
 
-  user_id             Int      @unique
-  user                User     @relation(fields: [user_id], references: [id])
+   user_id       Int      @unique
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  address_id    Int      @unique
+  address       Address @relation(fields: [address_id], references: [id], onDelete: NoAction)
   cohort_id           Int
   cohort              Cohort   @relation(fields: [cohort_id], references: [id])
-  address_id          Int      @unique
-  address             Address  @relation(fields: [address_id], references: [id])
+ 
 
   attendence_record   StudentAttendence[]
   feedbacks_given StudentFeedBack[]
@@ -231,11 +232,11 @@ model StudentFeedBack {
   id              Int         @id@default(autoincrement())
   message         String      
   
-  student_id      Int
-  student         Student     @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  student_id      Int?
+  student         Student?     @relation(fields: [student_id], references: [id], onDelete: SetNull)
 
-  teacher_id      Int
-  teacher         Teacher     @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  teacher_id      Int?
+  teacher         Teacher?     @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
 }
 
 model Teacher {
@@ -249,11 +250,10 @@ model Teacher {
   qualification     String?  @db.VarChar(128)
   status    HRStatus     @default(ACTIVE)
 
-  user_id             Int      @unique
-  user                User     @relation(fields: [user_id], references: [id])
-
-  address_id          Int      @unique
-  address             Address @relation(fields: [address_id], references: [id])
+   user_id       Int      @unique
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  address_id    Int      @unique
+  address       Address @relation(fields: [address_id], references: [id], onDelete: NoAction)
 
   assessment_subjects AssessmentSubject[]
   section Section[]
@@ -272,10 +272,10 @@ model Admin {
   description String?
   status      HRStatus  @default(ACTIVE)
 
-  user_id     Int       @unique
-  user        User      @relation(fields: [user_id], references: [id])
-  address_id  Int      @unique
-  address     Address @relation(fields: [address_id], references: [id])
+   user_id       Int      @unique
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  address_id    Int      @unique
+  address       Address @relation(fields: [address_id], references: [id], onDelete: NoAction)
 }
 
 model Director {
@@ -288,10 +288,10 @@ model Director {
   end_date      DateTime? 
   status        HRStatus   @default(ACTIVE)
 
+   user_id       Int      @unique
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
   address_id    Int      @unique
-  address       Address   @relation(fields: [address_id], references: [id])
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id       Int      @unique
+  address       Address @relation(fields: [address_id], references: [id], onDelete: NoAction)
   
 }
 
@@ -306,9 +306,9 @@ model Staff {
   status        HRStatus  @default(ACTIVE)
 
   user_id       Int      @unique
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Restrict)
   address_id    Int      @unique
-  address       Address @relation(fields: [address_id], references: [id])
+  address       Address @relation(fields: [address_id], references: [id], onDelete: NoAction)
   
 }
 
@@ -345,7 +345,7 @@ model Section {
   grade            Grade    @relation(fields: [grade_id], references: [id], onDelete: Restrict)
 
   class_teacher_id Int?    
-  class_teacher    Teacher?  @relation(fields: [class_teacher_id], references: [id], onDelete: NoAction) 
+  class_teacher    Teacher?  @relation(fields: [class_teacher_id], references: [id], onDelete: SetNull) 
   cohorts          Cohort[]
 
   @@unique([grade_id, name]) 
@@ -552,8 +552,8 @@ model Payment {
 
   amount          Int
  
-  user_id           Int
-  user             User            @relation(fields: [user_id], references: [id])
+  user_id           Int?
+  user             User?           @relation(fields: [user_id], references: [id], onDelete: SetNull)
 
   payment_request_entry_id Int?
   payment_request_entry   PaymentRequestEntry?  @relation(fields: [payment_request_entry_id], references: [id], onDelete: SetNull)

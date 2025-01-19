@@ -36,7 +36,7 @@ export const useGetStudents = (
 
   const route = "/students?" + queryParams;
   const query = useQuery({
-    queryKey: ["students", route],
+    queryKey: ["students", "all"],
     queryFn: async () => {
       const res = await api(route, {
         method: "get",

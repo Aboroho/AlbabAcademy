@@ -28,6 +28,9 @@ import TableSkeleton from "@/components/ui/skeleton/table-skeleton";
 import { Protected } from "@/components/auth";
 import { FormProvider, useForm } from "react-hook-form";
 import { SelectGradeField } from "@/components/forms/common-fields";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/client-actions/helper";
+import { StudentListDTO } from "@/app/api/services/types/dto.types";
 
 export type IStudentTableRow = {
   id: number;
@@ -60,7 +63,53 @@ function StudentListTable({ students: defaultStudents }: Props) {
     filter
   );
   const students = defaultStudents || data?.students;
-  // const studentCount = data?.count;
+
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await api("/students/" + id, {
+        method: "DELETE",
+      });
+    },
+
+    onSettled: (res) => {
+      if (!res?.success) return;
+      const data = res.data as { id: number };
+
+      queryClient.invalidateQueries({ queryKey: ["students", "all"] });
+      queryClient.setQueryData(
+        ["students", "all"],
+        (oldData: StudentListDTO) => {
+          if (oldData && oldData.students) {
+            console.log(oldData.students);
+            oldData.students = oldData.students.filter(
+              (student) => student.id !== data.id
+            );
+            return oldData;
+          }
+          return oldData;
+        }
+      );
+    },
+  });
+
+  async function handleDelete(id: number) {
+    toast.loading("Deleting Student...", { id: "delete-student" });
+    try {
+      const res = await deleteMutation.mutateAsync(id);
+      if (res.success) {
+        toast.success("Student deleted");
+      } else {
+        toast.error("Failed to delete Student");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err: any) {
+      toast.error("Some error occured");
+      console.log(err);
+    } finally {
+      toast.dismiss("delete-student");
+    }
+  }
 
   useEffect(() => {
     if (students) {
@@ -80,10 +129,6 @@ function StudentListTable({ students: defaultStudents }: Props) {
       setStudentTableRows(rowData);
     }
   }, [students]);
-
-  function handleDelete(id: number) {
-    toast.success("Student deleted [not implemented yet]" + id);
-  }
 
   const columns: ColumnDef<IStudentTableRow>[] = useMemo(
     () => [

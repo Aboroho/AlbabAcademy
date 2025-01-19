@@ -51,7 +51,7 @@ export type StudentProfileDTO = {
 } & StudentDTO;
 
 export type StudentPaymentDTO = Omit<PaymentDetailsDTO, "user"> & {
-  student: StudentDTO;
+  student?: StudentDTO;
 };
 
 export type StudentPaymentListDTO = {

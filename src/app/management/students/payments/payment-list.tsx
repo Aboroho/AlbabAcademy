@@ -116,18 +116,18 @@ function StudentPaymentList() {
       <StudentInvoice
         stipend={payment.payment_request?.stipend || 0}
         fees={payment.payment_fields}
-        mobile={payment.student.user.phone}
-        name={payment.student.full_name}
-        studentCohort={payment.student.cohort.name}
-        studentGrade={payment.student.grade.name}
-        studentSection={payment.student.section.name}
-        studentID={payment.student.student_id}
+        mobile={payment.student?.user.phone}
+        name={payment.student?.full_name || "--"}
+        studentCohort={payment.student?.cohort.name || "--"}
+        studentGrade={payment.student?.grade.name || "--"}
+        studentSection={payment.student?.section.name || "--"}
+        studentID={payment.student?.student_id || "--"}
         forDate={forDate}
         paymentDetails={[{ amount: payment.amount, date: payment.created_at }]}
       />
     );
 
-    const fileName = `invoice-${payment.payment_request?.title}-${payment.student.student_id}`;
+    const fileName = `invoice-${payment.payment_request?.title}-${payment.student?.student_id}`;
     const blob = await pdf(invoice).toBlob();
 
     saveAs(blob, fileName);
@@ -219,10 +219,10 @@ function StudentPaymentList() {
                   {(page - 1) * pageSize + index + 1}
                 </TableCell>
                 <TableCell className="font-medium ">
-                  {payment.student.full_name}
+                  {payment.student?.full_name || "--"}
                 </TableCell>
-                <TableCell>{payment.student.grade.name}</TableCell>
-                <TableCell>{payment.student.section.name}</TableCell>
+                <TableCell>{payment.student?.grade.name || "--"}</TableCell>
+                <TableCell>{payment.student?.section.name || "--"}</TableCell>
                 <TableCell>
                   <Badge
                     className={cn(
@@ -258,9 +258,9 @@ function StudentPaymentList() {
                         <>
                           Pay on behalf of{" "}
                           <span className="font-bold">
-                            {payment.student.full_name},{" "}
-                            {payment.student.grade.name},{" "}
-                            {payment.student.section.name}
+                            {payment.student?.full_name || "--"},{" "}
+                            {payment.student?.grade.name || "--"},{" "}
+                            {payment.student?.section.name || "--"}
                           </span>
                         </>
                       }
@@ -284,9 +284,9 @@ function StudentPaymentList() {
                           <>
                             Reject payment -{" "}
                             <span className="font-bold">
-                              {payment.student.full_name},{" "}
-                              {payment.student.grade.name},{" "}
-                              {payment.student.section.name}
+                              {payment.student?.full_name || "--"},{" "}
+                              {payment.student?.grade.name || "--"},{" "}
+                              {payment.student?.section.name || "--"}
                             </span>
                           </>
                         }

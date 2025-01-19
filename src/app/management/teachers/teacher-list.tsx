@@ -22,6 +22,9 @@ import TableSkeleton from "@/components/ui/skeleton/table-skeleton";
 import { Protected } from "@/components/auth";
 import { useGetTeachers } from "@/client-actions/queries/teacher-queries";
 import { Badge } from "@/components/shadcn/ui/badge";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "@/client-actions/helper";
+import { ITeacherResponse } from "@/types/response_types";
 
 export type ITeacherRowTable = {
   id: number;
@@ -38,11 +41,32 @@ function TeacherListTable() {
     [] as ITeacherRowTable[]
   );
   const { data, isLoading } = useGetTeachers();
+  const queryClient = useQueryClient();
   const teachers = data;
-  // const studentCount = data?.count;
 
-  console.log(teachers);
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await api("/teachers/" + id, {
+        method: "DELETE",
+      });
+    },
 
+    onSettled: (res) => {
+      if (!res?.success) return;
+      const data = res.data as { id: number };
+
+      queryClient.invalidateQueries({ queryKey: ["teacher", "all"] });
+      queryClient.setQueryData(
+        ["teacher", "all"],
+        (oldData: ITeacherResponse[]) => {
+          if (oldData) {
+            return oldData.filter((teacher) => teacher.id !== data.id);
+          }
+          return oldData;
+        }
+      );
+    },
+  });
   useEffect(() => {
     if (teachers) {
       const rowData = teachers.map(
@@ -61,10 +85,21 @@ function TeacherListTable() {
     }
   }, [teachers]);
 
-  function handleDelete(id: number) {
-    toast.success("Student deleted [not implemented yet]" + id);
+  async function handleDelete(id: number) {
+    toast.loading("Deleting Teacher...", { id: "delete-teacher" });
+    try {
+      const res = await deleteMutation.mutateAsync(id);
+      if (res.success) {
+        toast.success("Teacher deleted");
+      } else {
+        toast.error("Failed to delete teacher");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      toast.dismiss("delete-teacher");
+    }
   }
-
   const columns: ColumnDef<ITeacherRowTable>[] = useMemo(
     () => [
       {
@@ -185,23 +220,8 @@ function TeacherListTable() {
   if (isLoading) return <TableSkeleton />;
   return (
     <div className="p-2 lg:p-4">
-      {/* <SearchFilter
-        filterList={[
-          { label: "name", value: "Name" },
-          { label: "Class", value: "class" },
-          { label: "Batch", value: "batch" },
-        ]}
-        onSearch={(filter, query) => console.log(filter, query)}
-      /> */}
-
-      <DataTable
-        data={teacherTableRows}
-        columns={columns}
-        // loading={isLoading}
-        // activeRowId={activeRowId}
-      />
+      <DataTable data={teacherTableRows} columns={columns} />
     </div>
   );
 }
-
 export default TeacherListTable;

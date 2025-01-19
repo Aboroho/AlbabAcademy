@@ -22,7 +22,7 @@ import {
 import InputField from "@/components/ui/input-field";
 
 import { Button } from "@/components/button";
-import { LayoutTemplate, PlusIcon } from "lucide-react";
+import { File, LayoutTemplate, PlusIcon } from "lucide-react";
 
 import { NoticeResponse } from "@/types/response_types";
 
@@ -39,6 +39,7 @@ import { SelectInput } from "@/components/ui/single-select-input";
 import { createNotice, updateNotice } from "./utils";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { useEdgeStore } from "@/lib/edgestore";
+import toast from "react-hot-toast";
 
 type FormData = NoticeCreateFormData | NoticeUpdateFormData;
 function NoticeForm({
@@ -87,6 +88,7 @@ function NoticeForm({
         description: noticeData.description,
         notice_target: noticeData.notice_target,
         notice_type: noticeData.notice_type || "PUBLIC",
+        attachments: JSON.parse(noticeData.attachments || "[]"),
       });
     }
   }, [noticeData, reset]);
@@ -98,7 +100,7 @@ function NoticeForm({
       return await updateNotice(data, noticeId);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["notice", noticeId] });
+      queryClient.invalidateQueries({ queryKey: ["notices", "private"] });
     },
   });
 
@@ -107,7 +109,7 @@ function NoticeForm({
       return await createNotice(data);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["notice"] });
+      queryClient.invalidateQueries({ queryKey: ["notices", "private"] });
     },
   });
 
@@ -325,61 +327,56 @@ function NoticeForm({
                         }
                       }}
                     />
-                    {/* <InputField
-                    label="Attachment URL"
-                    placeholder="e.g., https:///example.com/image.jpg"
-                    {...form.register(`attachments.${index}.url`)}
-                    error={errors.attachments?.[index]?.url}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        form.setFocus(`attachments.${index}.name`);
-                      }
-                    }}
-                    rightIcon={
-                      <Cross1Icon
-                        className="w-4 h-4 text-red-500 cursor-pointer"
-                        onClick={() => remove(index)}
-                      />
-                    }
-                  /> */}
 
                     <div className="lg:mt-8 ">
                       <div className="flex gap-2 items-center">
-                        <Button className="max-w-full">
-                          <input
-                            type="file"
-                            className="max-w-[200px]"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                form.setValue(`attachments.${index}.url`, "");
-                                const res = await edgestore.publicFiles.upload({
-                                  file: file,
-                                  onProgressChange: (progress: any) => {
-                                    console.log(progress);
-                                    form.setValue(
-                                      `attachments.${index}.loaded`,
-                                      progress
-                                    );
-                                  },
-                                });
-                                form.setValue(
-                                  `attachments.${index}.url`,
-                                  res.url
-                                );
-                              }
-                            }}
-                          />
-                        </Button>
+                        {url ? (
+                          <Button className="bg-green-600">
+                            <File className="" />
+                          </Button>
+                        ) : (
+                          <Button>
+                            <input
+                              type="file"
+                              className="max-w-[200px]"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  form.setValue(`attachments.${index}.url`, "");
+                                  const res =
+                                    await edgestore.publicFiles.upload({
+                                      file: file,
+                                      onProgressChange: (progress: any) => {
+                                        form.setValue(
+                                          `attachments.${index}.loaded`,
+                                          progress
+                                        );
+                                      },
+                                    });
+                                  form.setValue(
+                                    `attachments.${index}.url`,
+                                    res.url
+                                  );
+                                }
+                              }}
+                            />
+                          </Button>
+                        )}
 
                         <Cross1Icon
                           className="text-red-500 cursor-pointer"
-                          onClick={() => {
+                          onClick={async () => {
                             if (url) {
-                              edgestore.publicFiles.delete({
-                                url: form.getValues(`attachments.${index}.url`),
-                              });
+                              try {
+                                await edgestore.publicFiles.delete({
+                                  url: form.getValues(
+                                    `attachments.${index}.url`
+                                  ),
+                                });
+                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                              } catch (e: any) {
+                                toast.error("some error occured");
+                              }
                             }
                             remove(index);
                           }}

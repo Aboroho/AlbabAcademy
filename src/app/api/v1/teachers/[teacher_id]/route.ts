@@ -100,3 +100,29 @@ export const PUT = withMiddleware(
     return apiResponse({ data: res });
   }
 );
+
+export const DELETE = withMiddleware(
+  authenticate,
+  authorizeAdmin,
+  async (req, { params }: { params: Promise<{ teacher_id: string }> }) => {
+    const teacherId = parseInt((await params).teacher_id);
+    const teacher = await prismaQ.teacher.findUnique({
+      where: {
+        id: teacherId,
+      },
+    });
+    if (!teacher) throw new APIError("No teacher found", 404);
+
+    await prismaQ.teacher.delete({
+      where: {
+        id: teacherId,
+      },
+      include: {
+        user: true,
+        address: true,
+      },
+    });
+
+    return apiResponse({ data: { id: teacher.id } });
+  }
+);
