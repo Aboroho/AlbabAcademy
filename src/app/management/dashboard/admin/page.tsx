@@ -1,7 +1,11 @@
 import { Protected } from "@/components/auth";
-import PaymentSummary from "./payment-summary";
+import PaymentSummary from "../payment-summary";
 import Card from "@/components/ui/card";
 import CountChart from "./count-chart";
+import Announcements from "../announcement";
+import AttendanceChart from "../attendance";
+import FinanceChart from "../financeChart";
+import { BellIcon } from "lucide-react";
 
 function AdminDashboard() {
   return (
@@ -13,12 +17,28 @@ function AdminDashboard() {
             <Card value="Teacher" count={100} />
             <Card value="Staff" count={100} />
           </div>
+          <div className="bg-white h-[400px]">
+            <AttendanceChart />
+          </div>
+          <div className="bg-white h-[400px]">
+            <FinanceChart />
+          </div>
           <div className="bg-white rounded-md p-4">
             <PaymentSummary />
           </div>
         </div>
-        <div className="flex-1 bg-white rounded-md p-4">
-          <CountChart />
+        <div className="flex flex-1 flex-col bg-white rounded-md p-4">
+          <div className="h-[400px]">
+            <CountChart />
+          </div>
+          <hr></hr>
+          <div className="mt-8">
+            <h2 className="flex gap-2 text-xl mb-6 items-center">
+              <BellIcon />
+              Announcement
+            </h2>
+            <Announcements />
+          </div>
         </div>
       </div>
     </Protected>

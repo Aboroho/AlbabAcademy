@@ -62,7 +62,7 @@ function PaymentTemplates({}: Props) {
   }
 
   return (
-    <div className="max-w-[768px] mx-auto">
+    <div className="max-w-[768px] px-2 lg:px-4">
       <h1 className="text-2xl mb-4 flex gap-2 items-center ">
         Payment Templates{" "}
         {isLoading && <LoaderCircle className="animate-spin w-4 h-4 mt-1.5" />}

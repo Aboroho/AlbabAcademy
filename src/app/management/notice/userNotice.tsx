@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetPublicNotices } from "@/client-actions/queries/notice-queries";
+import { useGetPrivateNotices } from "@/client-actions/queries/notice-queries";
 import { Button } from "@/components/button";
 import { Accordion } from "@/components/shadcn/ui/accordion";
 import {
@@ -9,25 +9,26 @@ import {
   AccordionTrigger,
 } from "@/components/shadcn/ui/accordion";
 import { Bell, ChevronDown, DownloadCloudIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { RiAttachment2 } from "react-icons/ri";
 
-type Props = {
-  target: string;
-  category: string;
-  userId?: string;
-};
-
-function UserNotice({ category }: Props) {
-  const { data, isLoading, isError, error } = useGetPublicNotices(
-    {},
-    { notice_category: category.toLocaleUpperCase() }
-  );
+function UserNotice() {
+  const { data, isLoading, isError, error } = useGetPrivateNotices({});
+  const session = useSession();
+  const target = session.data?.user.role.toUpperCase();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
 
   const notices = data?.notices;
   //   const count = data?.count;
+
+  const targetedNotice = notices?.filter(
+    (notice) => notice.notice_target === target
+  );
+  const otherNotice = notices?.filter(
+    (notice) => notice.notice_target !== target
+  );
 
   if (!notices || notices.length === 0)
     return <div className="text-sm text-gray-500">No notices found</div>;
@@ -37,7 +38,7 @@ function UserNotice({ category }: Props) {
       <div className=" rounded-md flex  flex-col bg-gray-50 gap-4 flex-1">
         <h2 className="text-xl mb-4">Notice for You</h2>
 
-        {notices.map((notice) => (
+        {targetedNotice?.map((notice) => (
           <div key={notice.id} className="border rounded-md ">
             <Accordion type="single" collapsible>
               <AccordionItem value={notice.id.toString()}>
@@ -98,7 +99,7 @@ function UserNotice({ category }: Props) {
       <div className=" rounded-md flex  flex-col bg-gray-50 gap-4 flex-1">
         <h2 className="text-xl mb-4">General Notice</h2>
 
-        {notices.map((notice) => (
+        {otherNotice?.map((notice) => (
           <div key={notice.id} className="border rounded-md ">
             <Accordion type="single" collapsible>
               <AccordionItem value={notice.id.toString()}>

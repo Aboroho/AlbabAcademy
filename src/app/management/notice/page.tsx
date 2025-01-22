@@ -6,7 +6,7 @@ type Props = {};
 function NoticePage({}: Props) {
   return (
     <div>
-      <UserNotice category="GENERAL" target="ALL_USER" />
+      <UserNotice />
     </div>
   );
 }

@@ -100,7 +100,7 @@ export const POST = withMiddleware(
   }
 );
 
-export const GET = withMiddleware(async (req) => {
+export const GET = withMiddleware(authenticate, authorizeAdmin, async (req) => {
   const { searchParams } = new URL(req.url);
 
   // // join filters

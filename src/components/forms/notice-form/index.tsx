@@ -187,6 +187,10 @@ function NoticeForm({
                         value: "DIRECTOR",
                       },
                       {
+                        label: "Admin",
+                        value: "ADMIN",
+                      },
+                      {
                         label: "Super Admin",
                         value: "SUPER_ADMIN",
                       },

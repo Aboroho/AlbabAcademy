@@ -10,6 +10,7 @@ import { noticeCreateValidationSchema } from "../../validationSchema/noticeSchem
 
 import { getAuthSession } from "../../middlewares/auth/helper";
 import { NoticeService } from "../../services/notice.service";
+import { NoticeCategory, NoticeTarget } from "@prisma/client";
 
 export const POST = withMiddleware(
   authenticate,
@@ -34,10 +35,33 @@ export const GET = withMiddleware(authenticate, async (req) => {
 
   const page = parseInt(searchParams.get("page") || "") || 1;
   const pageSize = parseInt(searchParams.get("pageSize") || "") || 50;
+  let noticeCategory: any = searchParams.get("notice_category") || undefined;
+  if (noticeCategory) noticeCategory = noticeCategory.split(",");
+
   const noticeService = new NoticeService(prismaQ);
+
   if (session?.user.role === "ADMIN") {
-    const { notices, count } = await noticeService.findAll({ page, pageSize });
+    const { notices, count } = await noticeService.findAll({
+      page,
+      pageSize,
+      category: noticeCategory as NoticeCategory[],
+    });
 
     return apiResponse({ data: { count, notices } });
   }
+  const target =
+    session?.user.role === "STUDENT"
+      ? "STUDENT"
+      : session?.user.role === "TEACHER"
+      ? "TEACHER"
+      : "ALL_USERS";
+  const targets = [target, "ALL_USER"] as NoticeTarget[];
+  const { notices, count } = await noticeService.findAll({
+    page,
+    pageSize,
+    category: noticeCategory as NoticeCategory[],
+    target: targets,
+  });
+
+  return apiResponse({ data: { count, notices } });
 });

@@ -19,22 +19,50 @@ export class NoticeService implements INoticeService {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findAll(noticeQueryFilter: {
-    target?: [NoticeTarget];
-    type?: [NoticeType];
-    category?: [NoticeCategory];
+    target?: NoticeTarget[];
+    type?: NoticeType[];
+    category?: NoticeCategory[];
     status?: ["ACTIVE" | "INACTIVE" | "ARCHIVED"];
     page?: number;
     pageSize?: number;
   }): Promise<NoticeListDTO> {
-    // Implement the logic to fetch all notices with the given filter
     const pageSize = noticeQueryFilter.pageSize || 20;
     const page = noticeQueryFilter.page || 1;
     const notices = await this.prisma.notice.findMany({
+      where: {
+        notice_target: {
+          in: noticeQueryFilter.target,
+        },
+        notice_category: {
+          in: noticeQueryFilter.category,
+        },
+        notice_type: {
+          in: noticeQueryFilter.type,
+        },
+        status: {
+          in: noticeQueryFilter.status,
+        },
+      },
       take: pageSize,
       skip: (page - 1) * pageSize,
     });
 
-    const count = await this.prisma.notice.count({});
+    const count = await this.prisma.notice.count({
+      where: {
+        notice_target: {
+          in: noticeQueryFilter.target,
+        },
+        notice_category: {
+          in: noticeQueryFilter.category,
+        },
+        notice_type: {
+          in: noticeQueryFilter.type,
+        },
+        status: {
+          in: noticeQueryFilter.status,
+        },
+      },
+    });
 
     return {
       notices,
