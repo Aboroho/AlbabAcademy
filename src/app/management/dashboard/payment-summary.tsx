@@ -97,16 +97,17 @@ function PaymentSummary({}: Props) {
             </>
           )}
           {payments?.map((payment) => (
-            <tr className="border-b  " key={payment.id}>
+            <tr className="border-b  h-[65px]" key={payment.id}>
               <td>
-                {payment.user.avatar && (
-                  <Image
-                    alt="Avatar"
-                    width={50}
-                    height={50}
-                    src={payment.user.avatar}
-                  />
-                )}
+                <Image
+                  className="w-[50px] h-[50px] rounded-full border"
+                  alt="Avatar"
+                  width={50}
+                  height={50}
+                  src={
+                    payment.user.avatar || "/assets/images/student-avatar.png"
+                  }
+                />
               </td>
               <td className=" p-3 flex gap-4 items-center">
                 {payment.user.student?.full_name ||
