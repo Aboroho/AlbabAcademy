@@ -112,7 +112,7 @@ enum AssessmentStatus {
   PUBLISHED
 }
 
-enum AttendenceStatus {
+enum AttendanceStatus {
   PRESENT
   ABSENT
   NO_DATA
@@ -220,7 +220,7 @@ model Student {
   cohort              Cohort   @relation(fields: [cohort_id], references: [id])
  
 
-  attendence_record   StudentAttendence[]
+  attendance_record   StudentAttendance[]
   feedbacks_given StudentFeedBack[]
   
   roll                Int
@@ -258,7 +258,8 @@ model Teacher {
   assessment_subjects AssessmentSubject[]
   section Section[]
 
-  attendence_record   TeacherAttendence[]
+  
+  attendance_record   TeacherAttendance[]
 
   feedbacks_received           StudentFeedBack[]
 
@@ -393,16 +394,15 @@ model CohortTeacherSchedule {
 }
 
 
-model StudentAttendence {
+model StudentAttendance {
   id                Int                   @id @default(autoincrement())
   date              DateTime
-  status            AttendenceStatus
+  status            AttendanceStatus
 
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  
   
   student_id        Int               
   student           Student               @relation(fields: [student_id], references: [id], onDelete: Cascade)
@@ -410,10 +410,10 @@ model StudentAttendence {
   @@unique([date, student_id])
 }
 
-model TeacherAttendence {
+model TeacherAttendance {
   id                Int                   @id @default(autoincrement())
   date              DateTime
-  status            AttendenceStatus
+  status            AttendanceStatus
 
 
   createdAt   DateTime   @default(now())

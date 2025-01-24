@@ -17,7 +17,7 @@ export const GET = withMiddleware(async (req) => {
   const { notices, count } = await noticeService.findAllWithFilter({
     category: noticeCategory,
     type: "PUBLIC",
-
+    status : "ACTIVE",
     page,
     pageSize,
     target: noticeTarget,
