@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/shadcn/ui/accordion";
+import { formatDate } from "@/lib/utils";
 import { Bell, ChevronDown, DownloadCloudIcon } from "lucide-react";
 import { RiAttachment2 } from "react-icons/ri";
 
@@ -48,7 +49,12 @@ function NoticeList({ category, page, pageSize }: Props) {
                     <Bell className="w-4" />
                     {notice.title}
                   </h2>
-                  <ChevronDown className="ml-auto w-4" />
+                  <div className="flex gap-4 items-center">
+                    <div className="text-[12px] text-gray-700">
+                      {formatDate(notice.created_at)}
+                    </div>
+                    <ChevronDown className="ml-auto w-4" />
+                  </div>
                 </div>
               </AccordionTrigger>
               <AccordionContent>

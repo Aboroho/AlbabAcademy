@@ -9,7 +9,7 @@ function HeroSection() {
     <div className="w-full  bg-accent bg-gradient-to-b lg:bg-gradient-to-r from-white  to-brand/15 -z-20 border-b border-brand/50">
       <div className=" hero-pattern  ">
         <div className="relative z-20">
-          <div className=" container h-[768px] flex flex-col py-10 lg:flex-row lg:py-0 items-center justify-between ">
+          <div className=" container flex flex-col py-10 lg:flex-row lg:py-14 items-center justify-between ">
             <div className="text-center lg:text-left mb-10 lg:mb-0 w-full lg:w-[50%] lg:pr-6">
               <h2 className="text-sx font-semi-bold uppercase">
                 Learning Begins With Us
