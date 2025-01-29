@@ -1,7 +1,9 @@
 import AboutSection from "@/containers/landing-page/about-section";
 import CurriculumSection from "@/containers/landing-page/curriculum-section";
 import HeroSection from "@/containers/landing-page/hero-section";
+import MessageSection from "@/containers/landing-page/message-section";
 import MotivationSection from "@/containers/landing-page/motivation-section";
+import NoticeSection from "@/containers/landing-page/notice-section";
 import Slider from "@/containers/landing-page/slider-section";
 import { Metadata } from "next";
 
@@ -14,6 +16,8 @@ export default function Home() {
     <div>
       <Slider />
       <HeroSection />
+      <MessageSection />
+      <NoticeSection />
 
       <AboutSection />
 

@@ -13,12 +13,18 @@ import { RiAttachment2 } from "react-icons/ri";
 
 type Props = {
   category: string;
+  page?: number;
+  pageSize?: number;
 };
 
-function NoticeList({ category }: Props) {
+function NoticeList({ category, page, pageSize }: Props) {
   const { data, isLoading, isError, error } = useGetPublicNotices(
     {},
-    { notice_category: category.toLocaleUpperCase() }
+    {
+      notice_category: category.toLocaleUpperCase(),
+      ...(page && { page }),
+      ...(pageSize && { pageSize }),
+    }
   );
 
   if (isLoading) return <div>Loading...</div>;

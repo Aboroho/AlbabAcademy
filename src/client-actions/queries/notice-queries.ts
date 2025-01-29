@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api, DEFAULT_QUERY_FILTER } from "../helper";
 import { NoticeListDTO } from "@/app/api/services/types/dto.types";
 import { Notice, NoticeCategory, NoticeTarget } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 export type PublicNoticeListViewModel = NoticeListDTO;
 export type PrivateNoticeListViewModel = NoticeListDTO;
@@ -62,9 +63,13 @@ export const useGetPrivateNotices = (
   if (filter?.notice_target)
     route += `&notice_target=${filter.notice_target.join(",")}`;
 
-  console.log(route);
+  const [key, setKey] = useState(["notices", "private", route]);
+
+  useEffect(() => {
+    setKey(["notices", "private", route]);
+  }, [route]);
   const query = useQuery({
-    queryKey: ["notices", "private"],
+    queryKey: key,
     queryFn: async () => {
       const res = await api(route, {
         method: "get",
@@ -83,7 +88,7 @@ export const useGetPrivateNotices = (
     ...queryOptions,
   });
 
-  return query;
+  return { ...query, key };
 };
 
 export const useGetNoticeById = (

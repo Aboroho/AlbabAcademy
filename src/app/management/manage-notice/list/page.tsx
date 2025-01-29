@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import { RiAttachment2 } from "react-icons/ri";
 
 function NoticeList() {
-  const { data, isLoading, isError, error } = useGetPrivateNotices(
+  const { data, isLoading, isError, error, key } = useGetPrivateNotices(
     {}
     // { notice_category: category.toLocaleUpperCase() }
   );
@@ -48,7 +48,7 @@ function NoticeList() {
 
       queryClient.invalidateQueries({ queryKey: ["notices", "private"] });
       queryClient.setQueryData(
-        ["notices", "private"],
+        ["notices", "private", key],
         (oldData: NoticeListDTO) => {
           if (oldData && oldData.notices) {
             const newData = oldData.notices.filter(
@@ -75,7 +75,6 @@ function NoticeList() {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: any) {
       toast.error("Some error occured");
-      console.log(err);
     } finally {
       toast.dismiss("delete-notice");
     }
@@ -113,7 +112,10 @@ function NoticeList() {
                       <PopoverTrigger onClick={(e) => e.stopPropagation()}>
                         <DotsVerticalIcon className="w-4 h-4 cursor-pointer" />
                       </PopoverTrigger>
-                      <PopoverContent className=" z-[1]">
+                      <PopoverContent
+                        className=" z-[1]"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="action-menu-container">
                           <Link
                             href={"/management/manage-notice/" + notice.id}
@@ -128,7 +130,10 @@ function NoticeList() {
                               confirmText="Delete"
                               message=""
                             >
-                              <div className="flex gap-3  cursor-pointer text-red-500 hover:text-red-600">
+                              <div
+                                className="flex gap-3  cursor-pointer text-red-500 hover:text-red-600"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 <Trash2 className="w-5 h-5" />
                                 <span>Delete</span>
                               </div>
