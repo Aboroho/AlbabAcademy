@@ -1,9 +1,9 @@
-// import { AssementDetailsForm } from "@/components/forms/assesment-details-form";
+import { AssementDetailsForm } from "@/components/forms/assesment-details-form";
 
 function CreateAssesment() {
   return (
     <div>
-      {/* <AssementDetailsForm /> */}
+      <AssementDetailsForm />
       not implemented yet
     </div>
   );

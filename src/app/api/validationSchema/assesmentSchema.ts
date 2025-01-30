@@ -11,14 +11,14 @@ const AssesmentStatus = z.enum(
   }
 );
 export const assessmentSubjectSchema = z.object({
-  assessment_id: z
-    .number({
-      required_error: "Assessment ID is required.",
-      invalid_type_error: "Assessment ID must be a number.",
-    })
-    .int("Assessment ID must be an integer.")
-    .positive("Assessment ID must be a positive integer.")
-    .optional(),
+  // assessment_id: z
+  //   .number({
+  //     required_error: "Assessment ID is required.",
+  //     invalid_type_error: "Assessment ID must be a number.",
+  //   })
+  //   .int("Assessment ID must be an integer.")
+  //   .positive("Assessment ID must be a positive integer.")
+  //   .optional(),
 
   subject_name: z
     .string({
@@ -28,7 +28,7 @@ export const assessmentSubjectSchema = z.object({
     .min(1, "Subject name cannot be empty.")
     .max(32, "Subject name must not exceed 32 characters."),
 
-  total_mark: z
+  total_marks: z
     .number({
       required_error: "Total mark is required.",
       invalid_type_error: "Total mark must be a number.",
@@ -53,6 +53,14 @@ export const AssessmentSchema = z.object({
     })
     .int("Grade ID must be an integer.")
     .positive("Grade ID must be a positive integer."),
+  section_ids: z
+    .array(
+      z
+        .number()
+        .int("Grade ID must be an integer.")
+        .positive("Grade ID must be a positive integer.")
+    )
+    .min(1, "Sections are required"),
 
   title: z
     .string({
@@ -78,22 +86,7 @@ export const AssessmentSchema = z.object({
   date: z.preprocess((arg) => {
     return typeof arg === "string" || arg instanceof Date ? new Date(arg) : arg;
   }, z.date({ message: "Invalid date" })),
-  result_date: z
-    .preprocess((arg) => {
-      return typeof arg === "string" || arg instanceof Date
-        ? new Date(arg)
-        : arg;
-    }, z.date({ message: "Invalid date" }))
-    .optional(),
 
-  creator_id: z
-    .number({
-      required_error: "Creator ID is required.",
-      invalid_type_error: "Creator ID must be a number.",
-    })
-    .int("Creator ID must be an integer.")
-    .positive("Creator ID must be a positive integer."),
-
-  assessment_status: AssesmentStatus.default("IN_PROGRESS"),
+  status: AssesmentStatus.default("IN_PROGRESS"),
   assessment_subjects: z.array(assessmentSubjectSchema),
 });

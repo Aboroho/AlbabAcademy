@@ -110,6 +110,8 @@ enum AssessmentStatus {
   IN_PROGRESS
   CANCELED
   PUBLISHED
+  COMPLETED
+  GRADED
 }
 
 enum AttendanceStatus {
@@ -172,7 +174,7 @@ model User {
   notices       Notice[]
   
 
-  assessments_created Assessment[]
+
   media Media[]
 
  
@@ -226,6 +228,7 @@ model Student {
   roll                Int
   @@unique([roll, cohort_id])
   
+  assessment_results AssessmentResult[]
 }
 
 model StudentFeedBack {
@@ -437,19 +440,16 @@ model Assessment {
   description       String?          @db.Text
   assessment_type   String?          @db.VarChar(20)
   date              DateTime
-  result_date       DateTime?
 
-  creator_id        Int?
-  creator           User?            @relation(fields: [creator_id], references: [id], onDelete: SetNull)
-
-  status           AssessmentStatus  @default(PENDING)
+  status           AssessmentStatus  @default(IN_PROGRESS)
   created_at        DateTime         @default(now())
 
   grade_id          Int
   grade             Grade            @relation(fields: [grade_id], references: [id])
   
-  
   assessment_subjects AssessmentSubject[]
+
+  assessment_results AssessmentResult[]
 }
 
 // Model for AssessmentSubject
@@ -457,7 +457,7 @@ model AssessmentSubject {
   id             Int       @id @default(autoincrement())
   
   subject_name           String   
-  total_mark     Int
+  total_marks     Int
   status         AssessmentStatus @default(PENDING)
 
   teacher_id     Int?
@@ -466,15 +466,23 @@ model AssessmentSubject {
   assessment_id  Int
   assessment     Assessment  @relation(fields: [assessment_id], references: [id],onDelete: Cascade)
   
-
   @@unique([assessment_id, subject_name])
+  assessment_results AssessmentResult[]
 }
 
 model AssessmentResult {
-  student_id                Int      
+  student_id                Int 
+  student                   Student @relation(fields: [student_id], references: [id], onDelete: Cascade)     
+
   assessment_subject_id     Int      
-  mark                      Int
-  status                    AssessmentStatus  @default(PENDING)
+  assessment_subject        AssessmentSubject @relation(fields: [assessment_subject_id], references: [id], onDelete: Cascade)
+
+  assessment_id             Int
+  assessment                Assessment @relation(fields: [assessment_id], references: [id], onDelete: Cascade)
+
+
+  mark                      Int     @default(0)
+  
   remark                    String?
 
   @@unique([student_id, assessment_subject_id])
