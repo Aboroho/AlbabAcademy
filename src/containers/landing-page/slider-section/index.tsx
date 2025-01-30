@@ -17,7 +17,7 @@ import { School } from "lucide-react";
 
 export default function TopCarousel() {
   return (
-    <div className="w-full  ">
+    <div className="w-full container ">
       <Carousel
         className=" h-full mx-auto relative overflow-visible"
         plugins={[Autoplay({ delay: 3000, stopOnFocusIn: true })]}
@@ -26,6 +26,17 @@ export default function TopCarousel() {
         }}
       >
         <CarouselContent className=" max-h-[65vh] ">
+          <CarouselItem>
+            <div className="">
+              <Image
+                src={"/assets/images/school.jpg"}
+                alt="header-image"
+                className="w-full object-center"
+                width={1920}
+                height={1080}
+              />
+            </div>
+          </CarouselItem>
           <CarouselItem>
             <div className="relative h-full">
               <div className="overlay absolute top-0 right-0 left-0 bottom-0 bg-black/25"></div>
@@ -93,15 +104,6 @@ export default function TopCarousel() {
                 src={Quran}
                 alt="header-image"
                 className="w-full object-cover h-full"
-              />
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div className="">
-              <Image
-                src={Math}
-                alt="header-image"
-                className="w-full object-cover"
               />
             </div>
           </CarouselItem>

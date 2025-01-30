@@ -85,7 +85,6 @@ export function AssementDetailsForm() {
     toast.success("Assessment Created successfully");
   }
 
-  console.log(errors);
   return (
     <div>
       <FormProvider {...form}>

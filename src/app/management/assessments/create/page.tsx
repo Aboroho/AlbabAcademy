@@ -4,7 +4,6 @@ function CreateAssesment() {
   return (
     <div>
       <AssementDetailsForm />
-      not implemented yet
     </div>
   );
 }

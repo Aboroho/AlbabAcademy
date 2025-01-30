@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/shadcn/ui/accordion";
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
 import { formatDate } from "@/lib/utils";
 import { Bell, ChevronDown, DownloadCloudIcon } from "lucide-react";
 import { RiAttachment2 } from "react-icons/ri";
@@ -28,7 +29,14 @@ function NoticeList({ category, page, pageSize }: Props) {
     }
   );
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex gap-4 flex-col">
+        <Skeleton className="w-full h-[50px]" />
+        <Skeleton className="w-full h-[50px]" />
+        <Skeleton className="w-full h-[50px]" />
+      </div>
+    );
   if (isError) return <div>Error: {error.message}</div>;
 
   const notices = data?.notices;
