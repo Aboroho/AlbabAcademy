@@ -17,7 +17,7 @@ import { School } from "lucide-react";
 
 export default function TopCarousel() {
   return (
-    <div className="w-full container ">
+    <div className="w-full container !p-0">
       <Carousel
         className=" h-full mx-auto relative overflow-visible"
         plugins={[Autoplay({ delay: 3000, stopOnFocusIn: true })]}
@@ -31,7 +31,7 @@ export default function TopCarousel() {
               <Image
                 src={"/assets/images/school.jpg"}
                 alt="header-image"
-                className="w-full object-center"
+                className="w-full object-fit"
                 width={1920}
                 height={1080}
               />
