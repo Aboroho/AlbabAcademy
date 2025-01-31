@@ -9,7 +9,7 @@ import { parseJSONData } from "@/app/api/utils/parseIncomingData";
 import { prismaQ } from "@/app/api/utils/prisma";
 import { AssessmentStatus } from "@prisma/client";
 
-export const UPDATE = withMiddleware(
+export const PUT = withMiddleware(
   authenticate,
   authorizeAdmin,
   async (req, { params }: { params: Promise<{ assessmentId: string }> }) => {
