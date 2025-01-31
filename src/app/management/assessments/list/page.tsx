@@ -19,10 +19,12 @@ import {
 import { formatDate } from "@/lib/utils";
 
 import { ChevronDown } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 function AssessmentList() {
   const { data: assessments } = useGetAssessments();
+  const session = useSession();
 
   return (
     <div>
@@ -89,6 +91,11 @@ function AssessmentList() {
                                       className="bg-green-500 hover:bg-green-600 text-white"
                                       size="sm"
                                       variant="default"
+                                      disabled={
+                                        session?.data?.user.id !==
+                                          subject.teacher?.id &&
+                                        session?.data?.user.role !== "ADMIN"
+                                      }
                                     >
                                       Assess
                                     </Button>

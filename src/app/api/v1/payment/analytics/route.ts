@@ -45,7 +45,46 @@ export const GET = withMiddleware(authenticate, async (req) => {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
-  return apiResponse({ data: payments });
+  const paymentRequestEntry = await prismaQ.paymentRequestEntry.aggregate({
+    _sum: {
+      amount: true,
+      stipend: true,
+    },
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+      ...(role !== "ADMIN" && { user_id: userId }),
+    },
+  });
+
+  // const paymentRequest = await prismaQ.paymentRequest.findMany({
+  //   select : {
+  //     payment_request_entries : {
+  //       select : {
+  //         amount : true,
+  //         stipend : true,
+  //         payments : {
+  //           select : {
+  //             amount : true,
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //   }
+  // })
+  return apiResponse({
+    data: {
+      payments,
+      totalRequestedAmount: paymentRequestEntry._sum.amount,
+      totalStipend: paymentRequestEntry._sum.stipend,
+    },
+  });
 });

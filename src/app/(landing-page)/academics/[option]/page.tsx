@@ -1,14 +1,15 @@
-type Props = {
-  params: Promise<{ option: string }>;
-};
+import CurriculumSection from "@/containers/landing-page/curriculum-section";
 
-async function Academics({ params }: Props) {
-  const option = (await params).option;
+// type Props = {
+//   params: Promise<{ option: string }>;
+// };
+
+async function Academics() {
+  // const option = (await params).option;
 
   return (
     <div className="container min-h-[400px] py-10">
-      <h1 className="text-2xl">{option.replaceAll("-", " ")}</h1>
-      <div>Comming soon..</div>
+      <CurriculumSection />
     </div>
   );
 }

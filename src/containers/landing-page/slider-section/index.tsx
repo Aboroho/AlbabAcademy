@@ -17,7 +17,7 @@ import { School } from "lucide-react";
 
 export default function TopCarousel() {
   return (
-    <div className="w-full container !p-0">
+    <div className="w-full ">
       <Carousel
         className=" h-full mx-auto relative overflow-visible"
         plugins={[Autoplay({ delay: 3000, stopOnFocusIn: true })]}

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/shadcn/ui/skeleton";
 
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { formatDate } from "@/lib/utils";
+import { isEmpty } from "lodash";
 import Image from "next/image";
 
 import { useState } from "react";
@@ -19,7 +20,7 @@ function PaymentSummary({}: Props) {
     to: new Date(),
   });
 
-  const { data: payments, isLoading } = useGetPaymentAnalytics(
+  const { data: analytics, isLoading } = useGetPaymentAnalytics(
     {},
     {
       startDate: date?.from,
@@ -27,12 +28,18 @@ function PaymentSummary({}: Props) {
     }
   );
 
-  const total =
+  const payments = analytics?.payments;
+
+  const totalPaid =
     payments?.reduce(
       (acc, payment) =>
         payment.status === "PAID" ? acc + payment.amount : acc,
       0
     ) || 0;
+
+  const totalRequested = analytics?.totalRequestedAmount || 0;
+  const totalStipend = analytics?.totalStipend || 0;
+
   return (
     <div>
       <h2 className="text-lg mb-2 font-semibold">Payment Analytics</h2>
@@ -46,11 +53,26 @@ function PaymentSummary({}: Props) {
         locale="en-GB"
         showCompare={false}
       />
-      <div>
-        <div className="text-green-500 text-2xl py-4">Total : {total} ৳</div>
+      <div className="flex gap-4 py-4">
+        <div className="bg-orange-500 p-4 px-8 rounded-md text-white flex flex-col items-center">
+          Requested Amount <span className="text-xl">{totalRequested}৳</span>
+        </div>
+
+        <div className="bg-gray-500 p-4 px-8 rounded-md text-white flex flex-col items-center">
+          Stipend Given <span className="text-xl">{totalStipend}৳</span>
+        </div>
+        <div className="bg-green-500 p-4 px-8 rounded-md text-white flex flex-col items-center">
+          Paid <span className="text-xl">{totalPaid}৳</span>
+        </div>
+        <div className="bg-red-500 p-4 px-8 rounded-md text-white flex flex-col items-center">
+          Due{" "}
+          <span className="text-xl">
+            {totalRequested - totalStipend - totalPaid}৳
+          </span>
+        </div>
       </div>
 
-      <div>
+      <div className="max-h-[70vh] overflow-y-scroll">
         <table className="w-full mb-14">
           <thead>
             <th className="text-left">Avatar</th>
@@ -71,19 +93,28 @@ function PaymentSummary({}: Props) {
                 <td>
                   <Skeleton className="w-full h-6" />
                 </td>
-              </tr>
-              <tr className="w-full">
-                <td>
-                  <Skeleton className="w-full h-6" />
-                </td>
-                <td>
-                  <Skeleton className="w-full h-6" />
-                </td>
                 <td>
                   <Skeleton className="w-full h-6" />
                 </td>
               </tr>
               <tr className="w-full">
+                <td>
+                  <Skeleton className="w-full h-6" />
+                </td>
+                <td>
+                  <Skeleton className="w-full h-6" />
+                </td>
+                <td>
+                  <Skeleton className="w-full h-6" />
+                </td>
+                <td>
+                  <Skeleton className="w-full h-6" />
+                </td>
+              </tr>
+              <tr className="w-full">
+                <td>
+                  <Skeleton className="w-full h-6" />
+                </td>
                 <td>
                   <Skeleton className="w-full h-6" />
                 </td>
@@ -96,6 +127,7 @@ function PaymentSummary({}: Props) {
               </tr>
             </>
           )}
+
           {payments?.map((payment) => (
             <tr className="border-b  h-[65px]" key={payment.id}>
               <td>
@@ -123,6 +155,11 @@ function PaymentSummary({}: Props) {
             </tr>
           ))}
         </table>
+        {!isLoading && isEmpty(payments) && (
+          <div className="text-sm text-gray-500 mb-10 text-center">
+            No data found
+          </div>
+        )}
       </div>
     </div>
   );

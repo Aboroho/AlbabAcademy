@@ -174,11 +174,15 @@ export const useGetPaymentAnalytics = (
         method: "get",
       });
       if (res?.success) {
-        const data = res.data as Array<
-          Payment & {
-            user: { avatar?: string; student?: Student; teacher?: Teacher };
-          }
-        >;
+        const data = res.data as {
+          payments: Array<
+            Payment & {
+              user: { avatar?: string; student?: Student; teacher?: Teacher };
+            }
+          >;
+          totalRequestedAmount: number;
+          totalStipend: number;
+        };
         return data;
       }
     },
