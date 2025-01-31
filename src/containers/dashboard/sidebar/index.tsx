@@ -27,6 +27,28 @@ function Sidebar() {
       <CommonLinks />
 
       <Protected
+        roles={["ADMIN", "DIRECTOR", "SUPER_ADMIN", "TEACHER"]}
+        action="redirect"
+        redirectPath="/management/dashboard"
+      >
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Assessment"}
+          routePrefix="/management/assessments"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create Assessment", href: "/create" },
+                { label: "Assessment List", href: "/list" },
+              ],
+              prefix: "/management/assessments",
+            }}
+          />
+        </CollapsibleLink>
+      </Protected>
+
+      <Protected
         roles={["ADMIN", "DIRECTOR", "SUPER_ADMIN"]}
         action="redirect"
         redirectPath="/management/dashboard"
@@ -80,22 +102,6 @@ function Sidebar() {
                 { label: "Create teacher", href: "/create" },
               ],
               prefix: "/management/teachers",
-            }}
-          />
-        </CollapsibleLink>
-
-        <CollapsibleLink
-          icon={<GraduationCap className="w-4 h-4" />}
-          label={"Assessment"}
-          routePrefix="/management/assessments"
-        >
-          <CollapsibleLinkContent
-            linkList={{
-              links: [
-                { label: "Create Assessment", href: "/create" },
-                { label: "Assessment List", href: "/list" },
-              ],
-              prefix: "/management/assessments",
             }}
           />
         </CollapsibleLink>

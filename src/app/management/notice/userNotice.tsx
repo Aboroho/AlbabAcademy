@@ -38,7 +38,9 @@ function UserNotice() {
     <div className="flex flex-col lg:flex-row  gap-4">
       <div className=" rounded-md flex  flex-col bg-gray-50 gap-4 flex-1">
         <h2 className="text-xl mb-4">Notice for You</h2>
-
+        {targetedNotice?.length === 0 && (
+          <div className="text-sm text-gray-500">No notices found</div>
+        )}
         {targetedNotice?.map((notice) => (
           <div key={notice.id} className="border rounded-md ">
             <Accordion type="single" collapsible>
@@ -104,6 +106,10 @@ function UserNotice() {
 
       <div className=" rounded-md flex  flex-col bg-gray-50 gap-4 flex-1">
         <h2 className="text-xl mb-4">General Notice</h2>
+
+        {otherNotice?.length === 0 && (
+          <div className="text-sm">No notices found</div>
+        )}
 
         {otherNotice?.map((notice) => (
           <div key={notice.id} className="border rounded-md ">

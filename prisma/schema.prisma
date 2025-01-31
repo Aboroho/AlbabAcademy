@@ -485,7 +485,8 @@ model AssessmentResult {
   
   remark                    String?
 
-  @@unique([student_id, assessment_subject_id])
+  // @@unique([student_id, assessment_subject_id])
+  @@unique([assessment_id, assessment_subject_id, student_id])
 }
 
 

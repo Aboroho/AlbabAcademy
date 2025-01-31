@@ -55,7 +55,7 @@ export const GET = withMiddleware(authenticate, async (req) => {
       : session?.user.role === "TEACHER"
       ? "TEACHER"
       : "ALL_USERS";
-  const targets = [target, "ALL_USER"] as NoticeTarget[];
+  const targets = [target, "ALL_USERS"] as NoticeTarget[];
   const { notices, count } = await noticeService.findAll({
     page,
     pageSize,

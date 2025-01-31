@@ -6,7 +6,7 @@ import { FieldError } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  label: string;
+  label?: string;
   error?: FieldError;
   rightIcon?: JSX.Element;
   icon?: JSX.Element;
@@ -23,11 +23,16 @@ const InputField = forwardRef<HTMLInputElement, Props>(
     const errorLabelClass = error && "text-red-500";
     return (
       <div className="w-full space-y-2">
-        <div className="label">
-          <label htmlFor={id} className={cn("font-semibold", errorLabelClass)}>
-            {label}
-          </label>
-        </div>
+        {label && (
+          <div className="label">
+            <label
+              htmlFor={id}
+              className={cn("font-semibold", errorLabelClass)}
+            >
+              {label}
+            </label>
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <Input
             icon={icon}
