@@ -24,7 +24,6 @@ export default function Home() {
       <AboutSection />
       <ImageGallary />
 
-      <CurriculumSection />
       <VideoGallary />
       <MotivationSection />
     </div>

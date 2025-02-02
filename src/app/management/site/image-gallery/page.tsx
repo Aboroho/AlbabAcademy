@@ -88,11 +88,11 @@ function ImageGallery({}: Props) {
   }
   return (
     <div>
-      <div className="mb-10 flex gap-2 items-center">
+      <div className="mb-10 flex gap-2 items-center lg:ml-10 p-2">
         <ImageIcon />
         <h1 className="text-2xl">Image Gallary</h1>
       </div>
-      <div className="p-7 border border-dashed border-gray-300 ml-10 mr-10">
+      <div className="p-7 border border-dashed border-gray-300 lg:ml-10 lg:mr-10">
         <CldUploadButton
           options={{
             resourceType: "auto",
@@ -109,9 +109,9 @@ function ImageGallery({}: Props) {
 
           // className="text-xs absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 group-hover:transition-opacity"
         >
-          <Button size={"sm"} className="bg-green-600 hover:bg-green-700">
+          <Button className="bg-green-600 hover:bg-green-700">
             <UploadCloud className="w-5" />
-            Choose Image Upload
+            Choose Image to Upload
           </Button>
         </CldUploadButton>
       </div>
@@ -138,7 +138,7 @@ function ImageGallery({}: Props) {
           </Skeleton>
         </div>
       )}
-      <div className="grid grid-cols-4 p-10 gap-2 mt-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 p-10 gap-2 mt-10">
         {media?.map((file) => (
           <div className="relative group" key={file.asset_id}>
             <Image
