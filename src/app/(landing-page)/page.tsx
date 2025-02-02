@@ -1,5 +1,5 @@
 import AboutSection from "@/containers/landing-page/about-section";
-import CurriculumSection from "@/containers/landing-page/curriculum-section";
+
 import HeroSection from "@/containers/landing-page/hero-section";
 import ImageGallary from "@/containers/landing-page/image-gallary";
 import MessageSection from "@/containers/landing-page/message-section";
