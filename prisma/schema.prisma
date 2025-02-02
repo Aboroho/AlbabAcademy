@@ -674,19 +674,28 @@ model Notification {
   user_id   Int
 }
 
+enum FileType{
+  AUDIO
+  VIDEO
+  IMAGE
+  DOC
+  OTHER
+}
 
 model Media {
   id            Int      @id @default(autoincrement())
-  media_url     String
-  file_type     String
+  asset_id      String  @unique
+  url           String
+  type     FileType? @default(IMAGE)
   uploaded_at   DateTime @default(now())
   status        MediaStatus @default(TEMP)
+  group   String?
   
-  user_id Int
-  uploaded_by   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int?
+  uploaded_by   User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   
 
-  static_pagees StaticPageResource[]
+  static_pages StaticPageResource[]
 }
 
 

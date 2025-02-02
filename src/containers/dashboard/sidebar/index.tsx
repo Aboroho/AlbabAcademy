@@ -3,14 +3,17 @@ import Image from "next/image";
 import CommonLinks from "./common-links";
 import Link from "next/link";
 
-import { Bell, GraduationCap, Notebook } from "lucide-react";
+import { Bell, BookOpenCheck, GraduationCap, Notebook } from "lucide-react";
 import {
   CollapsibleLink,
   CollapsibleLinkContent,
 } from "@/components/ui/collapsible-link";
 import { Protected } from "@/components/auth";
+import IconLink from "@/components/ui/IconLink";
+import { usePathname } from "next/navigation";
 
 function Sidebar() {
+  const pathName = usePathname();
   return (
     <div className="flex flex-col gap-3">
       <Link href={"/"}>
@@ -28,7 +31,7 @@ function Sidebar() {
 
       <Protected
         roles={["ADMIN", "DIRECTOR", "SUPER_ADMIN", "TEACHER"]}
-        action="redirect"
+        action="hide"
         redirectPath="/management/dashboard"
       >
         <CollapsibleLink
@@ -47,10 +50,21 @@ function Sidebar() {
           />
         </CollapsibleLink>
       </Protected>
-
+      <Protected
+        roles={["STUDENT"]}
+        action="hide"
+        redirectPath="/management/dashboard"
+      >
+        <IconLink
+          label="Result"
+          icon={<BookOpenCheck className="w-4 h-4" />}
+          href="/management/result"
+          active={pathName == "/management/result"}
+        />
+      </Protected>
       <Protected
         roles={["ADMIN", "DIRECTOR", "SUPER_ADMIN"]}
-        action="redirect"
+        action="hide"
         redirectPath="/management/dashboard"
       >
         <CollapsibleLink
@@ -67,6 +81,19 @@ function Sidebar() {
                 { label: " Payment request", href: "/payment-request" },
               ],
               prefix: "/management/students",
+            }}
+          />
+        </CollapsibleLink>
+
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Site"}
+          routePrefix="/management/site/"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [{ label: "Image Gallery", href: "image-gallery" }],
+              prefix: "/management/site/",
             }}
           />
         </CollapsibleLink>

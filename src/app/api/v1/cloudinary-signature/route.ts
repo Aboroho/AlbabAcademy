@@ -12,8 +12,6 @@ export const POST = withMiddleware(
     const body = (await req.json()) as { paramsToSign: string[] };
     const { paramsToSign } = body;
 
-    console.log(paramsToSign);
-
     const signature = cloudinary.utils.api_sign_request(
       paramsToSign,
 

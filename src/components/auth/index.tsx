@@ -28,7 +28,9 @@ export const Protected = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLogedIn || !user || !roles?.includes(user.role)) {
+    if (!roles) return;
+
+    if (!isLogedIn || !user || !roles.includes(user.role)) {
       if (action === "redirect" && !isLoading) router.push(redirectPath);
     }
   }, [action, isLogedIn, redirectPath, roles, router, user, isLoading]);

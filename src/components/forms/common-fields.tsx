@@ -107,13 +107,14 @@ export const AvatarField = ({ defaultAvatarUrl, onImageChange }: Props) => {
             <CldUploadButton
               options={{
                 resourceType: "auto",
-                maxFiles: 1,
+                maxFiles: 4,
               }}
               signatureEndpoint="/api/v1/cloudinary-signature"
               uploadPreset="user_avatar"
               onSuccess={(file) => {
                 if (typeof file.info !== "string" && file.info?.secure_url) {
                   onImageChange(file.info.secure_url);
+                  console.log(file);
                 }
               }}
               className="text-xs absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 group-hover:transition-opacity"

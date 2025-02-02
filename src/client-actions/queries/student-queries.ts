@@ -16,6 +16,7 @@ import {
   StudentListDTO,
   StudentProfileDTO,
 } from "@/app/api/services/types/dto.types";
+import { Student } from "@prisma/client";
 
 export type IGetStudentsQueryFilter = {
   grade_id?: number;
@@ -62,6 +63,26 @@ export const useGetStudentById = (
         method: "get",
       });
       if (res?.success) return res.data as StudentProfileViewModel;
+    },
+
+    ...DEFAULT_QUERY_FILTER,
+    ...queryOptions,
+  });
+  return query;
+};
+
+export const useGetStudentByUserId = (
+  id: number | null | undefined,
+  queryOptions?: CustomQueryOptions
+) => {
+  const query = useQuery({
+    queryKey: ["student", "userId", id],
+    queryFn: async () => {
+      if (!id) return {} as StudentProfileViewModel;
+      const res = await api("/user/student/" + id, {
+        method: "get",
+      });
+      if (res?.success) return res.data as Student;
     },
 
     ...DEFAULT_QUERY_FILTER,

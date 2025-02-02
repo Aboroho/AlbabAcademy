@@ -97,3 +97,53 @@ export const useGetStudentForAssessment = (
   });
   return query;
 };
+
+type AssessmentWithResult = {
+  assessments: {
+    title: string;
+    assessment_type: string;
+    created_at: string | Date;
+    assessment_results: {
+      mark: number;
+      assessment_subject: {
+        subject_name: string;
+        total_marks: number;
+        teacher: {
+          full_name: string;
+          id: number;
+        };
+      };
+    }[];
+  }[];
+  count: number;
+};
+export const useGetAssessmentWithResult = (
+  studentId: number,
+  queryOptions?: CustomQueryOptions,
+  filter?: {
+    page: number;
+    pageSize: number;
+  }
+) => {
+  let route = `/assessments/result/${studentId}?`;
+  if (filter?.page) route += filter.page + "&";
+  if (filter?.pageSize) route += filter.pageSize;
+  const query = useQuery({
+    queryKey: ["assessments", "result", studentId],
+    queryFn: async () => {
+      const res = await api(route, {
+        method: "get",
+      });
+      if (res?.success) {
+        return res.data as AssessmentWithResult;
+      }
+    },
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+
+    refetchOnWindowFocus: true,
+
+    ...queryOptions,
+  });
+  return query;
+};

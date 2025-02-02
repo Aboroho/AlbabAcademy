@@ -6,6 +6,7 @@ const protectedApiRoutes = ["/api/edgestore"];
 
 export default async function middleare(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
   if (
     protectedApiRoutes.some((route) => req.nextUrl.pathname.startsWith(route))
   ) {
