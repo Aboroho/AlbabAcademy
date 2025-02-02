@@ -179,6 +179,7 @@ export const isNotEmpty = (v: any) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isEmpty = (v: any) => {
   if (Array.isArray(v)) return v.length === 0;
-  if (typeof v === "object") return Object.entries(v).length === 0;
+  if (typeof v === "object" && v !== null)
+    return Object.entries(v).length === 0;
   return EMPTY_FIELD_VALUES.includes(v);
 };
