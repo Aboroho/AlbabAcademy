@@ -1,3 +1,4 @@
+"use client";
 import { CustomQueryOptions } from "@/types/common";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../helper";
