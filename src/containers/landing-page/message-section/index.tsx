@@ -35,4 +35,5 @@ async function MessageSection({}: Props) {
   );
 }
 
+export const revalidate = 0;
 export default MessageSection;

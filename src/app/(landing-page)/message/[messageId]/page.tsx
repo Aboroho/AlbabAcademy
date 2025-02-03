@@ -14,6 +14,7 @@ async function Page({ params }: Props) {
       id: messageId,
     },
   });
+
   if (!testimonial) return <div>Testimonial not found</div>;
   return (
     <div className="container min-h-[70vh] py-10">
