@@ -3,7 +3,16 @@ import Image from "next/image";
 import CommonLinks from "./common-links";
 import Link from "next/link";
 
-import { Bell, BookOpenCheck, GraduationCap, Notebook } from "lucide-react";
+import {
+  Bell,
+  BookOpenCheck,
+  Globe,
+  GraduationCap,
+  MessageCircle,
+  Notebook,
+  NotebookPen,
+  UsersRound,
+} from "lucide-react";
 import {
   CollapsibleLink,
   CollapsibleLinkContent,
@@ -35,7 +44,7 @@ function Sidebar() {
         redirectPath="/management/dashboard"
       >
         <CollapsibleLink
-          icon={<GraduationCap className="w-4 h-4" />}
+          icon={<NotebookPen className="w-4 h-4" />}
           label={"Assessment"}
           routePrefix="/management/assessments"
         >
@@ -86,7 +95,7 @@ function Sidebar() {
         </CollapsibleLink>
 
         <CollapsibleLink
-          icon={<GraduationCap className="w-4 h-4" />}
+          icon={<Globe className="w-4 h-4" />}
           label={"Site"}
           routePrefix="/management/site/"
         >
@@ -98,9 +107,25 @@ function Sidebar() {
           />
         </CollapsibleLink>
 
+        <CollapsibleLink
+          icon={<MessageCircle className="w-4 h-4" />}
+          label={"Testimonial"}
+          routePrefix="/management/testimonial/"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create", href: "create" },
+                { label: "List", href: "list" },
+              ],
+              prefix: "/management/testimonial/",
+            }}
+          />
+        </CollapsibleLink>
+
         {/* student group */}
         <CollapsibleLink
-          icon={<GraduationCap className="w-4 h-4" />}
+          icon={<UsersRound className="w-4 h-4" />}
           label={"Student Groups"}
           routePrefix="/management/groups"
         >

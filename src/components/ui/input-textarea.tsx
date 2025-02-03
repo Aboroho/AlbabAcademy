@@ -8,10 +8,10 @@ import { Textarea } from "../shadcn/ui/textarea";
 type Props = {
   label: string;
   error?: FieldError;
-} & React.TextareaHTMLAttributes<HTMLInputElement>;
+} & React.ComponentProps<"textarea">;
 
 const InputTextArea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ label, name, id, error, className, cols, rows }: Props, ref) => {
+  ({ label, name, id, error, className, cols, rows, ...rest }: Props, ref) => {
     const errorInputClass =
       error &&
       "ring-1 ring-red-500 focus-within:ring-red-500 focus-within:ring-2";
@@ -30,6 +30,7 @@ const InputTextArea = forwardRef<HTMLTextAreaElement, Props>(
             name={name}
             ref={ref}
             className={cn("bg-white", className, errorInputClass)}
+            {...rest}
           />
         </div>
         {error && <div className="text-red-500 text-sm">{error.message}</div>}

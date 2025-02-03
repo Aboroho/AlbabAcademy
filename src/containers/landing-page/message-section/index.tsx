@@ -1,9 +1,11 @@
-import React from "react";
 import MessageCard from "./message-card";
+import { prismaQ } from "@/app/api/utils/prisma";
 
 type Props = {};
 
-function MessageSection({}: Props) {
+async function MessageSection({}: Props) {
+  const testimonials = await prismaQ.testimonial.findMany();
+
   return (
     <div
       className=" py-[5rem] "
@@ -13,42 +15,20 @@ function MessageSection({}: Props) {
     >
       <div className="container">
         <div className="flex  gap-4 flex-wrap">
-          <div className="lg:max-w-[48%] lg:min-w-[48%]">
-            <MessageCard
-              designation="Director"
-              image="/assets/images/director.png"
-              message="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugiat quae voluptatum repellendus dolores nobis corrupti, consequatur hic eaque ab numquam, nostrum impedit similique animi dolorum nihil aperiam vero sapiente modi!"
-              name="Abul Kalam"
-              messageId={1}
-            />
-          </div>
-          <div className=" lg:max-w-[48%] lg:min-w-[48%]">
-            <MessageCard
-              designation="Director"
-              image="/assets/images/director.png"
-              message="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugiat quae voluptatum repellendus dolores nobis corrupti, consequatur hic eaque ab numquam, nostrum impedit similique animi dolorum nihil aperiam vero sapiente modi!"
-              name="Al Mamun"
-              messageId={1}
-            />
-          </div>
-          <div className=" lg:max-w-[48%] lg:min-w-[48%]">
-            <MessageCard
-              designation="Director"
-              image="/assets/images/director.png"
-              message="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugiat quae voluptatum repellendus dolores nobis corrupti, consequatur hic eaque ab numquam, nostrum impedit similique animi dolorum nihil aperiam vero sapiente modi!"
-              name="Al Mamun"
-              messageId={1}
-            />
-          </div>
-          <div className=" lg:max-w-[48%] lg:min-w-[48%]">
-            <MessageCard
-              designation="Director"
-              image="/assets/images/director.png"
-              message="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugiat quae voluptatum repellendus dolores nobis corrupti, consequatur hic eaque ab numquam, nostrum impedit similique animi dolorum nihil aperiam vero sapiente modi!"
-              name="Al Mamun"
-              messageId={1}
-            />
-          </div>
+          {testimonials.map((testimonials) => (
+            <div
+              className="lg:max-w-[48%] lg:min-w-[48%]"
+              key={testimonials.id}
+            >
+              <MessageCard
+                designation={testimonials.designation}
+                image={testimonials.avatar}
+                message={testimonials.message}
+                name={testimonials.name}
+                messageId={testimonials.id}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

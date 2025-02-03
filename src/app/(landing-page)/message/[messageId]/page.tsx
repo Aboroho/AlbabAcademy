@@ -1,4 +1,6 @@
+import { prismaQ } from "@/app/api/utils/prisma";
 import Image from "next/image";
+
 import React from "react";
 
 type Props = {
@@ -6,8 +8,13 @@ type Props = {
 };
 
 async function Page({ params }: Props) {
-  const messageId = (await params).messageId;
-  console.log(messageId);
+  const messageId = Number((await params).messageId);
+  const testimonial = await prismaQ.testimonial.findUnique({
+    where: {
+      id: messageId,
+    },
+  });
+  if (!testimonial) return <div>Testimonial not found</div>;
   return (
     <div className="container min-h-[70vh] py-10">
       <div className="p-2 rounded-full border-primary relative self-center ">
@@ -17,7 +24,7 @@ async function Page({ params }: Props) {
             className="w-[100px] h-[100px] rounded-full object-cover border-white border-2"
             width={100}
             height={100}
-            src={"/assets/images/director.png"}
+            src={testimonial.avatar}
             alt="avatar"
           />
         </div>
@@ -31,24 +38,13 @@ async function Page({ params }: Props) {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Al Mamun
+          {testimonial.name}
         </p>
-        <p className="text-slate-700 text-sm">Assistant Director</p>
+        <p className="text-slate-700 text-sm">{testimonial.designation}</p>
       </div>
 
       <div className="mt-5 text-slate-700 text-lg ">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore magnam
-        recusandae quis officiis ad distinctio deleniti similique obcaecati?
-        Odio dolore dolores cupiditate deleniti sunt natus corrupti totam
-        tenetur amet animi ex incidunt illo optio sapiente vel velit, mollitia
-        aspernatur! Amet tempore quasi maxime deleniti iusto reprehenderit
-        explicabo ducimus sapiente voluptatem! Lorem ipsum dolor sit amet
-        <br></br>
-        consectetur adipisicing elit. Est cumque dolore voluptate doloribus
-        nulla laborum cum sed maiores saepe beatae, libero impedit, doloremque
-        officia aut possimus. Exercitationem, voluptate quaerat fuga laborum
-        perspiciatis voluptatem! Quo veniam enim delectus deleniti voluptatum
-        neque odio laborum, itaque id aut dolore sint soluta, vero eveniet!
+        <p>{testimonial.message}</p>
       </div>
     </div>
   );

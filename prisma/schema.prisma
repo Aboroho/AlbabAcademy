@@ -698,5 +698,15 @@ model Media {
   static_pages StaticPageResource[]
 }
 
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  message   String
+  designation String
+  avatar    String
+  name      String
+  group     String?
+  created_at DateTime @default(now())
+}
+
 
 

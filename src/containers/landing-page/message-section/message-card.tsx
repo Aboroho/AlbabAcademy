@@ -22,7 +22,7 @@ function MessageCard({ message, image, name, designation, messageId }: Props) {
     >
       <div className="p-2 rounded-full border-primary relative self-center ">
         <div className="absolute w-[128px] h-[128px] rounded-full p-4 bg-brand -z-10 top-[-10px] left-[-30px] opacity-40"></div>
-        <div className="w-[128px] h-[128px] rounded-full p-4 bg-primary">
+        <div className="w-[128px] h-[128px] rounded-full p-4 bg-primary z-[20]">
           <Image
             className="w-[100px] h-[100px] rounded-full object-cover border-white border-2"
             width={100}
