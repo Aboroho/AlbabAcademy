@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import {
   Bell,
+  BookA,
   BookOpenCheck,
   Globe,
   GraduationCap,
@@ -101,7 +102,10 @@ function Sidebar() {
         >
           <CollapsibleLinkContent
             linkList={{
-              links: [{ label: "Image Gallery", href: "image-gallery" }],
+              links: [
+                { label: "Image Gallery", href: "image-gallery" },
+                { label: "Admission Details", href: "admission-details" },
+              ],
               prefix: "/management/site/",
             }}
           />
@@ -119,6 +123,21 @@ function Sidebar() {
                 { label: "List", href: "list" },
               ],
               prefix: "/management/testimonial/",
+            }}
+          />
+        </CollapsibleLink>
+        <CollapsibleLink
+          icon={<BookA className="w-4 h-4" />}
+          label={"Curriculum"}
+          routePrefix="/management/curriculum/"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create", href: "create" },
+                { label: "List", href: "list" },
+              ],
+              prefix: "/management/curriculum/",
             }}
           />
         </CollapsibleLink>

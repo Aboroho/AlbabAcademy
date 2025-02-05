@@ -1,8 +1,8 @@
 import { BookOpen } from "lucide-react";
 
 type Props = {
-  title: string;
-  description: string;
+  title: JSX.Element | string;
+  description: JSX.Element | string;
   image: JSX.Element;
   buttonElem: JSX.Element;
 };
@@ -18,7 +18,7 @@ function CurriculumCard({ title, description, image, buttonElem }: Props) {
           <BookOpen className="w-5 h-5 text-brand" />
           {title}
         </h3>
-        <p className="text-slate-600 mt-1 text-sm">{description}</p>
+        <div className="text-slate-600 mt-1 text-sm">{description}</div>
         <div className="mt-4 ">{buttonElem}</div>
       </div>
     </div>
