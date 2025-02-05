@@ -1,17 +1,26 @@
+"use client";
+import { useGetStaticPageBySlug } from "@/client-actions/queries/static-page-queries";
+import { Skeleton } from "@/components/shadcn/ui/skeleton";
 import React from "react";
 
 type Props = {};
 
 function About({}: Props) {
+  const { data: page, isLoading } = useGetStaticPageBySlug("about-us");
   return (
     <div className="container py-10 min-h-[400px]">
-      <h1 className="text-2xl mb-4">About Us</h1>
-      Albab Academy is dedicated to nurturing the next generation of leaders
-      through a holistic approach to Islamic education. We blend traditional
-      Islamic teachings with modern academic disciplines, ensuring students
-      develop both spiritually and intellectually. Our mission is to empower
-      learners to excel in their faith, character, and worldly knowledge,
-      preparing them for a life of success and service to humanity.
+      {isLoading && (
+        <div className="flex flex-col gap-2">
+          <Skeleton className="w-1/3 h-7" />
+          <Skeleton className="w-full h-4" />
+          <Skeleton className="w-full h-4" />
+          <Skeleton className="w-full h-4" />
+          <Skeleton className="w-full h-4" />
+          <Skeleton className="w-full h-4" />
+        </div>
+      )}
+      <h1 className="text-2xl mb-4">{page?.title}</h1>
+      <div dangerouslySetInnerHTML={{ __html: page?.body || "" }}></div>
     </div>
   );
 }

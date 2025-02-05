@@ -105,6 +105,7 @@ function Sidebar() {
               links: [
                 { label: "Image Gallery", href: "image-gallery" },
                 { label: "Admission Details", href: "admission-details" },
+                { label: "About Us", href: "about-us" },
               ],
               prefix: "/management/site/",
             }}
