@@ -26,7 +26,7 @@ function HeroSection() {
               </p>
               <div className="mt-4 flex flex-col lg:flex-row gap-4 ">
                 <div>
-                  <Link href="#curriculum ">
+                  <Link href="/academics/list-of-subject ">
                     <Button className="max-w-fit">
                       Explore our curriculum
                     </Button>

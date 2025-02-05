@@ -54,7 +54,7 @@ export default function TopCarousel() {
                   </p>
 
                   <div className="mt-4 flex  lg:flex-row gap-4 justify-center lg:justify-start ">
-                    <Link href="/contact">
+                    <Link href="/about">
                       <Button className=" max-w-fit">
                         <School className="w-4 h-4" /> Know About Us
                       </Button>
