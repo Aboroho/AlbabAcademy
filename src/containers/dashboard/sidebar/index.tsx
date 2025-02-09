@@ -210,6 +210,21 @@ function Sidebar() {
           />
         </CollapsibleLink>
         <CollapsibleLink
+          icon={<BookA className="w-4 h-4" />}
+          label={"Expense"}
+          routePrefix="/management/expense/"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: "Create", href: "create" },
+                { label: "List", href: "list" },
+              ],
+              prefix: "/management/expense/",
+            }}
+          />
+        </CollapsibleLink>
+        <CollapsibleLink
           icon={<GraduationCap className="w-4 h-4" />}
           label={"Manage Payment"}
           routePrefix="/management/payment"

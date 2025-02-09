@@ -585,6 +585,17 @@ model Payout{
   create_at   DateTime    @default(now())
 }
 
+model Expense {
+  id          Int         @id @default(autoincrement())
+  amount      Int
+  title       String
+  description String?
+  date        DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+}
+
 
 enum NoticeStatus{
   ACTIVE
