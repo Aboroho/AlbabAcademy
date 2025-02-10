@@ -19,15 +19,22 @@ type Props = {
   className?: string;
 };
 export function DatePicker({ defaultDate, onSelect, className }: Props) {
-  const [date, setDate] = React.useState<Date>(defaultDate || new Date());
+  // console.log(defaultDate);
+  const [date, setDate] = React.useState<Date | undefined>(
+    defaultDate || new Date()
+  );
   const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setDate(defaultDate);
+  }, [defaultDate]);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "justify-start text-left font-normal",
             !date && "text-muted-foreground",
             className
           )}

@@ -19,14 +19,14 @@ export const useGetAllExpenses = (
   if (filter?.page) route += `&page=${filter.page}`;
   if (filter?.pageSize) route += `&pageSize=${filter.pageSize}`;
   const query = useQuery({
-    queryKey: ["expense", route],
+    queryKey: ["expenses", route],
     queryFn: async () => {
       const res = await api(route, {
         method: "get",
       });
       if (res?.success) {
         const data = res.data as {
-          payments: Array<Expense>;
+          expenses: Array<Expense>;
           count: number;
         };
         return data;
@@ -41,5 +41,29 @@ export const useGetAllExpenses = (
     ...queryOptions,
   });
 
+  return query;
+};
+
+export const useGetExpenseById = (
+  expenseId: number,
+  queryOptions?: CustomQueryOptions
+) => {
+  const query = useQuery({
+    queryKey: ["expense", expenseId],
+    queryFn: async () => {
+      const res = await api("/expense/" + expenseId, {
+        method: "get",
+      });
+      if (res?.success) {
+        return res.data as Expense;
+      }
+    },
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+
+    refetchOnWindowFocus: true,
+
+    ...queryOptions,
+  });
   return query;
 };

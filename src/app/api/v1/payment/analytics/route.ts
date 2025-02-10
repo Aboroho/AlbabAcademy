@@ -64,27 +64,23 @@ export const GET = withMiddleware(authenticate, async (req) => {
     },
   });
 
-  // const paymentRequest = await prismaQ.paymentRequest.findMany({
-  //   select : {
-  //     payment_request_entries : {
-  //       select : {
-  //         amount : true,
-  //         stipend : true,
-  //         payments : {
-  //           select : {
-  //             amount : true,
-  //           }
-  //         }
-  //       }
-  //     }
-
-  //   }
-  // })
+  let expenses;
+  if (role === "ADMIN") {
+    expenses = await prismaQ.expense.findMany({
+      where: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+  }
   return apiResponse({
     data: {
       payments,
       totalRequestedAmount: paymentRequestEntry._sum.amount,
       totalStipend: paymentRequestEntry._sum.stipend,
+      expenses,
     },
   });
 });

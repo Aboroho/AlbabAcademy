@@ -48,7 +48,7 @@ function ExpenseDetailsForm({
       title: "",
       amount: 0,
       description: "",
-      date: new Date().toISOString(),
+      date: new Date(),
     },
   });
 
@@ -57,11 +57,12 @@ function ExpenseDetailsForm({
 
   useEffect(() => {
     if (expense && isNotEmpty(expense)) {
+      console.log(expense);
       reset({
         title: expense.title,
         amount: expense.amount,
         description: expense.description || "",
-        date: expense.date.toISOString(),
+        date: expense.date,
       });
     }
   }, [reset, expense]);
@@ -70,8 +71,9 @@ function ExpenseDetailsForm({
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (data: FormData) => {
+      console.log(data);
       return await api("/expense/" + expenseId, {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(data),
       });
     },
@@ -150,7 +152,7 @@ function ExpenseDetailsForm({
                 />
                 <InputField
                   label="Expense Amount"
-                  placeholder="e.g., Principal"
+                  placeholder="e.g., 5000"
                   {...form.register("amount", {
                     valueAsNumber: true,
                   })}
@@ -160,7 +162,7 @@ function ExpenseDetailsForm({
                   className="max-w-[350px] w-full"
                   defaultDate={new Date(form.watch("date"))}
                   onSelect={(date) => {
-                    form.setValue("date", date.toISOString());
+                    form.setValue("date", date);
                   }}
                 />
                 <InputTextArea

@@ -13,7 +13,7 @@ import {
   StudentPaymentListDTO,
 } from "@/app/api/services/types/dto.types";
 import { useEffect, useState } from "react";
-import { Payment, Student, Teacher } from "@prisma/client";
+import { Expense, Payment, Student, Teacher } from "@prisma/client";
 
 export const useGetPaymentTemplates = (
   queryOptions?: CustomQueryOptions
@@ -182,6 +182,7 @@ export const useGetPaymentAnalytics = (
           >;
           totalRequestedAmount: number;
           totalStipend: number;
+          expenses: Expense[];
         };
         return data;
       }

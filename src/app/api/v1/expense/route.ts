@@ -47,6 +47,9 @@ export const GET = withMiddleware(
             },
           }),
       },
+      orderBy: {
+        date: "desc",
+      },
       take: pageSize,
       skip: (page - 1) * pageSize,
     });
