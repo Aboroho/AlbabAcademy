@@ -73,6 +73,9 @@ export const GET = withMiddleware(authenticate, async (req) => {
           lte: endDate,
         },
       },
+      orderBy: {
+        date: "desc",
+      },
     });
   }
   return apiResponse({
