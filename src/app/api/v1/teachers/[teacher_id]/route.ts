@@ -110,6 +110,10 @@ export const DELETE = withMiddleware(
       where: {
         id: teacherId,
       },
+      include: {
+        user: true,
+        address: true,
+      },
     });
     if (!teacher) throw new APIError("No teacher found", 404);
 
