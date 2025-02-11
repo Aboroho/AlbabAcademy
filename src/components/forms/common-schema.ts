@@ -54,8 +54,8 @@ export type IAddressUpdateFormData = z.infer<typeof addressUpdateSchema>;
 export const userCreateSchema = z.object({
   username: z
     .string()
-    .min(3, { message: "Username must be at least 3 characters long" })
-    .max(12, { message: "Username cannot be longer than 12 characters" }),
+    .min(2, { message: "Username must be at least 2 characters long" })
+    .max(64, { message: "Username cannot be longer than 64 characters" }),
   password: z
     .string()
     .min(3, { message: "Password must be at least 3 characters long" })

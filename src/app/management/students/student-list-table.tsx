@@ -9,7 +9,7 @@ import {
   Pencil1Icon,
 } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
-import { Trash2 } from "lucide-react";
+import { ActivitySquare, Trash2 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -17,7 +17,6 @@ import Link from "next/link";
 
 import { useGetStudents } from "@/client-actions/queries/student-queries";
 
-import { IStudentResponse } from "@/types/response_types";
 import { isEmpty } from "@/components/forms/form-utils";
 import { Popover } from "@/components/shadcn/ui/popover";
 import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
@@ -30,7 +29,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { SelectGradeField } from "@/components/forms/common-fields";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/client-actions/helper";
-import { StudentListDTO } from "@/app/api/services/types/dto.types";
+import { StudentDTO, StudentListDTO } from "@/app/api/services/types/dto.types";
+import { StudentStatus } from "@prisma/client";
 
 export type IStudentTableRow = {
   id: number;
@@ -41,10 +41,11 @@ export type IStudentTableRow = {
   section: string;
   cohort: string;
   phone: string;
+  student_status: string;
 };
 
 type Props = {
-  students?: IStudentResponse[];
+  students?: StudentDTO[];
 };
 
 function StudentListTable({ students: defaultStudents }: Props) {
@@ -62,7 +63,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
     },
     filter
   );
-  const students = defaultStudents || data?.students;
+  const students = data?.students;
 
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({
@@ -92,6 +93,50 @@ function StudentListTable({ students: defaultStudents }: Props) {
       );
     },
   });
+
+  async function handleStatus(id: number, status: string) {
+    toast.loading("Updating Student...", { id: "update-student" });
+    try {
+      const res = await api("/students/" + id + "/update-status", {
+        method: "PATCH",
+        body: JSON.stringify({
+          status: status,
+        }),
+      });
+      if (res.success) {
+        toast.success("Student updated");
+        queryClient.invalidateQueries({ queryKey: ["students", "all"] });
+        queryClient.setQueryData(
+          ["students", "all"],
+          (oldData: StudentListDTO) => {
+            if (oldData && oldData.students) {
+              oldData.students = oldData.students.map((student) => {
+                if (student.id === id) {
+                  return {
+                    ...student,
+                    student_status: status as StudentStatus,
+                  };
+                }
+                return student;
+              });
+
+              return oldData;
+            }
+
+            return oldData;
+          }
+        );
+      } else {
+        toast.error("Failed to update Student");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err: any) {
+      toast.error("Some error occured");
+      console.log(err);
+    } finally {
+      toast.dismiss("update-student");
+    }
+  }
 
   async function handleDelete(id: number) {
     toast.loading("Deleting Student...", { id: "delete-student" });
@@ -124,6 +169,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
             section: student.section.name,
             cohort: student.cohort.name,
             phone: student.user.phone,
+            student_status: student.student_status,
           } as IStudentTableRow)
       );
       setStudentTableRows(rowData);
@@ -270,15 +316,36 @@ function StudentListTable({ students: defaultStudents }: Props) {
                       href={"/management/students/" + student.id}
                       className="flex gap-3  items-center  cursor-pointer hover:text-slate-700"
                     >
-                      <Pencil1Icon
-                        className="w-5 h-5"
-                        onClick={() => {
-                          console.log("clicked");
-                        }}
-                      />
+                      <Pencil1Icon className="w-5 h-5" />
                       <span>Edit</span>
                     </Link>
                     <Protected action="hide" roles={["ADMIN"]}>
+                      <AlertDialog
+                        onConfirm={() =>
+                          handleStatus(
+                            student.id,
+                            student.student_status === "ACTIVE"
+                              ? "INACTIVE"
+                              : "ACTIVE"
+                          )
+                        }
+                        confirmText={
+                          student.student_status === "ACTIVE"
+                            ? "Deactivate"
+                            : "Activate"
+                        }
+                        message="Confirm action"
+                      >
+                        <div className="flex gap-3  cursor-pointer text-blue-500 hover:text-blue-600">
+                          <ActivitySquare className="w-5 h-5" />
+                          <span>
+                            {student.student_status === "ACTIVE"
+                              ? "Deactivate"
+                              : "Activate"}
+                          </span>
+                        </div>
+                      </AlertDialog>
+
                       <AlertDialog
                         onConfirm={() => handleDelete(student.id)}
                         confirmText="Delete"
@@ -298,7 +365,7 @@ function StudentListTable({ students: defaultStudents }: Props) {
         },
       },
     ],
-    []
+    [students]
   );
 
   return (
