@@ -17,6 +17,7 @@ import {
   StudentProfileDTO,
 } from "@/app/api/services/types/dto.types";
 import { Student } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 export type IGetStudentsQueryFilter = {
   grade_id?: number;
@@ -34,10 +35,15 @@ export const useGetStudents = (
   filter?: IGetStudentsQueryFilter
 ) => {
   const queryParams = generateQueryParamsFromObject(filter || {});
-
   const route = "/students?" + queryParams;
+  const [key, setKey] = useState(["students", "all", route]);
+
+  useEffect(() => {
+    setKey(["students", "all", route]);
+  }, [route]);
+
   const query = useQuery({
-    queryKey: ["students", "all"],
+    queryKey: key,
     queryFn: async () => {
       const res = await api(route, {
         method: "get",
@@ -47,7 +53,7 @@ export const useGetStudents = (
     ...DEFAULT_QUERY_FILTER,
     ...queryOptions,
   });
-  return query;
+  return { key, ...query };
 };
 
 export type StudentProfileViewModel = StudentProfileDTO;
