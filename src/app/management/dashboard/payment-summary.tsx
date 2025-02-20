@@ -12,12 +12,15 @@ import Image from "next/image";
 
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
+import { CSVLink } from "react-csv";
 
+import { Button } from "@/components/button";
+import { DownloadCloud } from "lucide-react";
 type Props = {};
 
 function PaymentSummary({}: Props) {
   const now = new Date();
-  const [date, setDate] = useState<DateRange | undefined>({
+  const [date, setDate] = useState<DateRange>({
     from: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
     to: new Date(),
   });
@@ -47,8 +50,34 @@ function PaymentSummary({}: Props) {
   const totalStipend = analytics?.totalStipend || 0;
 
   function renderExpense() {
+    const csvData = [
+      ["Expense Analytics"],
+      [
+        "Date Range",
+        `${formatDate(date.from || new Date())} - ${formatDate(
+          date.to || new Date()
+        )}`,
+      ],
+      ["Total Expense", totalExpense],
+      [""], // Empty row for separation
+      ["Details", "Amount", "Date"], // Column headers
+      ...(analytics?.expenses?.map((expense) => [
+        expense.title,
+        expense.amount,
+        formatDate(expense.createdAt),
+      ]) || []),
+    ];
     return (
       <div className="max-h-[70vh] overflow-y-scroll">
+        {analytics?.expenses && (
+          <CSVLink data={csvData} filename="expenses.csv">
+            <Button size={"sm"}>
+              {" "}
+              <DownloadCloud />
+              Download CSV
+            </Button>
+          </CSVLink>
+        )}
         <table className="w-full mb-14">
           <thead>
             <th className="text-left">Title</th>
@@ -116,8 +145,38 @@ function PaymentSummary({}: Props) {
   }
 
   function renderPayments() {
+    const csvData = [
+      ["Payment Analytics"],
+      [
+        "Date Range",
+        `${formatDate(date.from || new Date())} - ${formatDate(
+          date.to || new Date()
+        )}`,
+      ],
+      ["Total Paid", totalPaid],
+      [""], // Empty row for separation
+      ["Name", "Roll", "Grade", "Section", "Cohort", "Amount", "Date"], // Column headers
+      ...(analytics?.payments?.map((payment) => [
+        payment.user.student?.full_name,
+        payment.user.student?.roll,
+        payment.user.student?.cohort.section.grade.name,
+        payment.user.student?.cohort.section.name,
+        payment.user.student?.cohort.name,
+
+        payment.amount,
+        formatDate(payment.createdAt),
+      ]) || []),
+    ];
     return (
       <div className="max-h-[70vh] overflow-y-scroll">
+        {analytics?.payments && (
+          <CSVLink data={csvData} filename="payments.csv">
+            <Button size={"sm"}>
+              <DownloadCloud />
+              Download CSV
+            </Button>
+          </CSVLink>
+        )}
         <table className="w-full mb-14">
           <thead>
             <th className="text-left">Avatar</th>
@@ -254,5 +313,4 @@ function PaymentSummary({}: Props) {
     </div>
   );
 }
-
 export default PaymentSummary;

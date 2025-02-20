@@ -32,10 +32,28 @@ export const GET = withMiddleware(authenticate, async (req) => {
 
           student: {
             select: {
+              roll: true,
               full_name: true,
               guardian_phone: true,
+              cohort: {
+                select: {
+                  name: true,
+
+                  section: {
+                    select: {
+                      name: true,
+                      grade: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
+
           teachers: {
             select: {
               full_name: true,

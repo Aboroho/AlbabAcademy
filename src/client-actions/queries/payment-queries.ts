@@ -177,7 +177,21 @@ export const useGetPaymentAnalytics = (
         const data = res.data as {
           payments: Array<
             Payment & {
-              user: { avatar?: string; student?: Student; teacher?: Teacher };
+              user: {
+                avatar?: string;
+                student?: Student & {
+                  cohort: {
+                    name: string;
+                    section: {
+                      name: string;
+                      grade: {
+                        name: string;
+                      };
+                    };
+                  };
+                };
+                teacher?: Teacher;
+              };
             }
           >;
           totalRequestedAmount: number;
