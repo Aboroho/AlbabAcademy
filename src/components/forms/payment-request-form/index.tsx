@@ -272,6 +272,7 @@ function PaymentRequestForm({
                     {...form.register(`payment_details.${index}.amount`, {
                       valueAsNumber: true,
                     })}
+                    
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();

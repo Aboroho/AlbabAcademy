@@ -104,6 +104,7 @@ function Sidebar() {
             linkList={{
               links: [
                 { label: "Image Gallery", href: "image-gallery" },
+                { label: "Video Gallery", href: "video-gallery" },
                 { label: "Admission Details", href: "admission-details" },
                 { label: "About Us", href: "about-us" },
               ],

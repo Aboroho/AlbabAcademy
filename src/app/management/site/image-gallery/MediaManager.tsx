@@ -20,15 +20,17 @@ type Props = {
   pageTitle?: string;
 };
 
-function ImageGalleryManager({ groupName, pageTitle }: Props) {
+function MediaManager({ groupName, pageTitle }: Props) {
   const group = groupName || "image-gallery";
   const title = pageTitle || "Image Gallery";
   const { data: media, isLoading } = useGetMediaByGroup(group);
   const queryClient = useQueryClient();
 
-  async function handleImageUpload(cref: CloudinaryUploadWidgetResults) {
+  async function handleMediaUpload(cref: CloudinaryUploadWidgetResults) {
     if (cref.event !== "success") return;
     if (!cref.info || typeof cref.info !== "object") return;
+
+    console.log("m", cref.info);
 
     const data = {
       group: group,
@@ -41,7 +43,7 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
     };
 
     try {
-      toast.loading("Uploading...", { id: "uploading-image" });
+      toast.loading("Uploading...", { id: "uploading-media" });
       const res = await api("/media", {
         body: JSON.stringify(data),
         method: "POST",
@@ -59,13 +61,13 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
     } catch (err: any) {
       toast.error(err.message);
     } finally {
-      toast.dismiss("uploading-image");
+      toast.dismiss("uploading-media");
     }
   }
 
   async function handleDeleteMedia(assetId: string) {
     try {
-      toast.loading("Deleting...", { id: "delete-image" });
+      toast.loading("Deleting...", { id: "delete-media" });
       const res = await api("/media/asset_id/" + assetId, {
         method: "delete",
       });
@@ -81,7 +83,7 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
     } catch (err: any) {
       toast.error(err.message);
     } finally {
-      toast.dismiss("delete-image");
+      toast.dismiss("delete-media");
     }
   }
   return (
@@ -100,8 +102,9 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
           signatureEndpoint="/api/v1/cloudinary-signature"
           uploadPreset="default_media"
           onSuccess={(file) => {
+            console.log(file);
             if (typeof file.info !== "string" && file.info?.secure_url) {
-              handleImageUpload(file);
+              handleMediaUpload(file);
             }
           }}
 
@@ -109,7 +112,7 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
         >
           <Button className="bg-green-600 hover:bg-green-700">
             <UploadCloud className="w-5" />
-            Choose Image to Upload
+            Choose Media to Upload
           </Button>
         </CldUploadButton>
       </div>
@@ -139,14 +142,18 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
       <div className="grid grid-cols-2 md:grid-cols-4 p-10 gap-2 mt-10">
         {media?.map((file) => (
           <div className="relative group" key={file.asset_id}>
-            <Image
-              src={file.url}
-              alt="image"
-              width={300}
-              height={200}
-              className="w-full h-full object-fit aspect-square"
-            />
-            <div className="absolute top-0 left-0 right-0 bottom-0 opacity-0 group-hover:opacity-100 flex items-center justify-center bg-black/15">
+            {file.group === "video" ? (
+              <video controls src={file.url}></video>
+            ) : (
+              <Image
+                src={file.url}
+                alt="image"
+                width={300}
+                height={200}
+                className="w-full h-full object-fit aspect-square"
+              />
+            )}
+            <div className="absolute top-0 left-0 ">
               <AlertDialog
                 confirmText="Delete"
                 title="Delete media"
@@ -163,6 +170,23 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
                 </Button>
               </AlertDialog>
             </div>
+            {/* <div className="absolute top-0 left-0 right-0 bottom-0 opacity-0 group-hover:opacity-100 flex items-center justify-center bg-black/15">
+              <AlertDialog
+                confirmText="Delete"
+                title="Delete media"
+                onConfirm={() => {
+                  handleDeleteMedia(file.asset_id);
+                }}
+              >
+                <Button
+                  size={"sm"}
+                  className="opacity-0 group-hover:opacity-100 group-hover:transition-opacity bg-red-500 hover:bg-red-600"
+                >
+                  <Trash2 className="w-5" />
+                  Delete
+                </Button>
+              </AlertDialog>
+            </div> */}
           </div>
         ))}
       </div>
@@ -170,4 +194,4 @@ function ImageGalleryManager({ groupName, pageTitle }: Props) {
   );
 }
 
-export default ImageGalleryManager;
+export default MediaManager;

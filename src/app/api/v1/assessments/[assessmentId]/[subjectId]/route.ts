@@ -58,9 +58,12 @@ export const GET = withMiddleware(
                 name: "asc",
               },
             },
+            
           },
         },
+        
       },
+      
     });
 
     return apiResponse({ data: results });

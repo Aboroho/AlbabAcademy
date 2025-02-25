@@ -1,6 +1,6 @@
 "use client";
 
-import ImageGalleryManager from "../image-gallery/ImageGalleryManager";
+import ImageGalleryManager from "../image-gallery/MediaManager";
 
 type Props = {};
 

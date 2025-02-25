@@ -1,10 +1,11 @@
 import React from "react";
-import ImageGalleryManager from "./ImageGalleryManager";
+
+import MediaManager from "./MediaManager";
 
 type Props = {};
 
 function ImageGallary({}: Props) {
-  return <ImageGalleryManager />;
+  return <MediaManager />;
 }
 
 export default ImageGallary;

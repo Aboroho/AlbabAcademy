@@ -371,11 +371,10 @@ const StudentInvoice = ({
 
         {/* Signature Section */}
         <View style={styles.signatureSection}>
-          <Text style={styles.borderTop}>Chairman</Text>
-          <Text style={styles.borderTop}>Auditor</Text>
-          <Text style={styles.borderTop}>Principal</Text>
-          <Text style={styles.borderTop}>Vice-Principal</Text>
+          <Text style={styles.borderTop}>Prepared By</Text>
           <Text style={styles.borderTop}>Accountant</Text>
+          <Text style={styles.borderTop}>Principal</Text>
+          <Text style={styles.borderTop}>Director</Text>
         </View>
       </Page>
     </Document>
