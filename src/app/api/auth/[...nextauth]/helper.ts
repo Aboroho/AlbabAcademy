@@ -69,15 +69,13 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  // 3. Pages Configuration
   pages: {
     signIn: "/login",
     error: "/login",
   },
 
-  // 4. Session Configuration
   session: {
-    strategy: "jwt", // Use JWT strategy instead of database sessions
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // Session expires in 30 days
     updateAge: 24 * 60 * 60, // Update session every 24 hours
   },

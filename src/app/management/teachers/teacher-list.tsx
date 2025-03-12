@@ -25,6 +25,7 @@ import { Badge } from "@/components/shadcn/ui/badge";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/client-actions/helper";
 import { ITeacherResponse } from "@/types/response_types";
+import { SelectInput } from "@/components/ui/single-select-input";
 
 export type ITeacherRowTable = {
   id: number;
@@ -40,6 +41,7 @@ function TeacherListTable() {
   const [teacherTableRows, setTeacherTableRows] = useState<ITeacherRowTable[]>(
     [] as ITeacherRowTable[]
   );
+  const [designation, setDesignation] = useState<string | undefined>("");
   const { data, isLoading } = useGetTeachers();
   const queryClient = useQueryClient();
   const teachers = data;
@@ -69,7 +71,10 @@ function TeacherListTable() {
   });
   useEffect(() => {
     if (teachers) {
-      const rowData = teachers.map(
+      const updatedTeachers = teachers.filter(
+        (teacher) => designation === "" || teacher.designation === designation
+      );
+      const rowData = updatedTeachers.map(
         (teacher) =>
           ({
             id: teacher.id,
@@ -83,21 +88,21 @@ function TeacherListTable() {
       );
       setTeacherTableRows(rowData);
     }
-  }, [teachers]);
+  }, [teachers, designation]);
 
   async function handleDelete(id: number) {
-    toast.loading("Deleting Teacher...", { id: "delete-teacher" });
+    toast.loading("Deleting Staff...", { id: "delete-Staff" });
     try {
       const res = await deleteMutation.mutateAsync(id);
       if (res.success) {
-        toast.success("Teacher deleted");
+        toast.success("Staff deleted");
       } else {
-        toast.error("Failed to delete teacher");
+        toast.error("Failed to delete Staff");
       }
     } catch (err: any) {
       toast.error(err.message);
     } finally {
-      toast.dismiss("delete-teacher");
+      toast.dismiss("delete-Staff");
     }
   }
   const columns: ColumnDef<ITeacherRowTable>[] = useMemo(
@@ -122,7 +127,7 @@ function TeacherListTable() {
       },
       {
         accessorKey: "name",
-        header: () => <div className="text-center font-bold">Teacher Name</div>,
+        header: () => <div className="text-center font-bold">Staff Name</div>,
         cell: ({ row }) => (
           <div className="text-center font-semibold">
             {row.getValue("name")}
@@ -151,9 +156,8 @@ function TeacherListTable() {
       },
       {
         accessorKey: "status",
-        header: () => (
-          <div className="text-center font-bold">Teacher Status</div>
-        ),
+        header: () => <div className="text-center font-bold">Staff Status</div>,
+
         cell: ({ row }) => (
           <div className="text-center font-semibold">
             <Badge>{row.getValue("status")}</Badge>
@@ -186,12 +190,7 @@ function TeacherListTable() {
                       href={"/management/teachers/" + teacher.id}
                       className="flex gap-3  items-center  cursor-pointer hover:text-slate-700"
                     >
-                      <Pencil1Icon
-                        className="w-5 h-5"
-                        onClick={() => {
-                          console.log("clicked");
-                        }}
-                      />
+                      <Pencil1Icon className="w-5 h-5" />
                       <span>Edit</span>
                     </Link>
                     <Protected action="hide" roles={["ADMIN"]}>
@@ -220,6 +219,52 @@ function TeacherListTable() {
   if (isLoading) return <TableSkeleton />;
   return (
     <div className="p-2 lg:p-4">
+      <div className="py-4 w-1/4">
+        <SelectInput
+          selectedValue={designation}
+          isLoading={isLoading}
+          placeholder="Select Designation"
+          onSelect={(value) => {
+            setDesignation(value);
+          }}
+          triggerClassName="w-full"
+          options={[
+            {
+              label: "Teacher",
+              value: "TEACHER",
+            },
+            {
+              label: "Principal",
+              value: "PRINCIPAL",
+            },
+            {
+              label: "Staff",
+              value: "STAFF",
+            },
+            {
+              label: "Director",
+              value: "DIRECTOR",
+            },
+            {
+              label: "Assistant Teacher",
+              value: "ASSISTENT_TEACHER",
+            },
+            {
+              label: "Accountant",
+              value: "ACCOUNTANT",
+            },
+            {
+              label: "Librarian",
+              value: "LIBRARIAN",
+            },
+            {
+              label: "Secretary",
+              value: "SECRETARY",
+            },
+          ]}
+          label={"Sort by Designation"}
+        />
+      </div>
       <DataTable data={teacherTableRows} columns={columns} />
     </div>
   );

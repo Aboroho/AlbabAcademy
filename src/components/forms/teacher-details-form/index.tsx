@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FieldError, FormProvider, useForm } from "react-hook-form";
 import {
   ITeacherCreateFormData,
   ITeacherUpdateFormData,
@@ -32,6 +32,8 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ITeacherResponse } from "@/types/response_types";
 import { PhoneIcon, Sparkles } from "lucide-react";
+import { SelectInput } from "@/components/ui/single-select-input";
+import InputTextArea from "@/components/ui/input-textarea";
 
 type FormData = ITeacherCreateFormData | ITeacherUpdateFormData;
 
@@ -117,16 +119,60 @@ function TeacherDetailsForm({
             <div className="personal-details p-2 space-y-4">
               <FormSection title="Personal Details">
                 <InputField
-                  label="Teacher's name"
+                  label=" Full Name"
                   placeholder="e.g., John Doe"
                   {...form.register("full_name")}
                   error={errors.full_name}
                 />
-                <InputField
-                  label="Designation"
-                  placeholder="e.g., Lecturer"
-                  {...form.register("designation")}
-                  error={errors.designation}
+                <Controller
+                  control={form.control}
+                  name="designation"
+                  rules={{}}
+                  render={({ field }) => (
+                    <SelectInput
+                      selectedValue={field.value}
+                      isLoading={isLoading}
+                      error={errors.designation as FieldError}
+                      placeholder="Select Designation"
+                      onSelect={field.onChange}
+                      triggerClassName="w-full"
+                      options={[
+                        {
+                          label: "Teacher",
+                          value: "TEACHER",
+                        },
+                        {
+                          label: "Principal",
+                          value: "PRINCIPAL",
+                        },
+                        {
+                          label: "Staff",
+                          value: "STAFF",
+                        },
+                        {
+                          label: "Director",
+                          value: "DIRECTOR",
+                        },
+                        {
+                          label: "Assistant Teacher",
+                          value: "ASSISTENT_TEACHER",
+                        },
+                        {
+                          label: "Accountant",
+                          value: "ACCOUNTANT",
+                        },
+                        {
+                          label: "Librarian",
+                          value: "LIBRARIAN",
+                        },
+                        {
+                          label: "Secretary",
+                          value: "SECRETARY",
+                        },
+                      ]}
+                      label={"Designation"}
+                    />
+                  )}
                 />
                 <InputField
                   icon={<PhoneIcon className="w-4 h-4" />}
@@ -142,7 +188,7 @@ function TeacherDetailsForm({
                   {...form.register("subject_expertise")}
                   error={errors.subject_expertise}
                 />
-                <InputField
+                <InputTextArea
                   label="Short Description (optional)"
                   placeholder="A brief description of the teacher"
                   {...form.register("description")}
@@ -160,9 +206,9 @@ function TeacherDetailsForm({
                   <Button
                     isLoading={form.formState.isSubmitting}
                     type="submit"
-                    className="mt-auto"
+                    className="mt-auto bg-green-500 hover:bg-green-500"
                   >
-                    Submit Teacher&apos;s Data
+                    Submit Data
                   </Button>
                 )}
               </div>

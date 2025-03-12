@@ -94,6 +94,21 @@ function Sidebar() {
             }}
           />
         </CollapsibleLink>
+        <CollapsibleLink
+          icon={<GraduationCap className="w-4 h-4" />}
+          label={"Staff"}
+          routePrefix="/management/teachers"
+        >
+          <CollapsibleLinkContent
+            linkList={{
+              links: [
+                { label: " Staff List", href: "" },
+                { label: "Create staff", href: "/create" },
+              ],
+              prefix: "/management/teachers",
+            }}
+          />
+        </CollapsibleLink>
 
         <CollapsibleLink
           icon={<Globe className="w-4 h-4" />}
@@ -159,22 +174,6 @@ function Sidebar() {
                 { label: "Create Cohort", href: "/cohorts/create" },
               ],
               prefix: "/management/groups",
-            }}
-          />
-        </CollapsibleLink>
-
-        <CollapsibleLink
-          icon={<GraduationCap className="w-4 h-4" />}
-          label={"Teacher"}
-          routePrefix="/management/teachers"
-        >
-          <CollapsibleLinkContent
-            linkList={{
-              links: [
-                { label: " Teacher's List", href: "" },
-                { label: "Create teacher", href: "/create" },
-              ],
-              prefix: "/management/teachers",
             }}
           />
         </CollapsibleLink>

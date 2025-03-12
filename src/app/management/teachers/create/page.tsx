@@ -3,7 +3,7 @@ import TeacherDetailsForm from "@/components/forms/teacher-details-form";
 function CreateTeacher() {
   return (
     <div>
-      <TeacherDetailsForm formTitle="Create Teacher" />
+      <TeacherDetailsForm formTitle="Create New Staff" />
     </div>
   );
 }

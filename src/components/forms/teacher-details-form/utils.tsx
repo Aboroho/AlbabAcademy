@@ -46,7 +46,7 @@ export async function createTeacher(data: ITeacherCreateFormData) {
 export function getTeacherDefaultCreateFormData(): ITeacherCreateFormData {
   return {
     address: defaultAddressField,
-    designation: "",
+    designation: "TEACHER",
     full_name: "",
     user: defaultUserField,
     date_of_joining: null,
@@ -60,7 +60,7 @@ export function getTeacherDefaultUpdateFormData(
   teacher?: ITeacherResponse
 ): ITeacherUpdateFormData {
   if (!teacher) return {} as ITeacherUpdateFormData;
-  console.log(teacher);
+
   return {
     ...omitFields(teacher, ["address_id", "user_id", "grades", "id"]),
     date_of_joining: teacher.date_of_joining

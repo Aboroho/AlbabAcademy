@@ -75,6 +75,17 @@ enum PaymentMethod {
   CASH
 }
 
+enum Designation {
+  STAFF
+  TEACHER
+  DIRECTOR
+  ASSISTENT_TEACHER
+  ACCOUNTANT
+  LIBRARIAN
+  SECRETARY
+  PRINCIPAL
+  OTHER
+}
 enum StudentStatus {
   ACTIVE
   INACTIVE
@@ -246,7 +257,7 @@ model Teacher {
   id                Int      @unique @default(autoincrement())
  
   full_name         String   @db.VarChar(64)
-  designation       String   @db.VarChar(64)
+  // designation       String?   @db.VarChar(64)
   description       String?   @db.VarChar(1024)
   subject_expertise String?   @db.VarChar(128)
   date_of_joining   DateTime? @default(now()) @db.Timestamp
@@ -261,6 +272,7 @@ model Teacher {
   assessment_subjects AssessmentSubject[]
   section Section[]
 
+  designation Designation @default(TEACHER)
   
   attendance_record   TeacherAttendance[]
 
