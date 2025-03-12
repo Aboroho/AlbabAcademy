@@ -4,6 +4,7 @@ import { omitFields } from "@/app/api/utils/excludeFields";
 import { defaultAddressField, defaultUserField } from "../common-fields";
 import toast from "react-hot-toast";
 import { api } from "@/client-actions/helper";
+import { Designation } from "@prisma/client";
 
 export async function updateTeacher(
   data: ITeacherUpdateFormData,
@@ -66,5 +67,6 @@ export function getTeacherDefaultUpdateFormData(
     date_of_joining: teacher.date_of_joining
       ? new Date(teacher.date_of_joining || "")
       : null,
+    designation: teacher.designation as Designation,
   };
 }

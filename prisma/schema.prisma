@@ -84,7 +84,7 @@ enum Designation {
   LIBRARIAN
   SECRETARY
   PRINCIPAL
-  OTHER
+
 }
 enum StudentStatus {
   ACTIVE
